@@ -1,32 +1,51 @@
 import React, { useState } from 'react';
 import { TextField, Button } from '@mui/material';
-import { createUser, getUser, login } from '@/api/requests/User';
-import { StoreInstance } from '@/models/Store';
-import { User } from '@/models/User';
+import { createUser, getUser, login } from '@/models/User/Api';
+import { AxiosError } from 'axios';
+import { Error } from '@mui/icons-material';
 
 
 
-const SignInForm: React.FC = () => {
+const SignInForm: React.FC<{close: ()=>void}> = ({close}) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
-
+  const [error, setError] = useState<string|undefined>()
 
   const handleSignIn = async () => {
-    await login({ username, password })
-    const user: User = await getUser()
-    StoreInstance.user = user
+    setError(undefined)
+    try{
+      await login({ username, password })
+      close()
+    }catch(e: unknown){
+      if(e instanceof AxiosError){
+        setError(e.message)
+      }
+    }
+
   };
-  const handleSignUp = () => {
-    if(email!==''){
-      createUser({ username, password, email }).then(()=>handleSignIn());
-    }else{
-      createUser({ username, password }).then(()=>handleSignIn());
+  const handleSignUp = async () => {
+    setError(undefined)
+    try{
+      if(email!==''){
+        await createUser({ username, password, email })
+        await handleSignIn();
+      }else{
+        createUser({ username, password });
+        await handleSignIn();
+      }
+    }catch(e: unknown){
+      if(e instanceof AxiosError){
+        setError(e.message)
+      }
     }
   };
 
   return (
     <div>
+      {error && <Error>
+        {error}
+      </Error>}
       <TextField
         label="Username"
         value={username}

@@ -1,12 +1,15 @@
-import { observable } from "mobx";
-import { Portfolio } from "./Portfolio";
-import { User } from "./User";
-import { getUser } from "@/api/requests/User";
+import { makeAutoObservable, observable } from "mobx";
+import { Portfolio } from "./Portfolio/Portfolio";
+import { User } from "./User/User";
+import { getUser } from "@/models/User/Api";
 
 export class Store {
-  @observable user?: User
-  @observable portfolio?: Portfolio 
-  @observable loading: boolean = true
+  user?: User
+  portfolio?: Portfolio 
+  loading: boolean = true
+  constructor(){
+    makeAutoObservable(this)
+  }
 }
 
 

@@ -7,5 +7,6 @@ export class User{
       public date_registered: string,
       public email?: string,
   ){
+    
   }
 }

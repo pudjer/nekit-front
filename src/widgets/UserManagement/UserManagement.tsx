@@ -1,28 +1,56 @@
 import React, { useState } from 'react';
 import { TextField, Button } from '@mui/material';
-import { deleteUser, updateUser } from '@/api/requests/User';
+import { deleteUser, logOut, updateUser } from '@/models/User/Api';
 import { StoreInstance } from '@/models/Store';
+import { AxiosError } from 'axios';
+import { Error } from '@mui/icons-material';
 
 
-const UserManagement: React.FC = () => {
+const UserManagement: React.FC<{close: ()=>void}> = ({close}) => {
   const user = StoreInstance.user!
   const [username, setUsername] = useState(user.username);
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState(user.email || '');
+  const [error, setError] = useState<string|undefined>()
 
-  const handleDelete = () => {
+  const handleDelete = async() => {
     // Call API to delete user
-    deleteUser();
+    try{
+      await deleteUser();
+      close()
+    }catch(e: unknown){
+      if(e instanceof AxiosError){
+        setError(e.message)
+      }
+    }
   };
 
 
-  const handleUpdate = () => {
+  const handleUpdate = async () => {
     // Call API to update user
-    updateUser({ username, password, email });
+    try{
+      await updateUser({ username, password, email });
+      close()
+    }catch(e: unknown){
+      if(e instanceof AxiosError){
+        console.log(e)
+        setError(e.message)
+      }
+    }
+  };
+
+
+  const handleExit = () => {
+    // Call API to update user
+    logOut()
+    close()
   };
 
   return (
     <div>
+      {error && <Error>
+        {error}
+      </Error>}
       <TextField
         label="Username"
         value={username}
@@ -42,6 +70,8 @@ const UserManagement: React.FC = () => {
       />
       <Button variant="contained" onClick={handleDelete}>Delete User</Button>
       <Button variant="contained" onClick={handleUpdate}>Update User</Button>
+      <Button variant="contained" onClick={handleExit}>Exit</Button>
+
     </div>
   );
 };

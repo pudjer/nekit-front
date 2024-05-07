@@ -1,0 +1,5 @@
+.page{
+  display: flex;
+  justify-content: stretch;
+  flex-grow: 8;
+}

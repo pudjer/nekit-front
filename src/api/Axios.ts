@@ -1,9 +1,10 @@
 import axios from 'axios';
-import { Navigate, redirect } from 'react-router-dom';
+import { redirect } from 'react-router-dom';
 import { baseUrl } from './baseUrl';
 
 const api = axios.create({
   baseURL: baseUrl,
+  headers: {withCredentials:true},
 });
 
 api.interceptors.response.use(
@@ -19,5 +20,9 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+api.interceptors.request.use(request=>{
+  request.headers.Authorization = localStorage.getItem('access_token')
+  return request
+})
 
 export const Axios = api
