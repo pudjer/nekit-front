@@ -4,7 +4,7 @@ import { StoreInstance } from '@/models/Store';
 import { Button, Select, MenuItem, SelectChangeEvent, InputLabel, FormControl } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Portfolio } from '@/models/Portfolio/Portfolio';
-import styles from "./PortfolioButton.module.css"
+import styles from "./PortfolioSelect.module.css"
 import { useNavigate } from 'react-router-dom';
 
 const PortfolioSelect = observer(() => {
@@ -21,8 +21,8 @@ const PortfolioSelect = observer(() => {
       <InputLabel id={styles.portfolioSelect} onClick={StoreInstance.portfolio && (()=>nav("/portfolio"))}>Portfolio</InputLabel>
       <Select style={{overflow: "hidden"} }
         labelId={styles.portfolioSelect}
-        value={ StoreInstance.portfolio?.name }
-        label="Age"
+        value={ StoreInstance.portfolio?.name || ''}
+        label="Portfolio"
       >
         {portfolios.map((portfolio) => (
           <MenuItem key={portfolio._id} value={portfolio.name} style={{maxWidth: "50vw"}} onClick={()=>{StoreInstance.portfolio = portfolio}}>

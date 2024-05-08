@@ -64,7 +64,7 @@ export const Portfolios: React.FC = observer(() => {
       <Dialog open={dialogOpen} onClose={handleCloseDialog}>
         <DialogTitle>Add a new portfolio</DialogTitle>
         <DialogContent>
-          <Box component="form" onSubmit={handleSubmit(createPortfolio)} noValidate autoComplete="off">
+          <Box component="form" onSubmit={handleSubmit((d)=>createPortfolio(d).then(portf =>setPortfolios([...portfolios, portf])))} noValidate autoComplete="off">
             <TextField
               {...register('name', { required: true })}
               label="Name"

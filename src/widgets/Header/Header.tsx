@@ -5,7 +5,8 @@ import logo from './logo.svg';
 import styles from './Header.module.css'
 import ProfileButton from '../ProfileButton/ProfileButton';
 import { observer } from 'mobx-react-lite';
-import PortfolioSelect from '../PortfolioButton/PortfolioButton';
+import PortfolioSelect from '../PortfolioSelect/PortfolioSelect';
+import { CurrencySelect } from '../CurrencySelect/CurrencySelect';
 
 
 const Header: React.FC = observer(() => {
@@ -30,6 +31,7 @@ const Header: React.FC = observer(() => {
       </div>
 
       <PortfolioSelect/>
+      <CurrencySelect/>
       <div>
         <Typography variant="h6" align="right">
           <ProfileButton/>

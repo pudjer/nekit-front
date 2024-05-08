@@ -10,6 +10,7 @@ export class Store {
   user?: User
   portfolio?: Portfolio 
   currencies: Currency[] = []
+  currency?: Currency
   tokens: Token[] = []
   constructor(){
     makeAutoObservable(this)
@@ -19,13 +20,20 @@ export class Store {
 
 
 export const StoreInstance = new Store()
-setInterval(async ()=>{
+
+
+
+const setTokens = async ()=>{
   const res = await Axios.get('/exchange/tokens')
   StoreInstance.tokens = res.data
-}, 1000 * 60 * 10)
+}
+setTokens()
+setInterval(setTokens, 1000 * 60 * 10)
 
-setInterval(async ()=>{
+const setCurrencies = async ()=>{
   const res = await Axios.get('/exchange/currencies')
   StoreInstance.currencies = res.data
-}, 1000 * 60 * 60 * 24)
+}
+setCurrencies()
+setInterval(setCurrencies, 1000 * 60 * 60 * 24)
 getUser().then( user=>StoreInstance.user = user )
