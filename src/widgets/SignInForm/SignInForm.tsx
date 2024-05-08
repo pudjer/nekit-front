@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { TextField, Button } from '@mui/material';
-import { createUser, getUser, login } from '@/models/User/Api';
+import { TextField, Button, Alert } from '@mui/material';
+import { createUser,  login } from '@/models/User/Api';
 import { AxiosError } from 'axios';
-import { Error } from '@mui/icons-material';
 
 
 
@@ -43,9 +42,7 @@ const SignInForm: React.FC<{close: ()=>void}> = ({close}) => {
 
   return (
     <div>
-      {error && <Error>
-        {error}
-      </Error>}
+      {error && <Alert severity="error">{error}</Alert>}
       <TextField
         label="Username"
         value={username}
