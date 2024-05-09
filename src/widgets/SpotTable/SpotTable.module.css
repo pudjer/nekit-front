@@ -1,0 +1,11 @@
+.column:hover{
+  color: red;
+  cursor: pointer;
+}
+.hidden:hover{
+  color:lightgreen;
+  cursor: pointer;
+}
+.hidden{
+  display: inline;
+}

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { TextField, Button, Alert } from '@mui/material';
-import { createUser,  login } from '@/models/User/Api';
+import { TextField, Button, Alert, Checkbox, FormControlLabel, Switch, DialogContent } from '@mui/material';
 import { AxiosError } from 'axios';
+import { StoreInstance } from '@/Store/Store';
 
 
 
@@ -10,11 +10,11 @@ const SignInForm: React.FC<{close: ()=>void}> = ({close}) => {
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
   const [error, setError] = useState<string|undefined>()
-
+  const [signUp, setSignUp] = useState(false)
   const handleSignIn = async () => {
     setError(undefined)
     try{
-      await login({ username, password })
+      await StoreInstance.login({ username, password })
       close()
     }catch(e: unknown){
       if(e instanceof AxiosError){
@@ -27,11 +27,10 @@ const SignInForm: React.FC<{close: ()=>void}> = ({close}) => {
     setError(undefined)
     try{
       if(email!==''){
-        await createUser({ username, password, email })
+        await StoreInstance.createUser({ username, password, email })
         await handleSignIn();
       }else{
-        createUser({ username, password });
-        await handleSignIn();
+        await StoreInstance.createUser({ username, password });
       }
     }catch(e: unknown){
       if(e instanceof AxiosError){
@@ -41,28 +40,36 @@ const SignInForm: React.FC<{close: ()=>void}> = ({close}) => {
   };
 
   return (
-    <div>
+    <DialogContent>
       {error && <Alert severity="error">{error}</Alert>}
+      <FormControlLabel control={<Switch checked={signUp} onChange={()=>setSignUp(!signUp)}/>} label={signUp ? "SIGN UP" : "SIGN IN"} />
       <TextField
+        fullWidth
         label="Username"
         value={username}
         onChange={(e) => setUsername(e.target.value)}
       />
       <TextField
+        fullWidth
         label="Password"
         type="password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
-      <TextField
+      {signUp && <TextField
+        fullWidth
         label="Email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-      />
-      <Button variant="contained" onClick={handleSignIn}>Sign In</Button>
-      <Button variant="contained" onClick={handleSignUp}>Sign Up</Button>
-
-    </div>
+      />}
+      {
+        signUp 
+        ? 
+        <Button variant="contained" onClick={handleSignUp}>Sign Up</Button>
+        :
+        <Button variant="contained" onClick={handleSignIn}>Sign In</Button>
+      }
+    </DialogContent>
   );
 };
 

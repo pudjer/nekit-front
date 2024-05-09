@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Dialog from '@mui/material/Dialog';
 import { Button } from '@mui/material';
-import { StoreInstance } from '@/models/Store';
+import { StoreInstance } from '@/Store/Store';
 import { observer } from 'mobx-react-lite';
 import UserManagement from '../UserManagement/UserManagement';
 import SignInForm from '../SignInForm/SignInForm';

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { TextField, Button } from '@mui/material';
-import { deleteUser, logOut, updateUser } from '@/models/User/Api';
-import { StoreInstance } from '@/models/Store';
+import { TextField, Button, DialogContent } from '@mui/material';
+import { StoreInstance } from '@/Store/Store';
 import { AxiosError } from 'axios';
 import { Error } from '@mui/icons-material';
 
@@ -16,7 +15,7 @@ const UserManagement: React.FC<{close: ()=>void}> = ({close}) => {
   const handleDelete = async() => {
     // Call API to delete user
     try{
-      await deleteUser();
+      await StoreInstance.deleteUser();
       close()
     }catch(e: unknown){
       if(e instanceof AxiosError){
@@ -29,7 +28,7 @@ const UserManagement: React.FC<{close: ()=>void}> = ({close}) => {
   const handleUpdate = async () => {
     // Call API to update user
     try{
-      await updateUser({ username, password, email });
+      await StoreInstance.updateUser({ username, password, email });
       close()
     }catch(e: unknown){
       if(e instanceof AxiosError){
@@ -42,27 +41,30 @@ const UserManagement: React.FC<{close: ()=>void}> = ({close}) => {
 
   const handleExit = () => {
     // Call API to update user
-    logOut()
+    StoreInstance.logOut()
     close()
   };
 
   return (
-    <div>
+    <DialogContent>
       {error && <Error>
         {error}
       </Error>}
       <TextField
+        fullWidth
         label="Username"
         value={username}
         onChange={(e) => setUsername(e.target.value)}
       />
       <TextField
+        fullWidth
         label="Password"
         type="password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
       <TextField
+        fullWidth
         label="Email"
         type="email"
         value={email}
@@ -72,7 +74,7 @@ const UserManagement: React.FC<{close: ()=>void}> = ({close}) => {
       <Button variant="contained" onClick={handleUpdate}>Update User</Button>
       <Button variant="contained" onClick={handleExit}>Exit</Button>
 
-    </div>
+    </DialogContent>
   );
 };
 
