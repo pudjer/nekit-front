@@ -73,6 +73,10 @@ export class Store {
     const res = await Axios.get('/exchange/currencies')
     this.currencies = res.data
   }
+
+  stringFromUSD(p: number){
+    return this.currency ? p * this.currency.exchangeRateToUsd + " " + this.currency.symbol : p + ' USD'
+  }
 }
 
 

@@ -2,6 +2,7 @@ import { StoreInstance } from "@/Store/Store";
 import { Token } from "@/Store/Token";
 import { FormControl, Autocomplete, TextField } from "@mui/material";
 import { observer } from "mobx-react-lite";
+import React from "react";
 import { useState } from "react";
 
 export const SymbolSelect: React.FC<{onChange: (token: Token | undefined)=>void, fullWidth?: boolean, init?: string}> = observer(({onChange, fullWidth, init}) => {

@@ -12,6 +12,7 @@ export const FuturesPage = observer(()=>{
   const [openUpdate, setOpenUpdate] = useState<boolean>(false)
 
   const [selected, Select] = useState<FuturesPosition | undefined>()
+  StoreInstance.user?.setPortfolioFromHref()
   if(!StoreInstance.user?.portfolio){
     return <Typography variant="h1">Select portfolio!!</Typography>
   }

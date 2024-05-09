@@ -21,8 +21,8 @@ const Header: React.FC = observer(() => {
       </Link>
 
       {[{title: "home", to: '/home'}, {title: "portfolios", to: '/portfolios'}].map((link, index) => (
-        <Typography variant="h5" margin={1}>
-            <Link key={index} to={link.to}>
+        <Typography variant="h5" margin={1}  key={index}>
+            <Link to={link.to}>
               {link.title}
             </Link>
         </Typography>

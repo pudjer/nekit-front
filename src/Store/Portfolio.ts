@@ -25,6 +25,7 @@ export class Portfolio{
       props.quantity,
       props.timestamp,
       props.initialPrice,
+      props.exitPrice
     )
     return portfolio
   }
@@ -68,6 +69,7 @@ export class Portfolio{
       props.initialPrice,
       props.stopLoss,
       props.takeProfit,
+      props.exitPrice
     )
     return portfolio
   }
@@ -87,6 +89,57 @@ export class Portfolio{
   async getFuturesPosition(id: string){
     await Axios.get(`/futures/${id}`)
   }
+
+  getCurrentValue(){
+    let sum = 0
+    if(this.spotPositions){
+      for(const pos of this.spotPositions){
+        sum = sum + pos.getCurrentVolume()
+      }
+    }
+    if(this.futuresPositions){
+      for(const pos of this.futuresPositions){
+        sum = sum + pos.getValue()
+      }
+    }
+    return sum
+  }
+
+  getIncomePerc(){
+    let initialSum = 0
+    if(this.spotPositions){
+      for(const pos of this.spotPositions){
+        initialSum = initialSum + pos.getInitialVolume()
+      }
+    }
+    if(this.futuresPositions){
+      for(const pos of this.futuresPositions){
+        initialSum = initialSum + pos.margin
+      }
+    }
+    return ((this.getCurrentValue() / initialSum)-1) * 100
+  }
+
+  
+
+  getVolumeChange(){
+    let sum = 0
+    if(this.spotPositions){
+      for(const pos of this.spotPositions){
+        sum = sum + pos.getVolumeChange()
+      }
+    }
+    if(this.futuresPositions){
+      for(const pos of this.futuresPositions){
+        sum = sum + pos.getVolumeChange()
+      }
+    }
+    return sum
+  }
+
+
+
+
   
 
 }

@@ -13,8 +13,9 @@ export class FuturesPosition{
     public leverage: number,
     public timestamp: string,
     public initialPrice: number,
-    public stopLoss: number,
-    public takeProfit: number,
+    public stopLoss?: number,
+    public takeProfit?: number,
+    public exitPrice?: number
   ){
     makeAutoObservable(this)
   }
@@ -25,16 +26,28 @@ export class FuturesPosition{
     return symbol.current_price
   }
   getCurrentVolume(){
-    return this.getCurrentPrice()*this.quantity
+    return (this.exitPrice || this.getCurrentPrice())*this.quantity
   }
   getPriceChange(){
-    return this.initialPrice - this.getCurrentPrice()
+    return (this.exitPrice || this.getCurrentPrice())-this.initialPrice
   }
   getVolumeChange(){
-    return this.getPriceChange()*this.quantity
+    return this.getCurrentVolume() - this.getInitialVolume()
   }
   getInitialVolume(){
     return this.initialPrice*this.quantity
+  }
+  getPriceChangePerc(){
+    return (((this.exitPrice || this.getCurrentPrice()) / this.initialPrice) - 1) * 100
+  }
+  getVolumeChangePerc(){
+    return ((this.getCurrentVolume() / this.getInitialVolume()) - 1) * 100
+  }
+  getValue(){
+    return this.margin + this.getVolumeChange()
+  }
+  getValueChangePerc(){
+    return ((this.getValue() / this.margin) - 1) * 100
   }
   async update(upd: CreateFuturesPositionDTO){
     const res: FuturesPosition = (await Axios.patch(`/futures/${this._id}`, upd)).data
@@ -50,6 +63,8 @@ export type CreateFuturesPositionDTO = {
   leverage: number
   timestamp: string
   initialPrice: number,
-  stopLoss: number
-  takeProfit: number
+  stopLoss?: number
+  takeProfit?: number
+  exitPrice?: number
+
 }

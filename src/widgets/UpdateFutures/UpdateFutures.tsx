@@ -5,6 +5,8 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  FormControlLabel,
+  Switch,
   TextField,
 } from '@mui/material';
 import { CreateFuturesPositionDTO, FuturesPosition } from '@/Store/FuturesPosition';
@@ -23,8 +25,10 @@ export const UpdateFutures: React.FC<{open: boolean, onClose: ()=>void, pos: Fut
     leverage: pos.leverage,
     margin: pos.margin,
     stopLoss: pos.stopLoss,
-    takeProfit: pos.takeProfit
+    takeProfit: pos.takeProfit,
+    exitPrice: pos.exitPrice
   });
+  const [long, setIsLong] = useState(true)
   
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     let { name, value } = event.target;
@@ -34,14 +38,20 @@ export const UpdateFutures: React.FC<{open: boolean, onClose: ()=>void, pos: Fut
       [name]: (value),
     });
   };
-
+  const keysToUsd = ['initialPrice', 'margin', 'stopLoss', 'takeProfit', 'exitPrice'] satisfies (keyof FuturesPosition)[]
   const handleSubmit = () => {
     if(!StoreInstance.currency){
       alert("select currency!!!")
       return
     }
-    const initialPrice = formData.initialPrice / StoreInstance.currency!.exchangeRateToUsd
-    pos.update({...formData, initialPrice})
+    const toUsd = {...formData}
+    for(const key of keysToUsd){
+      if(toUsd[key]!==undefined){
+        toUsd[key] = toUsd[key]! / StoreInstance.currency.exchangeRateToUsd
+      }
+    }
+    if(!long && toUsd.quantity)toUsd.quantity = -toUsd.quantity
+    pos.update(toUsd)
   };
 
   return (
@@ -50,6 +60,8 @@ export const UpdateFutures: React.FC<{open: boolean, onClose: ()=>void, pos: Fut
       <DialogContent>
         <CurrencySelect fullWidth/>
         <SymbolSelect init={pos.symbol} fullWidth onChange={(s)=>s && setFormData({...formData, symbol: s.symbol})}/>
+        <FormControlLabel control={<Switch style={{color: long ? "lightgreen" : "red"}} checked={long} onChange={()=>setIsLong(!long)}/>} label={long ? "LONG" : "SHORT"} />
+
         <TextField
           margin="dense"
           name="quantity"
@@ -113,10 +125,19 @@ export const UpdateFutures: React.FC<{open: boolean, onClose: ()=>void, pos: Fut
           value={formData.takeProfit}
           onChange={handleChange}
         />
+        <TextField
+          margin="dense"
+          name="exitPrice"
+          label="Exit Price"
+          type="number"
+          fullWidth
+          value={formData.exitPrice}
+          onChange={handleChange}
+        />
       </DialogContent>
       <DialogActions>
         <Button onClick={handleSubmit} color="primary">
-          Create
+          update
         </Button>
       </DialogActions>
     </Dialog>

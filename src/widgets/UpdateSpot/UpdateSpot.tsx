@@ -19,6 +19,7 @@ export const UpdateSpot: React.FC<{open: boolean, onClose: ()=>void, pos: SpotPo
     quantity: pos.quantity,
     timestamp: pos.timestamp.slice(0, 16), // Initial timestamp as ISO string
     initialPrice: pos.initialPrice,
+    exitPrice: pos.exitPrice
   });
   
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,8 +36,15 @@ export const UpdateSpot: React.FC<{open: boolean, onClose: ()=>void, pos: SpotPo
       alert("select currency!!!")
       return
     }
-    const initialPrice = formData.initialPrice / StoreInstance.currency!.exchangeRateToUsd
-    pos.update({...formData, initialPrice})
+    const keysToUsd = ['initialPrice', 'exitPrice'] satisfies (keyof SpotPosition)[]
+    
+    const toUsd = {...formData}
+    for(const key of keysToUsd){
+      if(toUsd[key]!==undefined){
+        toUsd[key] = toUsd[key]! / StoreInstance.currency.exchangeRateToUsd
+      }
+    }
+    pos.update(toUsd)
   };
 
   return (
@@ -72,10 +80,19 @@ export const UpdateSpot: React.FC<{open: boolean, onClose: ()=>void, pos: SpotPo
           value={formData.initialPrice}
           onChange={handleChange}
         />
+         <TextField
+          margin="dense"
+          name="exitPrice"
+          label="Exit Price"
+          type="number"
+          fullWidth
+          value={formData.exitPrice}
+          onChange={handleChange}
+        />
       </DialogContent>
       <DialogActions>
         <Button onClick={handleSubmit} color="primary">
-          Create
+          update
         </Button>
       </DialogActions>
     </Dialog>

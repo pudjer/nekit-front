@@ -7,16 +7,17 @@ import {
   DialogTitle,
   TextField,
 } from '@mui/material';
-import { CreateSpotPositionDTO } from '@/Store/SpotPosition';
+import { CreateSpotPositionDTO, SpotPosition } from '@/Store/SpotPosition';
 import { StoreInstance } from '@/Store/Store';
 import { SymbolSelect } from '../SymbolSelect/SymbolSelect';
 import { CurrencySelect } from '../CurrencySelect/CurrencySelect';
 
 
 export const CreateSpot: React.FC<{open: boolean, onClose: ()=>void}> = ({open, onClose}) => {
-  const [formData, setFormData] = useState<CreateSpotPositionDTO>({
-    symbol: '',
-    quantity: 0,
+  const [formData, setFormData] = useState<Partial<CreateSpotPositionDTO>>({
+    exitPrice:0,
+    quantity:0,
+    symbol:"",
     timestamp: (new Date()).toISOString().slice(0, 16), // Initial timestamp as ISO string
     initialPrice: 0,
   });
@@ -35,8 +36,17 @@ export const CreateSpot: React.FC<{open: boolean, onClose: ()=>void}> = ({open, 
       alert("select currency!!!")
       return
     }
-    const initialPrice = formData.initialPrice / StoreInstance.currency!.exchangeRateToUsd
-    StoreInstance.user?.portfolio?.createSpotPosition({...formData, initialPrice})
+    const keysToUsd = ['initialPrice', 'exitPrice'] satisfies (keyof SpotPosition)[]
+    
+    const toUsd = {...formData}
+    for(const key of keysToUsd){
+      if(toUsd[key]!==undefined){
+        toUsd[key] = toUsd[key]! / StoreInstance.currency.exchangeRateToUsd
+      }
+    }
+    //@ts-ignore
+    StoreInstance.user?.portfolio?.createSpotPosition(toUsd)
+
   };
 
   return (
@@ -70,6 +80,15 @@ export const CreateSpot: React.FC<{open: boolean, onClose: ()=>void}> = ({open, 
           type="number"
           fullWidth
           value={formData.initialPrice}
+          onChange={handleChange}
+        />
+        <TextField
+          margin="dense"
+          name="exitPrice"
+          label="Exit Price"
+          type="number"
+          fullWidth
+          value={formData.exitPrice}
           onChange={handleChange}
         />
       </DialogContent>

@@ -5,18 +5,18 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  FormControlLabel,
+  Switch,
   TextField,
 } from '@mui/material';
 import { StoreInstance } from '@/Store/Store';
 import { SymbolSelect } from '../SymbolSelect/SymbolSelect';
 import { CurrencySelect } from '../CurrencySelect/CurrencySelect';
-import { CreateFuturesPositionDTO } from '@/Store/FuturesPosition';
+import { CreateFuturesPositionDTO, FuturesPosition } from '@/Store/FuturesPosition';
 
 
 export const CreateFutures: React.FC<{open: boolean, onClose: ()=>void}> = ({open, onClose}) => {
-  const [formData, setFormData] = useState<CreateFuturesPositionDTO>({
-    symbol: '',
-    quantity: 0,
+  const [formData, setFormData] = useState<Partial<CreateFuturesPositionDTO>>({
     timestamp: (new Date()).toISOString().slice(0, 16), // Initial timestamp as ISO string
     initialPrice: 0,
     currency: "",
@@ -25,14 +25,14 @@ export const CreateFutures: React.FC<{open: boolean, onClose: ()=>void}> = ({ope
     stopLoss: 0,
     takeProfit: 0
   });
-  
+  const [long, setIsLong] = useState(true)
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     let { name, value } = event.target;
-
     setFormData({
       ...formData,
       [name]: (value),
     });
+
   };
 
   const handleSubmit = () => {
@@ -40,8 +40,18 @@ export const CreateFutures: React.FC<{open: boolean, onClose: ()=>void}> = ({ope
       alert("select currency!!!")
       return
     }
-    const initialPrice = formData.initialPrice / StoreInstance.currency!.exchangeRateToUsd
-    StoreInstance.user?.portfolio?.createFuturesPosition({...formData, initialPrice})
+    const keysToUsd = ['initialPrice', 'margin', 'stopLoss', 'takeProfit', 'exitPrice'] satisfies (keyof FuturesPosition)[]
+
+    
+    const toUsd = {...formData}
+    for(const key of keysToUsd){
+      if(toUsd[key]!==undefined){
+        toUsd[key] = toUsd[key]! / StoreInstance.currency.exchangeRateToUsd
+      }
+    }
+    if(!long && toUsd.quantity)toUsd.quantity = -toUsd.quantity
+    //@ts-ignore
+    StoreInstance.user?.portfolio?.createFuturesPosition(toUsd)
   };
 
   return (
@@ -50,6 +60,8 @@ export const CreateFutures: React.FC<{open: boolean, onClose: ()=>void}> = ({ope
       <DialogContent>
         <CurrencySelect fullWidth/>
         <SymbolSelect fullWidth onChange={(s)=>s && setFormData({...formData, symbol: s.symbol})}/>
+        <FormControlLabel control={<Switch style={{color: long ? "lightgreen" : "red"}} checked={long} onChange={()=>setIsLong(!long)}/>} label={long ? "LONG" : "SHORT"} />
+
         <TextField
           margin="dense"
           name="quantity"
@@ -61,15 +73,6 @@ export const CreateFutures: React.FC<{open: boolean, onClose: ()=>void}> = ({ope
         />
         <TextField
           margin="dense"
-          name="timestamp"
-          label="timestamp"
-          type="datetime-local"
-          fullWidth
-          value={formData.timestamp}
-          onChange={handleChange}
-        />
-        <TextField
-          margin="dense"
           name="initialPrice"
           label="Initial Price"
           type="number"
@@ -77,6 +80,7 @@ export const CreateFutures: React.FC<{open: boolean, onClose: ()=>void}> = ({ope
           value={formData.initialPrice}
           onChange={handleChange}
         />
+
         <TextField
           margin="dense"
           name="leverage"
@@ -113,6 +117,25 @@ export const CreateFutures: React.FC<{open: boolean, onClose: ()=>void}> = ({ope
           value={formData.takeProfit}
           onChange={handleChange}
         />
+        <TextField
+          margin="dense"
+          name="timestamp"
+          label="timestamp"
+          type="datetime-local"
+          fullWidth
+          value={formData.timestamp}
+          onChange={handleChange}
+        />
+        <TextField
+          margin="dense"
+          name="exitPrice"
+          label="Exit Price"
+          type="number"
+          fullWidth
+          value={formData.exitPrice}
+          onChange={handleChange}
+        />
+
       </DialogContent>
       <DialogActions>
         <Button onClick={handleSubmit} color="primary">

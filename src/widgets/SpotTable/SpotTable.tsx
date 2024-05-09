@@ -10,19 +10,19 @@ import TableRow from '@mui/material/TableRow';
 import { StoreInstance } from '@/Store/Store';
 import { observer } from 'mobx-react-lite';
 import { SpotPosition } from '@/Store/SpotPosition';
-import { Typography } from '@mui/material';
+import { Button, Typography } from '@mui/material';
 import { useState } from 'react';
 import styles from "./SpotTable.module.css"
 interface Column {
-  id: 'symbol' | 'quantity' | 'initialPrice' | 'timestamp' | "currentPrice" | "currentVolume" | "initialVolume" | "volumeChange" | "priceChange";
+  id: 'symbol' | 'quantity' | 'initialPrice' | 'timestamp' | "currentPrice" | "currentVolume" | "initialVolume" | "volumeChange" | "priceChange" | "changePerc";
   label: string;
   minWidth?: number;
   align?: 'right';
   format: (value: any) => React.ReactNode;
 }
 
-const columns: Column[] = [
-  { id: 'symbol', label: 'symbol', format: (value: SpotPosition) => value.symbol, },
+const initColumns: Column[] = [
+  { id: 'symbol', label: 'symbol', format: (value: SpotPosition) => <div style={{display: "flex", alignItems: "flex-end"}}><img style={{width: 40}} src={StoreInstance.tokensMap.get(value.symbol)?.image}/>{value.symbol}</div>, },
   { id: 'quantity', label: 'quantity', format: (value: SpotPosition) => value.quantity.toString(), },
   {
     id: 'initialPrice',
@@ -30,11 +30,7 @@ const columns: Column[] = [
     align: 'right',
     format: (value: SpotPosition) => {
       const price = value.initialPrice
-      if(StoreInstance.currency){
-        return price * StoreInstance.currency.exchangeRateToUsd +' '+ StoreInstance.currency.symbol
-      }else{
-        return price.toString()+' USD'
-      }
+      return StoreInstance.stringFromUSD(price)
     },
   },
   {
@@ -48,15 +44,9 @@ const columns: Column[] = [
     label: 'currentVolume',
     align: 'right',
     format: (value: SpotPosition) => {
-      const volume = value.getCurrentVolume()
-      if(!volume){
-        return 'N/A'
-      }
-      if(StoreInstance.currency){
-        return volume * StoreInstance.currency.exchangeRateToUsd +' '+ StoreInstance.currency.symbol
-      }else{
-        return (volume).toString() +' USD'
-      }
+      const price = value.getCurrentVolume()
+      return StoreInstance.stringFromUSD(price)
+
     },
   },
   {
@@ -65,14 +55,8 @@ const columns: Column[] = [
     align: 'right',
     format: (value: SpotPosition) => {
       const volume = value.getInitialVolume()
-      if(!volume){
-        return 'N/A'
-      }
-      if(StoreInstance.currency){
-        return volume * StoreInstance.currency.exchangeRateToUsd +' '+ StoreInstance.currency.symbol
-      }else{
-        return (volume).toString() +' USD'
-      }
+      return StoreInstance.stringFromUSD(volume)
+
     },
   },
   {
@@ -84,11 +68,7 @@ const columns: Column[] = [
       if(!price){
         return 'N/A'
       }
-      if(StoreInstance.currency){
-        return price * StoreInstance.currency.exchangeRateToUsd +' '+ StoreInstance.currency.symbol
-      }else{
-        return price.toString()+' USD'
-      }
+      return StoreInstance.stringFromUSD(price)
     },
   },
   {
@@ -123,6 +103,15 @@ const columns: Column[] = [
       }
     },
   },
+  {
+    id: 'changePerc',
+    label: 'changePerc',
+    align: 'right',
+    format: (value: SpotPosition) => {
+      const price = value.getChangePerc()
+      return formatChange(price, "%")
+    },
+  },
 
 ];
 
@@ -135,7 +124,9 @@ const formatChange = function(price: number, curr: string){
 export const SpotTable : React.FC<{onSelect: (pos: SpotPosition)=>void}> = observer(({onSelect}) => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const [hidden, Hide] = useState<Column['label'][]>([])
+  const [hidden, Hide] = useState<Column[]>([])
+  const ref = React.useRef<number>()
+  const [columns, setColumns] = useState<Column[]>(initColumns)
 
   const handleChangePage = (_: unknown, newPage: number) => {
     setPage(newPage);
@@ -145,21 +136,32 @@ export const SpotTable : React.FC<{onSelect: (pos: SpotPosition)=>void}> = obser
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
-  const filteredColumns = columns.filter(e=>!(hidden.includes(e.label)))
   return (
     <Paper sx={{ width: '100vw', overflow: 'hidden'}}>
       <TableContainer sx={{height: "60vh" }} >
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
-              {filteredColumns.map((column) => (
+              {columns.map((column, index) => (
                 <TableCell
                   key={column.id}
                   align={column.align}
                   style={{ minWidth: column.minWidth }}
                   className={styles.column}
+                  draggable
+                  onDragStart={()=>ref.current = index}
+                  onDragEnd={()=>ref.current = undefined}
+                  onDrop={()=>{
+                    if(ref.current===undefined)return
+                    const copy = [...columns]
+                    const started = copy[ref.current]
+                    copy[ref.current] = column
+                    copy[index] = started
+                    setColumns([...copy])
+                  }}
+                  onDragOver={e=>{e.preventDefault() ; e.stopPropagation()}}
                 >
-                  <div onClick={()=>{Hide([...hidden, column.label])}}>{column.label}</div>
+                  <span onClick={()=>{Hide([...hidden, column]); setColumns(columns.filter(e=>e!==column))}}>{column.label}</span>
                 </TableCell>
               ))}
             </TableRow>
@@ -170,7 +172,7 @@ export const SpotTable : React.FC<{onSelect: (pos: SpotPosition)=>void}> = obser
               .map((pos) => {
                 return (
                   <TableRow onClick={()=>onSelect(pos)} hover role="checkbox" tabIndex={-1} key={pos._id}>
-                    {filteredColumns.map((column) => {
+                    {columns.map((column) => {
                       const value = column.format(pos);
                       return (
                         <TableCell key={column.id} align={column.align}>
@@ -194,7 +196,7 @@ export const SpotTable : React.FC<{onSelect: (pos: SpotPosition)=>void}> = obser
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
       {
-        hidden.map(e=><div onClick={()=>{Hide(hidden.filter(el=>el!==e))}} className={styles.hidden}>{'+'+e+" "}</div>)
+        hidden.map(e=><Button color='success' onClick={()=>{Hide(hidden.filter(el=>el!==e)); setColumns([...columns, e])}} className={styles.hidden}>{e.label+" "}</Button>)
       }
     </Paper>
   );

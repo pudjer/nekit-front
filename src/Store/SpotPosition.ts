@@ -10,6 +10,7 @@ export class SpotPosition{
     public quantity: number,
     public timestamp: string,
     public initialPrice: number,
+    public exitPrice?: number
   ){
     makeAutoObservable(this)
   }
@@ -20,16 +21,20 @@ export class SpotPosition{
     return symbol.current_price
   }
   getCurrentVolume(){
-    return this.getCurrentPrice()*this.quantity
+    return (this.exitPrice || this.getCurrentPrice())*this.quantity
   }
   getPriceChange(){
-    return this.getCurrentPrice() - this.initialPrice
+    return (this.exitPrice || this.getCurrentPrice()) - this.initialPrice
   }
   getVolumeChange(){
     return this.getPriceChange()*this.quantity
   }
   getInitialVolume(){
     return this.initialPrice*this.quantity
+  }
+
+  getChangePerc(){
+    return (((this.exitPrice || this.getCurrentPrice()) / this.initialPrice) - 1) * 100
   }
   async update(upd: CreateSpotPositionDTO){
     const res: SpotPosition = (await Axios.patch(`/spot/${this._id}`, upd)).data
@@ -43,4 +48,6 @@ export type CreateSpotPositionDTO = {
   quantity: number,
   timestamp: string,
   initialPrice: number,
+  exitPrice?: number
+
 }

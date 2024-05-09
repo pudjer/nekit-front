@@ -6,6 +6,14 @@
   color:lightgreen;
   cursor: pointer;
 }
+.column::before{
+  content: "--";
+  color: red
+}
 .hidden{
   display: inline;
+}
+.hidden::before{
+  content: "+";
+  color: lightgreen
 }

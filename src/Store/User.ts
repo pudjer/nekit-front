@@ -4,7 +4,6 @@ import { Axios } from "@/api/Axios"
 
 
 export type createPortfolioDTO = {
-  currency?: string
   description?: string
   name: string
 }
@@ -33,9 +32,15 @@ export class User{
   async updatePortfolios(){
     const portfolios: Portfolio[] = (await Axios.get('/portfolios')).data
     this.portfolios = portfolios.map(e=>this.fromProps(e))
+
   }
   
-  
+  setPortfolioFromHref(){
+    const portfolioId = location.href.split('=')[1]
+    if(typeof portfolioId === 'string' && portfolioId.length){
+      this.portfolio = this.portfolios?.find(e=>e._id===portfolioId)
+    }
+  }
 
   async createPortfolio(props : createPortfolioDTO ){
     const res: Portfolio = (await Axios.post('/portfolios', props)).data
