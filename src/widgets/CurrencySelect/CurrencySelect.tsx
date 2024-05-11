@@ -21,7 +21,7 @@ export const CurrencySelect : React.FC<{fullWidth?: boolean}> = observer(({fullW
           label: StoreInstance.currency.symbol+" "+StoreInstance.currency.name,
           id: StoreInstance.currency
         }: ""}
-        renderInput={(params) => <TextField {...params} label={isCorrect ? "Currency" : "Select Currency!!"} />}
+        renderInput={(params) => <TextField {...params} label={isCorrect ? "Валюта" : "Выберите валюту!!"} />}
         onChange={(e, v)=>{
           if(typeof v !== "string" && v){
             setIsCorrect(true)

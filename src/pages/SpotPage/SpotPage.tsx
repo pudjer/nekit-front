@@ -20,10 +20,10 @@ export const SpotPage = observer(()=>{
     <div>
       <SpotTable onSelect={Select}/>
       <CreateSpot onClose={()=>setOpenCreate(false)} open={openCreate}/>
-      <Button variant="contained" onClick={()=>setOpenCreate(true)}>Add pos</Button>
-      {selected && <Button onClick={()=>setOpenUpdate(true)}>Update pos</Button>}
+      <Button variant="contained" color='success' onClick={()=>setOpenCreate(true)}>Добавить</Button>
+      {selected && <Button variant="contained" color='info'  onClick={()=>setOpenUpdate(true)}>Изменить</Button>}
       {selected && openUpdate && <UpdateSpot open onClose={()=>setOpenUpdate(false)} pos={selected}/>}
-      {selected && <Button onClick={()=>StoreInstance.user?.portfolio?.deleteSpotPosition(selected._id)}>delete pos</Button>}
+      {selected && <Button variant="contained" color='error' onClick={()=>StoreInstance.user?.portfolio?.deleteSpotPosition(selected._id)}>УДАЛИТЬ</Button>}
     </div>
   )
 })

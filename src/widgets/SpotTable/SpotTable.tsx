@@ -4,9 +4,10 @@ import { PosTable, Column } from '../PosTable/PosTable';
 import { useNavigate } from 'react-router-dom';
 import { SpotPosition } from '@/Store/SpotPosition';
 import { CommonColumns } from '../CommonColumns';
+import { Typography } from '@mui/material';
 
 
-const initColumns: Column<SpotPosition>[] = CommonColumns
+export const spotColumns: Column<SpotPosition>[] = CommonColumns
 
 export const SpotTable: React.FC<{onSelect: (pos: SpotPosition)=>void}> = observer(({onSelect}) => {
   const nav = useNavigate()
@@ -15,5 +16,8 @@ export const SpotTable: React.FC<{onSelect: (pos: SpotPosition)=>void}> = observ
     nav("/portfolios")
     return ""
   }
-  return <PosTable sx={{width: "100vw", height: "80vh"}}onSelect={onSelect} positions={StoreInstance.user.portfolio.spotPositions} cols={initColumns}/>
+  return <div style={{display: "flex", alignItems: "center",margin: 10, flexDirection: "column"}}>
+    <Typography variant='h2'>Spot</Typography>
+    <PosTable sx={{width: "97vw", height: "80vh"}}onSelect={onSelect} positions={StoreInstance.user.portfolio.spotPositions} cols={spotColumns}/>
+  </div>
 })

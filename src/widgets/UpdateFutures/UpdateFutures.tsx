@@ -56,7 +56,7 @@ export const UpdateFutures: React.FC<{open: boolean, onClose: ()=>void, pos: Fut
 
   return (
     <Dialog open={open} onClose={onClose}>
-      <DialogTitle>Update Futures Position</DialogTitle>
+      <DialogTitle>Изменить фьючерс-позицию</DialogTitle>
       <DialogContent>
         <CurrencySelect fullWidth/>
         <SymbolSelect init={pos.symbol} fullWidth onChange={(s)=>s && setFormData({...formData, symbol: s.symbol})}/>
@@ -65,7 +65,7 @@ export const UpdateFutures: React.FC<{open: boolean, onClose: ()=>void, pos: Fut
         <TextField
           margin="dense"
           name="quantity"
-          label="Quantity"
+          label="Количество"
           type="number"
           fullWidth
           value={formData.quantity}
@@ -74,7 +74,7 @@ export const UpdateFutures: React.FC<{open: boolean, onClose: ()=>void, pos: Fut
         <TextField
           margin="dense"
           name="timestamp"
-          label="timestamp"
+          label="Дата и время"
           type="datetime-local"
           fullWidth
           value={formData.timestamp}
@@ -83,7 +83,7 @@ export const UpdateFutures: React.FC<{open: boolean, onClose: ()=>void, pos: Fut
         <TextField
           margin="dense"
           name="initialPrice"
-          label="Initial Price"
+          label="Цена покупки"
           type="number"
           fullWidth
           value={formData.initialPrice}
@@ -92,7 +92,7 @@ export const UpdateFutures: React.FC<{open: boolean, onClose: ()=>void, pos: Fut
         <TextField
           margin="dense"
           name="leverage"
-          label="Leverage"
+          label="Кредитное плечо"
           type="number"
           fullWidth
           value={formData.leverage}
@@ -101,7 +101,7 @@ export const UpdateFutures: React.FC<{open: boolean, onClose: ()=>void, pos: Fut
         <TextField
           margin="dense"
           name="margin"
-          label="Margin"
+          label="Обеспечение"
           type="number"
           fullWidth
           value={formData.margin}
@@ -128,7 +128,7 @@ export const UpdateFutures: React.FC<{open: boolean, onClose: ()=>void, pos: Fut
         <TextField
           margin="dense"
           name="exitPrice"
-          label="Exit Price"
+          label="Цена закрытия"
           type="number"
           fullWidth
           value={formData.exitPrice}
@@ -137,7 +137,7 @@ export const UpdateFutures: React.FC<{open: boolean, onClose: ()=>void, pos: Fut
       </DialogContent>
       <DialogActions>
         <Button onClick={handleSubmit} color="primary">
-          update
+          ИЗМЕНИТЬ
         </Button>
       </DialogActions>
     </Dialog>

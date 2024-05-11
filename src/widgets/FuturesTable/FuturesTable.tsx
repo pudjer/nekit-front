@@ -4,9 +4,10 @@ import { StoreInstance } from '@/Store/Store';
 import { PosTable, Column } from '../PosTable/PosTable';
 import { useNavigate } from 'react-router-dom';
 import { CommonColumns } from '../CommonColumns';
+import { Typography } from '@mui/material';
 
 
-const initColumns: Column<FuturesPosition>[]= [
+export const futuresColumns: Column<FuturesPosition>[]= [
   {
     id: 'type',
     label: 'type',
@@ -16,6 +17,22 @@ const initColumns: Column<FuturesPosition>[]= [
 
 ];
 
+
+const hightlight = (value: FuturesPosition)=>{
+  if(value.getValue()<0) return "darkred";
+  if(value.takeProfit){
+    if(value.quantity>0){
+      if(value.getCurrentPrice()>=value.takeProfit){
+        return "darkgreen"
+      }
+    }else{
+      if(value.getCurrentPrice()<=value.takeProfit){
+        return "darkgreen"
+      }
+    }
+  }
+    
+}
 export const FuturesTable: React.FC<{onSelect: (pos: FuturesPosition)=>void}> = observer(({onSelect}) => {
   const nav = useNavigate()
   if(!StoreInstance.user?.portfolio?.futuresPositions){
@@ -23,5 +40,8 @@ export const FuturesTable: React.FC<{onSelect: (pos: FuturesPosition)=>void}> = 
     nav("/portfolios")
     return ""
   }
-  return <PosTable sx={{width: "100vw", height: "80vh"}} onSelect={onSelect} positions={StoreInstance.user.portfolio.futuresPositions} cols={initColumns}/>
+  return <div style={{display: "flex", alignItems: "center",margin: 10, flexDirection: "column"}}>
+    <Typography variant='h2'>Futures</Typography>
+    <PosTable sx={{width: "97vw", height: "80vh"}} onSelect={onSelect} positions={StoreInstance.user.portfolio.futuresPositions} cols={futuresColumns}  highlighted={hightlight}/>
+  </div>
 })

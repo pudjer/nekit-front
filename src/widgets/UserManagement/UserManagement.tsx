@@ -52,27 +52,27 @@ const UserManagement: React.FC<{close: ()=>void}> = ({close}) => {
       </Error>}
       <TextField
         fullWidth
-        label="Username"
+        label="Имя пользователя"
         value={username}
         onChange={(e) => setUsername(e.target.value)}
       />
       <TextField
         fullWidth
-        label="Password"
+        label="Пароль"
         type="password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
       <TextField
         fullWidth
-        label="Email"
+        label="Электронная почта"
         type="email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
       />
-      <Button variant="contained" onClick={handleDelete}>Delete User</Button>
-      <Button variant="contained" onClick={handleUpdate}>Update User</Button>
-      <Button variant="contained" onClick={handleExit}>Exit</Button>
+      <Button variant="contained" onClick={handleDelete}>УДАЛИТЬ пользователя</Button>
+      <Button variant="contained" onClick={handleUpdate}>ИЗМЕНИТЬ пользователя</Button>
+      <Button variant="contained" onClick={handleExit}>Выйти</Button>
 
     </DialogContent>
   );

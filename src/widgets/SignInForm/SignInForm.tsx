@@ -42,32 +42,32 @@ const SignInForm: React.FC<{close: ()=>void}> = ({close}) => {
   return (
     <DialogContent>
       {error && <Alert severity="error">{error}</Alert>}
-      <FormControlLabel control={<Switch checked={signUp} onChange={()=>setSignUp(!signUp)}/>} label={signUp ? "SIGN UP" : "SIGN IN"} />
+      <FormControlLabel control={<Switch checked={signUp} onChange={()=>setSignUp(!signUp)}/>} label={signUp ? "Зарегистрироваться" : "Войти"} />
       <TextField
         fullWidth
-        label="Username"
+        label="Имя пользователя"
         value={username}
         onChange={(e) => setUsername(e.target.value)}
       />
       <TextField
         fullWidth
-        label="Password"
+        label="Пароль"
         type="password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
       {signUp && <TextField
         fullWidth
-        label="Email"
+        label="Электронная почта"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
       />}
       {
         signUp 
         ? 
-        <Button variant="contained" onClick={handleSignUp}>Sign Up</Button>
+        <Button variant="contained" onClick={handleSignUp}>Зарегистрироваться</Button>
         :
-        <Button variant="contained" onClick={handleSignIn}>Sign In</Button>
+        <Button variant="contained" onClick={handleSignIn}>Войти</Button>
       }
     </DialogContent>
   );

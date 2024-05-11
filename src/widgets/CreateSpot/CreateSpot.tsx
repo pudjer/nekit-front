@@ -51,14 +51,14 @@ export const CreateSpot: React.FC<{open: boolean, onClose: ()=>void}> = ({open, 
 
   return (
     <Dialog open={open} onClose={onClose}>
-      <DialogTitle>Create Spot Position</DialogTitle>
+      <DialogTitle>Добавить спот-позицию</DialogTitle>
       <DialogContent>
         <CurrencySelect fullWidth/>
         <SymbolSelect fullWidth onChange={(s)=>s && setFormData({...formData, symbol: s.symbol})}/>
         <TextField
           margin="dense"
           name="quantity"
-          label="Quantity"
+          label="Количество"
           type="number"
           fullWidth
           value={formData.quantity}
@@ -67,7 +67,7 @@ export const CreateSpot: React.FC<{open: boolean, onClose: ()=>void}> = ({open, 
         <TextField
           margin="dense"
           name="timestamp"
-          label="timestamp"
+          label="Дата и время"
           type="datetime-local"
           fullWidth
           value={formData.timestamp}
@@ -76,7 +76,7 @@ export const CreateSpot: React.FC<{open: boolean, onClose: ()=>void}> = ({open, 
         <TextField
           margin="dense"
           name="initialPrice"
-          label="Initial Price"
+          label="Цена покупки"
           type="number"
           fullWidth
           value={formData.initialPrice}
@@ -85,7 +85,7 @@ export const CreateSpot: React.FC<{open: boolean, onClose: ()=>void}> = ({open, 
         <TextField
           margin="dense"
           name="exitPrice"
-          label="Exit Price"
+          label="Цена закрытия"
           type="number"
           fullWidth
           value={formData.exitPrice}
@@ -94,7 +94,7 @@ export const CreateSpot: React.FC<{open: boolean, onClose: ()=>void}> = ({open, 
       </DialogContent>
       <DialogActions>
         <Button onClick={handleSubmit} color="primary">
-          Create
+          ДОБАВИТЬ
         </Button>
       </DialogActions>
     </Dialog>

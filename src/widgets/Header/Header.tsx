@@ -5,9 +5,7 @@ import logo from './logo.svg';
 import styles from './Header.module.css'
 import ProfileButton from '../ProfileButton/ProfileButton';
 import { observer } from 'mobx-react-lite';
-import PortfolioSelect from '../PortfolioSelect/PortfolioSelect';
 import { CurrencySelect } from '../CurrencySelect/CurrencySelect';
-import { StoreInstance } from '@/Store/Store';
 
 
 const Header: React.FC = observer(() => {
@@ -20,7 +18,7 @@ const Header: React.FC = observer(() => {
         <img src={logo}/>
       </Link>
 
-      {[{title: "home", to: '/home'}, {title: "portfolios", to: '/portfolios'}].map((link, index) => (
+      {[{title: "ДОМОЙ", to: '/home'}, {title: "ПОРТФЕЛИ", to: '/portfolios'}].map((link, index) => (
         <Typography variant="h5" margin={1}  key={index}>
             <Link to={link.to}>
               {link.title}

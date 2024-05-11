@@ -4,6 +4,14 @@ import { Currency } from "./Currency";
 import { Token } from "./Token";
 import { Axios } from "@/api/Axios";
 import { Typography } from "@mui/material";
+type Glob = {
+  "eth_dominance": 15.54915795644,
+  "btc_dominance": 53.204077126219,
+  "total_market_cap": 2251885193123.512,
+  "total_volume_24h": 67644895476.9,
+}
+
+
 
 type UserCreateDTO = {
   username: string
@@ -18,12 +26,15 @@ export class Store {
   currency?: Currency
   tokens: Token[] = []
   tokensMap = new Map<string, Token>()
+  global?: Glob
   constructor(){
     makeAutoObservable(this)
     const loading = []
     loading.push(this.setUser())
     loading.push(this.setTokens())
-    loading.push(this.setCurrencies())       
+    loading.push(this.setCurrencies().then(()=>{this.currency = this.currencies[0] || undefined}))    
+    loading.push(this.setGlobal())   
+    setInterval(this.setGlobal.bind(this), 1000 * 60 * 10)
     setInterval(this.setTokens.bind(this), 1000 * 60 * 10)
     setInterval(this.setCurrencies.bind(this), 1000 * 60 * 60 * 24)
     Promise.all(loading).then(()=>{this.isLoading = false})
@@ -34,7 +45,10 @@ export class Store {
     const user = new User(props.username, props._id, props.blocked, props.isAdmin, props.date_registered, props.email)
     return user
   }
-  
+  async setGlobal(){
+    const glob : Glob = (await Axios.get("exchange/global")).data
+    this.global = glob
+  }
   async setUser(){
     const props: User = (await Axios.get('/user')).data
     this.user = this.userFromProps(props)

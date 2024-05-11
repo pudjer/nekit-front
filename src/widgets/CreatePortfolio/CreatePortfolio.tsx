@@ -8,25 +8,25 @@ export const CreatePortfolio: React.FC<{dialogOpen:boolean, handleCloseDialog:()
 
   return(
     <Dialog open={dialogOpen} onClose={handleCloseDialog}>
-        <DialogTitle>Add a new portfolio</DialogTitle>
+        <DialogTitle>Добавить портфель</DialogTitle>
         <DialogContent>
           <Box component="form" onSubmit={handleSubmit((d)=>StoreInstance.user!.createPortfolio(d))} noValidate autoComplete="off">
             <TextField
               {...register('name', { required: true })}
-              label="Name"
+              label="Название"
               variant="outlined"
               fullWidth
               margin="normal"
             />
             <TextField
               {...register('description')}
-              label="Description"
+              label="Описание"
               variant="outlined"
               fullWidth
               margin="normal"
             />
             <Button type="submit" variant="contained" color="primary">
-              Create Portfolio
+              Добавить
             </Button>
           </Box>
         </DialogContent>

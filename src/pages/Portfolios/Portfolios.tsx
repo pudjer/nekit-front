@@ -9,6 +9,7 @@ import { PortfolioList } from '@/widgets/PortfolioList/PortfolioList';
 import { CreatePortfolio } from '@/widgets/CreatePortfolio/CreatePortfolio';
 import { UpdatePortfolio } from '@/widgets/UpdatePortfolio/UpdatePortfolio';
 import { PieChart } from '@mui/x-charts/PieChart';
+import { ExportFunction } from './ExportFunction';
 
 export const Portfolios: React.FC = observer(() => {
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -90,12 +91,12 @@ export const Portfolios: React.FC = observer(() => {
   const greaterData: data = []
   for(const symbol in greaterStats){
     const stat = greaterStats[symbol]
-    greaterData.push({value: Math.abs(stat), label: ( stat > 0 ? "" : "-")+ symbol, color: stat > 0 ? getColor(stat, positiveMax) : getColor(stat, negativeMin)})
+    greaterData.push({value: (Math.abs(stat)/Math.abs(positiveSum+negativeSum)*100), label: ( stat > 0 ? "" : "-")+ symbol, color: stat > 0 ? getColor(stat, positiveMax) : getColor(stat, negativeMin)})
   }
   const lessData: data = []
   for(const symbol in lessStats){
     const stat = lessStats[symbol]
-    lessData.push({value: Math.abs(stat), label: ( stat > 0 ? "" : "-")+ symbol, color: stat > 0 ? getColor(stat, positiveMax) : getColor(stat, negativeMin)})
+    lessData.push({value: (Math.abs(stat)/Math.abs(positiveSum+negativeSum)*100), label: ( stat > 0 ? "" : "-")+ symbol, color: stat > 0 ? getColor(stat, positiveMax) : getColor(stat, negativeMin)})
   }
 
 
@@ -107,17 +108,18 @@ export const Portfolios: React.FC = observer(() => {
         <div style={{width: "40vw", display: "flex", justifyContent: "space-around"}}>
 
           <Button variant="contained" color="success" onClick={handleOpenDialog}>
-            Add Portfolio
+            ДОБАВИТЬ
           </Button>
           {
           StoreInstance.user.portfolio && <>
           <Button variant="contained" color="info" onClick={()=>setUDialogOpen(true)}>
-            update portfolio
+            ИЗМЕНИТЬ
           </Button>
           <Button variant="contained" color="error" onClick={()=>StoreInstance.user!.deletePortfolio(StoreInstance.user!.portfolio!._id)}>
-            delete Portfolio
+            УДАЛИТЬ
           </Button>
           <UpdatePortfolio portfolio={StoreInstance.user.portfolio} dialogOpen={UdialogOpen} handleCloseDialog={()=>setUDialogOpen(false)}/>
+          <Button onClick={ExportFunction}>ЭКСПОРТИРОВАТЬ ОТЧЕТ</Button>
           </>
           }
         </div>
@@ -127,36 +129,34 @@ export const Portfolios: React.FC = observer(() => {
         <div style={{flexDirection: 'column', padding: 5, margin: 10}}>
           <Typography align="center" variant='h3' color="secondary"  style={{width: "100%", wordBreak:"break-word"}} >{StoreInstance.user.portfolio.name}</Typography>
           <Paper sx={{display:"flex", flexShrink: 1, justifyContent: "space-around", alignItems: "center", flexDirection: "column"}} style={{width: "50vw", wordBreak:"break-word", height: "70vh"}}>
-            <div style={{display:"flex", flexShrink: 1, flexWrap: 'wrap', justifyContent: "space-around", padding: 20, width: "100%"}}>
-              <Card >
+            <div style={{display:"flex", flexWrap: 'wrap', justifyContent: "space-around", padding: 20, width: "100%"}}>
+              <Card sx={{flexGrow: 2, margin: 5}}>
                 <CardContent>
-                  <Typography variant="h5" component="div">
+                  <Typography variant="h5">
                     Стоимость
                   </Typography>
-                  <Typography variant="body2">
-                    {(()=>{
-                      const res = StoreInstance.convertFromUSD(positiveSum+negativeSum)
-                      return [<Typography>{[res[0].toLocaleString(), res[1]]}</Typography>]
-                      })()}
-                  </Typography>
+                  {(()=>{
+                    const res = StoreInstance.convertFromUSD(positiveSum+negativeSum)
+                    return [<Typography>{[res[0].toLocaleString(), res[1]]}</Typography>]
+                    })()}
                 </CardContent>
               </Card>
-              <Card >
+              <Card sx={{flexGrow: 2, margin: 5}}>
                 <CardContent>
-                  <Typography variant="h5" component="div">
+                  <Typography variant="h5">
                     Прибыль
                   </Typography>
-                  <Typography variant="body2">
+                  <Typography variant="h4">
                     {StoreInstance.formatChange(...StoreInstance.convertFromUSD(StoreInstance.user.portfolio.getVolumeChange()))}
                   </Typography>
                 </CardContent>
               </Card>
-              <Card >
+              <Card sx={{flexGrow: 2, margin: 5}}>
                 <CardContent>
-                  <Typography variant="h5" component="div">
+                  <Typography variant="h5">
                     Доходность
                   </Typography>
-                  <Typography variant="body2">
+                  <Typography variant="h4">
                     {StoreInstance.formatChange(StoreInstance.user.portfolio.getIncomePerc()," %")}
                   </Typography>
                 </CardContent>
@@ -170,22 +170,28 @@ export const Portfolios: React.FC = observer(() => {
                   data: lessData,
                   outerRadius: innerRadius-3,
                   paddingAngle: 2,
+                  arcLabel(value){
+                    return value.value.toLocaleString()+' %'
+                  },
                 },
                 {
                   data: greaterData,
                   outerRadius: outerRadius,
                   innerRadius: innerRadius+3,
                   paddingAngle: 2,
+                  arcLabel(value){
+                    return value.value.toLocaleString()+' %'
+                  }
                 }
               ]}
             />
             </div>
             <div style={{display: "flex", justifyContent: "space-around", width: "100%", padding: 30}}>
-              <Button variant="contained" color="secondary" onClick={()=>nav("/spot?portfolio="+StoreInstance.user?.portfolio?._id)}>
-                SPOT
+              <Button size="large" variant="contained" color="secondary" onClick={()=>nav("/spot?portfolio="+StoreInstance.user?.portfolio?._id)}>
+                СПОТ
               </Button>
-              <Button variant="contained" color="secondary" onClick={()=>nav("/futures?portfolio="+StoreInstance.user?.portfolio?._id)}>
-                FUTURES
+              <Button size="large" variant="contained" color="secondary" onClick={()=>nav("/futures?portfolio="+StoreInstance.user?.portfolio?._id)}>
+                ФЬЮЧЕРСЫ
               </Button>
             </div>
           </Paper>

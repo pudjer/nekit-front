@@ -22,7 +22,7 @@ export const SymbolSelect: React.FC<{onChange: (token: Token | undefined)=>void,
         options={
           options
         }
-        renderInput={(params) => <TextField {...params} label={isCorrect ? "Token" : "Select Token!!"} />}
+        renderInput={(params) => <TextField {...params} label={isCorrect ? "Токен" : "Выберите токен!!"} />}
         value={value}
         onChange={(e, v)=>{
           setValue(v)

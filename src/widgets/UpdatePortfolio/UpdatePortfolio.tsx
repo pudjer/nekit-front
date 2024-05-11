@@ -9,12 +9,12 @@ export const UpdatePortfolio: React.FC<{dialogOpen:boolean, handleCloseDialog:()
 
   return(
     <Dialog open={dialogOpen} onClose={handleCloseDialog}>
-        <DialogTitle>Add a new portfolio</DialogTitle>
+        <DialogTitle>Изменить портфель</DialogTitle>
         <DialogContent>
           <Box component="form" onSubmit={handleSubmit((d)=>StoreInstance.user!.updatePortfolio(portfolio._id, d))} noValidate autoComplete="off">
             <TextField
               {...register('name', { required: true })}
-              label="Name"
+              label="Название"
               variant="outlined"
               fullWidth
               margin="normal"
@@ -22,7 +22,7 @@ export const UpdatePortfolio: React.FC<{dialogOpen:boolean, handleCloseDialog:()
             />
             <TextField
               {...register('description')}
-              label="Description"
+              label="Описание"
               variant="outlined"
               fullWidth
               margin="normal"
@@ -30,7 +30,7 @@ export const UpdatePortfolio: React.FC<{dialogOpen:boolean, handleCloseDialog:()
 
             />
             <Button type="submit" variant="contained" color="primary">
-              update Portfolio
+              ИЗМЕНИТЬ
             </Button>
           </Box>
         </DialogContent>
