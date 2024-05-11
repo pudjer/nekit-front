@@ -1,18 +1,24 @@
+import { StoreInstance } from "@/Store/Store"
 import { FuturesPage } from "@/pages/FuturesPage/FuturesPage"
+import { HomePage } from "@/pages/HomePage/HomePage"
 import { Portfolios } from "@/pages/Portfolios/Portfolios"
 import { SpotPage } from "@/pages/SpotPage/SpotPage"
 import { Footer } from "@/widgets/Footer"
 import Header from "@/widgets/Header/Header"
+import { Typography } from "@mui/material"
+import { observer } from "mobx-react-lite"
 import { Route, Routes } from "react-router-dom"
 import { BrowserRouter } from "react-router-dom"
 
-function App() {
-
+const App = observer(() => {
+  if(StoreInstance.isLoading){
+    return <Typography variant="h1">Loading...</Typography>
+  }
   return (
     <BrowserRouter>
       <Header/>
       <Routes>
-        <Route path="home" Component={()=><div>home</div>}/>
+        <Route path="home" Component={()=><HomePage/>}/>
         <Route path="portfolios" Component={()=><Portfolios/>}/>
         <Route path="futures" Component={()=><FuturesPage/>}/>
         <Route path="spot" Component={()=><SpotPage/>}/>
@@ -20,6 +26,6 @@ function App() {
       <Footer/>
     </BrowserRouter>
   )
-}
+})
 
 export default App

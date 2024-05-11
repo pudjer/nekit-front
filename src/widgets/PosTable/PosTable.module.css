@@ -1,0 +1,19 @@
+.column:hover{
+  color: red;
+  cursor: pointer;
+}
+.hidden:hover{
+  color:lightgreen;
+  cursor: pointer;
+}
+.column::before{
+  content: "--";
+  color: red
+}
+.hidden::before{
+  content: "+";
+  color: lightgreen
+}
+.hidden{
+  display: inline;
+}

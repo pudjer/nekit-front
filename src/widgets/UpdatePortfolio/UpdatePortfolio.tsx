@@ -18,6 +18,7 @@ export const UpdatePortfolio: React.FC<{dialogOpen:boolean, handleCloseDialog:()
               variant="outlined"
               fullWidth
               margin="normal"
+              defaultValue={portfolio.name}
             />
             <TextField
               {...register('description')}
@@ -25,9 +26,11 @@ export const UpdatePortfolio: React.FC<{dialogOpen:boolean, handleCloseDialog:()
               variant="outlined"
               fullWidth
               margin="normal"
+              defaultValue={portfolio.description}
+
             />
             <Button type="submit" variant="contained" color="primary">
-              Create Portfolio
+              update Portfolio
             </Button>
           </Box>
         </DialogContent>

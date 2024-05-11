@@ -90,11 +90,11 @@ export class Portfolio{
     await Axios.get(`/futures/${id}`)
   }
 
-  getCurrentValue(){
+  getValue(){
     let sum = 0
     if(this.spotPositions){
       for(const pos of this.spotPositions){
-        sum = sum + pos.getCurrentVolume()
+        sum = sum + pos.getValue()
       }
     }
     if(this.futuresPositions){
@@ -109,7 +109,7 @@ export class Portfolio{
     let initialSum = 0
     if(this.spotPositions){
       for(const pos of this.spotPositions){
-        initialSum = initialSum + pos.getInitialVolume()
+        initialSum = initialSum + pos.getInitialValue()
       }
     }
     if(this.futuresPositions){
@@ -117,7 +117,25 @@ export class Portfolio{
         initialSum = initialSum + pos.margin
       }
     }
-    return ((this.getCurrentValue() / initialSum)-1) * 100
+    const value = this.getValue()
+    if(value===0 && initialSum===0){
+      return 0
+    }
+    return ((value / initialSum)-1) * 100
+  }
+  getStats(){
+    const symbolValueMap: {[key: string]: number} = {}
+    if(this.spotPositions){
+      for(const pos of this.spotPositions){
+        symbolValueMap[pos.symbol] = (symbolValueMap[pos.symbol] || 0) + pos.getValue()
+      }
+    }
+    if(this.futuresPositions){
+      for(const pos of this.futuresPositions){
+        symbolValueMap[pos.symbol] = (symbolValueMap[pos.symbol] || 0) + pos.getValue()
+      }
+    }
+    return symbolValueMap
   }
 
   
@@ -126,12 +144,12 @@ export class Portfolio{
     let sum = 0
     if(this.spotPositions){
       for(const pos of this.spotPositions){
-        sum = sum + pos.getVolumeChange()
+        sum = sum + pos.getValueChange()
       }
     }
     if(this.futuresPositions){
       for(const pos of this.futuresPositions){
-        sum = sum + pos.getVolumeChange()
+        sum = sum + pos.getValueChange()
       }
     }
     return sum

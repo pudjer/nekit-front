@@ -3,6 +3,7 @@ import { User } from "./User";
 import { Currency } from "./Currency";
 import { Token } from "./Token";
 import { Axios } from "@/api/Axios";
+import { Typography } from "@mui/material";
 
 type UserCreateDTO = {
   username: string
@@ -12,14 +13,20 @@ type UserCreateDTO = {
 
 export class Store {
   user?: User
-
+  isLoading = true
   currencies: Currency[] = []
   currency?: Currency
   tokens: Token[] = []
   tokensMap = new Map<string, Token>()
   constructor(){
     makeAutoObservable(this)
-    this.setUser()
+    const loading = []
+    loading.push(this.setUser())
+    loading.push(this.setTokens())
+    loading.push(this.setCurrencies())       
+    setInterval(this.setTokens.bind(this), 1000 * 60 * 10)
+    setInterval(this.setCurrencies.bind(this), 1000 * 60 * 60 * 24)
+    Promise.all(loading).then(()=>{this.isLoading = false})
   }
 
 
@@ -74,15 +81,14 @@ export class Store {
     this.currencies = res.data
   }
 
-  stringFromUSD(p: number){
-    return this.currency ? p * this.currency.exchangeRateToUsd + " " + this.currency.symbol : p + ' USD'
+  convertFromUSD(p: number):[number, string]{
+    return this.currency ? [p * this.currency.exchangeRateToUsd , " "+this.currency.symbol] : [p,' USD']
+  }
+  formatChange(price: number, curr: string, nice = price){
+    return <Typography color={nice<0?"error":"lightgreen"}>{(nice>0?'+':'')+price.toLocaleString()+curr}</Typography>
   }
 }
 
 
 
 export const StoreInstance = new Store()
-StoreInstance.setTokens()
-setInterval(StoreInstance.setTokens.bind(StoreInstance), 1000 * 60 * 10)
-StoreInstance.setCurrencies()       
-setInterval(StoreInstance.setCurrencies.bind(StoreInstance), 1000 * 60 * 60 * 24)

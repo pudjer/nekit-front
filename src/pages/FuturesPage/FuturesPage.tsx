@@ -23,6 +23,7 @@ export const FuturesPage = observer(()=>{
       <Button variant="contained" onClick={()=>setOpenCreate(true)}>Add pos</Button>
       {selected && <Button onClick={()=>setOpenUpdate(true)}>Update pos</Button>}
       {selected && openUpdate && <UpdateFutures open onClose={()=>setOpenUpdate(false)} pos={selected}/>}
+      {selected && <Button onClick={()=>StoreInstance.user?.portfolio?.deleteFuturesPosition(selected._id)}>delete pos</Button>}
     </div>
   )
 })

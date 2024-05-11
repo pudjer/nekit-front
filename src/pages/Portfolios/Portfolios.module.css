@@ -1,5 +1,5 @@
 .page{
   display: flex;
-  justify-content: stretch;
-  flex-grow: 8;
+  justify-content: space-around;
+  flex-grow: 1;
 }

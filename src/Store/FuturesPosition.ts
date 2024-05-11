@@ -1,8 +1,9 @@
 import { makeAutoObservable } from "mobx"
 import { StoreInstance } from "./Store"
 import { Axios } from "@/api/Axios"
+import { Position } from "./PositionInterface"
 
-export class FuturesPosition{
+export class FuturesPosition implements Position{
   constructor(
     public portfolioId: string,
     public _id: string,
@@ -31,11 +32,14 @@ export class FuturesPosition{
   getPriceChange(){
     return (this.exitPrice || this.getCurrentPrice())-this.initialPrice
   }
-  getVolumeChange(){
+  getValueChange(){
     return this.getCurrentVolume() - this.getInitialVolume()
   }
   getInitialVolume(){
     return this.initialPrice*this.quantity
+  }
+  getInitialValue() {
+    return this.margin
   }
   getPriceChangePerc(){
     return (((this.exitPrice || this.getCurrentPrice()) / this.initialPrice) - 1) * 100
@@ -44,7 +48,7 @@ export class FuturesPosition{
     return ((this.getCurrentVolume() / this.getInitialVolume()) - 1) * 100
   }
   getValue(){
-    return this.margin + this.getVolumeChange()
+    return this.margin + this.getValueChange()
   }
   getValueChangePerc(){
     return ((this.getValue() / this.margin) - 1) * 100
@@ -52,6 +56,10 @@ export class FuturesPosition{
   async update(upd: CreateFuturesPositionDTO){
     const res: FuturesPosition = (await Axios.patch(`/futures/${this._id}`, upd)).data
     Object.assign(this, res)
+  }
+  getPortfolioPerc(){
+    const portfolioValue = Math.abs(StoreInstance.user!.portfolio!.getValue())
+    return (this.getValue() / portfolioValue) * 100
   }
 }
 
