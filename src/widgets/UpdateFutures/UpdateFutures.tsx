@@ -18,7 +18,7 @@ import { CurrencySelect } from '../CurrencySelect/CurrencySelect';
 export const UpdateFutures: React.FC<{open: boolean, onClose: ()=>void, pos: FuturesPosition}> = ({open, onClose,pos}) => {
   const [formData, setFormData] = useState<CreateFuturesPositionDTO>({
     symbol: pos.symbol,
-    quantity: pos.quantity,
+    quantity: Math.abs(pos.quantity),
     timestamp: pos.timestamp.slice(0, 16), // Initial timestamp as ISO string
     initialPrice: pos.initialPrice,
     currency: pos.currency,
