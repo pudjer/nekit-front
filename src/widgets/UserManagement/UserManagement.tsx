@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TextField, Button, DialogContent } from '@mui/material';
+import { TextField, Button, DialogContent, Link, Typography } from '@mui/material';
 import { StoreInstance } from '@/Store/Store';
 import { AxiosError } from 'axios';
 import { Error } from '@mui/icons-material';
@@ -73,7 +73,7 @@ const UserManagement: React.FC<{close: ()=>void}> = ({close}) => {
       <Button variant="contained" onClick={handleDelete}>УДАЛИТЬ пользователя</Button>
       <Button variant="contained" onClick={handleUpdate}>ИЗМЕНИТЬ пользователя</Button>
       <Button variant="contained" onClick={handleExit}>Выйти</Button>
-
+      <Link href={'https://t.me/CoinTrackX_Bot?start='+StoreInstance.user!._id}><Typography>Добавить Telegram аккаунт</Typography></Link>
     </DialogContent>
   );
 };

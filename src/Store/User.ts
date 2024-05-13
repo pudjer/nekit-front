@@ -18,6 +18,7 @@ export class User{
       public isAdmin: string,
       public date_registered: string,
       public email?: string,
+      public tgId?: string
   ){
     makeAutoObservable(this)
     this.updatePortfolios()
@@ -36,7 +37,7 @@ export class User{
   }
   
   setPortfolioFromHref(){
-    const portfolioId = location.href.split('=')[1]
+    const portfolioId = (new URL(location.href)).searchParams.get('portfolio')
     if(typeof portfolioId === 'string' && portfolioId.length){
       this.portfolio = this.portfolios?.find(e=>e._id===portfolioId)
     }

@@ -17,7 +17,7 @@ export const SpotTable: React.FC<{onSelect: (pos: SpotPosition)=>void}> = observ
     return ""
   }
   return <div style={{display: "flex", alignItems: "center",margin: 10, flexDirection: "column"}}>
-    <Typography variant='h2'>Spot</Typography>
+    <Typography variant='h2'>Спот-позиции</Typography>
     <PosTable sx={{width: "97vw", height: "80vh"}}onSelect={onSelect} positions={StoreInstance.user.portfolio.spotPositions} cols={spotColumns}/>
   </div>
 })

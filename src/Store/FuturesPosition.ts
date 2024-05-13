@@ -16,7 +16,7 @@ export class FuturesPosition implements Position{
     public initialPrice: number,
     public stopLoss?: number,
     public takeProfit?: number,
-    public exitPrice?: number
+    public exitPrice?: number,
   ){
     makeAutoObservable(this)
   }

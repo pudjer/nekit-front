@@ -20,13 +20,13 @@ export const UpdateFutures: React.FC<{open: boolean, onClose: ()=>void, pos: Fut
     symbol: pos.symbol,
     quantity: Math.abs(pos.quantity),
     timestamp: pos.timestamp.slice(0, 16), // Initial timestamp as ISO string
-    initialPrice: pos.initialPrice,
+    initialPrice: StoreInstance.convertFromUSD(pos.initialPrice, pos.currency)[0],
     currency: pos.currency,
     leverage: pos.leverage,
-    margin: pos.margin,
-    stopLoss: pos.stopLoss,
-    takeProfit: pos.takeProfit,
-    exitPrice: pos.exitPrice
+    margin: StoreInstance.convertFromUSD(pos.margin, pos.currency)[0],
+    stopLoss: StoreInstance.convertFromUSD(pos.stopLoss, pos.currency)[0],
+    takeProfit: StoreInstance.convertFromUSD(pos.takeProfit, pos.currency)[0],
+    exitPrice: StoreInstance.convertFromUSD(pos.exitPrice, pos.currency)[0]
   });
   const [long, setIsLong] = useState(true)
   

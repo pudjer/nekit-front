@@ -5,41 +5,42 @@ import { StoreInstance } from "@/Store/Store";
 export const CommonColumns: Column<Position>[] = [
   { 
     id: 'symbol',
-    label: 'symbol',
+    label: 'Токен',
     format: (value: Position) => <div style={{display: "flex", alignItems: "flex-end"}}><img style={{width: 40}} src={StoreInstance.tokensMap.get(value.symbol)?.image}/>{value.symbol}</div>,
     toCompare: (a: Position, b: Position) => a.symbol>b.symbol ? 1 : -1
   },
   { 
     id:'quantity',
-    label: 'quantity',
+    label: 'Количество',
     format: (value: Position) => Math.abs(value.quantity).toLocaleString(),
     toCompare: (a: Position, b: Position) => a.quantity-b.quantity
   },
   {
     id: 'initialPrice',
-    label: 'initialPrice',
+    label: 'Начальная цена',
     align: 'right',
     format: (value: Position) => {
       const price = value.initialPrice
-      const res = StoreInstance.convertFromUSD(price)
+      const res = StoreInstance.convertFromUSD(price, value.currency)
       return [res[0].toLocaleString(), res[1]]
     },
     toCompare: (a: Position, b: Position) => a.initialPrice-b.initialPrice
   },
   {
     id: 'timestamp',
-    label: 'timestamp',
+    label: 'Дата и время',
     align: 'right',
     format: (value: Position) => (new Date(value.timestamp)).toLocaleString(),
     toCompare: (a: Position, b: Position) => a.timestamp>b.timestamp ? 1 : -1
   },
   {
     id: 'currentVolume',
-    label: 'currentVolume',
+    label: 'Текущая ценность',
     align: 'right',
     format: (value: Position) => {
       const price = value.getValue()
-      const res = StoreInstance.convertFromUSD(price)
+      const res = StoreInstance.convertFromUSD(price, value.currency)
+
       return [res[0].toLocaleString(), res[1]]
 
     },
@@ -47,11 +48,12 @@ export const CommonColumns: Column<Position>[] = [
   },
   {
     id: 'initialVolume',
-    label: 'initialVolume',
+    label: 'Начальная ценность',
     align: 'right',
     format: (value: Position) => {
-      const volume = value.getInitialValue()
-      const res = StoreInstance.convertFromUSD(volume)
+      const price = value.getInitialValue()
+      const res = StoreInstance.convertFromUSD(price, value.currency)
+
       return [res[0].toLocaleString(), res[1]]
 
     },
@@ -59,42 +61,44 @@ export const CommonColumns: Column<Position>[] = [
   },
   {
     id: 'currentPrice',
-    label: 'currentPrice',
+    label: 'Текущая цена',
     align: 'right',
     format: (value: Position) => {
       const price = value.getCurrentPrice()
       if(!price){
         return 'N/A'
       }
-      const res = StoreInstance.convertFromUSD(price)
+      const res = StoreInstance.convertFromUSD(price, value.currency)
+
       return [res[0].toLocaleString(), res[1]]
     },
     toCompare: (a: Position, b: Position) => a.getCurrentPrice()-b.getCurrentPrice()
   },
   {
     id: 'priceChange',
-    label: 'priceChange',
+    label: 'Изменение цены',
     align: 'right',
     format: (value: Position) => {
       const price = value.getPriceChange()
       if(!price){
         return 'N/A'
       }
-      return StoreInstance.formatChange(...StoreInstance.convertFromUSD(price))
+      return StoreInstance.formatChange(...StoreInstance.convertFromUSD(price, value.currency)
+    )
 
     },
     toCompare: (a: Position, b: Position) => a.getPriceChange() - b.getPriceChange()
   },
   {
     id: 'volumeChange',
-    label: 'volumeChange',
+    label: 'Изменение ценности',
     align: 'right',
     format: (value: Position) => {
       const price = value.getValueChange()
       if(!price){
         return 'N/A'
       }
-      return StoreInstance.formatChange(...StoreInstance.convertFromUSD(price))
+      return StoreInstance.formatChange(...StoreInstance.convertFromUSD(price, value.currency))
 
     },
     toCompare: (a: Position, b: Position) => a.getPriceChangePerc() - b.getPriceChangePerc()
@@ -102,7 +106,7 @@ export const CommonColumns: Column<Position>[] = [
   },
   {
     id: 'changePerc',
-    label: 'changePerc',
+    label: 'Изменение ценности %',
     align: 'right',
     format: (value: Position) => {
       const price = value.getValueChangePerc()
@@ -113,7 +117,7 @@ export const CommonColumns: Column<Position>[] = [
   },
   {
     id: 'portfolioPerc',
-    label: 'portfolioPerc',
+    label: 'Процент от ценности портфеля',
     align: 'right',
     format: (value: Position) => {
       const price = value.getPortfolioPerc()
@@ -124,7 +128,7 @@ export const CommonColumns: Column<Position>[] = [
   },
   {
     id: 'changePricePerc',
-    label: 'changePricePerc',
+    label: 'Изменение цены %',
     align: 'right',
     format: (value: Position) => {
       const price = value.getPriceChangePerc()

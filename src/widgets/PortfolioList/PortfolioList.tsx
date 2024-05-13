@@ -10,9 +10,10 @@ interface Props  {
 export const PortfolioList : React.FC<Props>=  ({handleSelect}) => {
   return (
     <div style={{display: "flex", flexDirection: 'column',justifyContent: "space-around", alignItems: "stretch", height: "100%"}}>
-      <Typography align="center" variant='h4' color={"white"}>Портфели</Typography>
+      <Typography align="center" variant='h2' color={"white"}>Портфели</Typography>
       <List sx={{
         maxWidth: "40vw",
+        height: "100%",
         bgcolor: 'background.paper',
         overflow: 'auto'
       }}>
@@ -20,7 +21,7 @@ export const PortfolioList : React.FC<Props>=  ({handleSelect}) => {
         StoreInstance.user?.portfolios
         &&
         StoreInstance.user.portfolios.map((portfolio) => (
-          <ListItem style={{width: "100%"}} onClick={() => handleSelect(portfolio)} key={portfolio._id}>
+          <ListItem style={{width: "100%" }} onClick={() => handleSelect(portfolio)} key={portfolio._id}>
             <ListItemText color={portfolio._id === StoreInstance.user?.portfolio?._id ? "primary" : "secondary"} primary={portfolio.name} secondary={portfolio.description} />
           </ListItem>
         ))}

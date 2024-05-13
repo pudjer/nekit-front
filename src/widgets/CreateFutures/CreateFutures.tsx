@@ -50,6 +50,7 @@ export const CreateFutures: React.FC<{open: boolean, onClose: ()=>void}> = ({ope
       }
     }
     if(!long && toUsd.quantity)toUsd.quantity = -toUsd.quantity
+    toUsd.currency = StoreInstance.currency.symbol
     //@ts-ignore
     StoreInstance.user?.portfolio?.createFuturesPosition(toUsd)
   };

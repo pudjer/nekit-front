@@ -1,4 +1,5 @@
 export interface Position{
+  currency?: string,
   portfolioId: string,
   _id: string,
   symbol: string,

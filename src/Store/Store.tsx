@@ -37,12 +37,12 @@ export class Store {
     setInterval(this.setGlobal.bind(this), 1000 * 60 * 10)
     setInterval(this.setTokens.bind(this), 1000 * 60 * 10)
     setInterval(this.setCurrencies.bind(this), 1000 * 60 * 60 * 24)
-    Promise.all(loading).then(()=>{this.isLoading = false})
+    Promise.allSettled(loading).then(()=>{this.isLoading = false})
   }
 
 
   userFromProps(props: User){
-    const user = new User(props.username, props._id, props.blocked, props.isAdmin, props.date_registered, props.email)
+    const user = new User(props.username, props._id, props.blocked, props.isAdmin, props.date_registered, props.email, props.tgId)
     return user
   }
   async setGlobal(){
@@ -59,8 +59,17 @@ export class Store {
     await this.login(user)
   }
   
-  async login(user: UserCreateDTO){
-    const token:{access_token: string}=(await Axios.post('/user/login', user)).data
+  async login(user: UserCreateDTO): Promise<true | void>{
+    const token: AuthToken=(await Axios.post('/user/login', user)).data
+    if(token.tgrequired === true){
+      return true
+    }
+    localStorage.setItem('access_token', token.access_token)
+    await this.setUser()
+  }
+  async tgLogin(pass: number, username: string){
+    const body: TgPassword = { tgPassword: pass, username}
+    const token: AuthToken=(await Axios.post('/user/tgauth', body)).data
     localStorage.setItem('access_token', token.access_token)
     await this.setUser()
   }
@@ -95,8 +104,10 @@ export class Store {
     this.currencies = res.data
   }
 
-  convertFromUSD(p: number):[number, string]{
-    return this.currency ? [p * this.currency.exchangeRateToUsd , " "+this.currency.symbol] : [p,' USD']
+  convertFromUSD(p: number | undefined, currency?: string):[number, string]{
+    if(p===undefined)return [NaN, 'N/A']
+    const cur = this.currencies.find(e=>(e.symbol === currency)) || this.currency
+    return cur ? [p * cur.exchangeRateToUsd , " "+cur.symbol] : [p,' USD']
   }
   formatChange(price: number, curr: string, nice = price){
     return <Typography color={nice<0?"error":"lightgreen"}>{(nice>0?'+':'')+price.toLocaleString()+curr}</Typography>
@@ -106,3 +117,9 @@ export class Store {
 
 
 export const StoreInstance = new Store()
+
+export interface AuthToken{access_token: string, tgrequired?: true}
+export interface TgPassword{
+  username: string
+  tgPassword: number
+}

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TextField, Button, Alert, Checkbox, FormControlLabel, Switch, DialogContent } from '@mui/material';
+import { TextField, Button, Alert, Checkbox, FormControlLabel, Switch, DialogContent, Input } from '@mui/material';
 import { AxiosError } from 'axios';
 import { StoreInstance } from '@/Store/Store';
 
@@ -11,18 +11,26 @@ const SignInForm: React.FC<{close: ()=>void}> = ({close}) => {
   const [email, setEmail] = useState('');
   const [error, setError] = useState<string|undefined>()
   const [signUp, setSignUp] = useState(false)
+  const [tgPassRequired, setTgPassRequired] = useState(false)
+  const [tgValue, setTgValue] = useState<number>()
+
   const handleSignIn = async () => {
     setError(undefined)
     try{
-      await StoreInstance.login({ username, password })
+      const res = await StoreInstance.login({ username, password })
+      if(res){
+        setTgPassRequired(true)
+        return
+      }
       close()
     }catch(e: unknown){
       if(e instanceof AxiosError){
-        setError(e.message)
+        setError(e.response.data.message)
       }
     }
 
   };
+
   const handleSignUp = async () => {
     setError(undefined)
     try{
@@ -34,11 +42,30 @@ const SignInForm: React.FC<{close: ()=>void}> = ({close}) => {
       }
     }catch(e: unknown){
       if(e instanceof AxiosError){
-        setError(e.message)
+        setError(e.response.data.message)
       }
     }
   };
-
+  if(tgPassRequired){
+    return <DialogContent>
+        {error && <Alert severity="error">{error}</Alert>}
+        <TextField type="number" value={tgValue} onChange={e=>{
+          setError(undefined)
+          setTgValue(Number(e.target.value))
+        }}/>
+        <Button onClick={async ()=>{
+          try{
+            tgValue && await StoreInstance.tgLogin(tgValue, username)
+          }catch(e){
+            if(e instanceof AxiosError)setError(e.message)
+          }
+          close()
+        }}>Подтвердить</Button>
+        <Button onClick={()=>{
+          setTgPassRequired(false)
+        }}>Отмена</Button>
+      </DialogContent>
+  }
   return (
     <DialogContent>
       {error && <Alert severity="error">{error}</Alert>}

@@ -11,7 +11,7 @@ import { CurrencySelect } from '../CurrencySelect/CurrencySelect';
 const Header: React.FC = observer(() => {
   const nav = useNavigate()
   return (
-    <AppBar >
+    <AppBar>
       <Toolbar className={styles.header}>
 
       <Link to={'/home'}>

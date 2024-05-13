@@ -17,27 +17,20 @@ export interface Column<T = any> {
 
 
 
-type TTable = <T extends {_id: string, [key: string]: any}[], TypeMap extends OverridableTypeMap>(props: {onSelect: (pos: T[number])=>void, positions: T, cols: Column<T[number]>[], rowsPerP?: number, highlighted?: (value: T[number])=>"darkred" | "darkgreen" |undefined} & DefaultComponentProps<TypeMap>)=>React.ReactNode
+type TTable = <T extends {_id: string, [key: string]: any}[], TypeMap extends OverridableTypeMap>(props: {onSelect: (pos: T[number])=>void, positions: T, cols: Column<T[number]>[], highlighted?: (value: T[number])=>"darkred" | "darkgreen" |undefined} & DefaultComponentProps<TypeMap>)=>React.ReactNode
 enum Compare{
   NOT,
   GREATER,
   LESS
 }
-export const PosTable: TTable = observer(({onSelect, positions, cols, rowsPerP, highlighted,  ...rest}) => {
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(rowsPerP || 10);
+export const PosTable: TTable = observer(({onSelect, positions, cols, highlighted,  ...rest}) => {
   const [hidden, Hide] = useState<Column[]>([])
   const [columns, setColumns] = useState<Column[]>(cols)
   const [compare, setCompare] = useState<{column: string, how: Compare, compareFn: (a: any, b:any)=>number}>()
 
-  const handleChangePage = (_: unknown, newPage: number) => {
-    setPage(newPage);
-  };
+
   const ref = React.useRef<number>()
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
+
   return (
     <Paper {...rest}>
       <TableContainer sx={{height: "100%", width: '100%' }} >
@@ -89,12 +82,12 @@ export const PosTable: TTable = observer(({onSelect, positions, cols, rowsPerP, 
           </TableHead>
           <TableBody>
             {positions
-              ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              ?.slice()
               .sort(compare?.how && (compare.how === Compare.GREATER ? compare.compareFn : ((a:any, b:any)=>compare.compareFn(b, a))) || (()=>0))
               .map((pos) => {
                 const highlight = highlighted && highlighted(pos)
                 return (
-                  <TableRow onClick={()=>onSelect(pos)} hover sx={highlight ? {backgroundColor: highlight} : {}}role="checkbox" tabIndex={-1} key={pos._id} >
+                  <TableRow id={pos._id} onClick={()=>onSelect(pos)} hover sx={highlight ? {backgroundColor: highlight} : {}}role="checkbox" tabIndex={-1} key={pos._id} >
                     {columns.map((column) => {
                       const value = column.format(pos);
                       
@@ -110,16 +103,6 @@ export const PosTable: TTable = observer(({onSelect, positions, cols, rowsPerP, 
           </TableBody>
         </Table>
       </TableContainer>
-      {rowsPerPage < positions.length ? <TablePagination
-        rowsPerPageOptions={[10, 25, 100]}
-        component="div"
-        count={positions.length || 0}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />: undefined}
-
     </Paper>
   );
 })

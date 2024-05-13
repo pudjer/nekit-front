@@ -3,6 +3,7 @@ import { FuturesPage } from "@/pages/FuturesPage/FuturesPage"
 import { HomePage } from "@/pages/HomePage/HomePage"
 import { Portfolios } from "@/pages/Portfolios/Portfolios"
 import { SpotPage } from "@/pages/SpotPage/SpotPage"
+import { WelcomePage } from "@/pages/WelcomPage/WelcomPage"
 import { Footer } from "@/widgets/Footer"
 import Header from "@/widgets/Header/Header"
 import { Typography } from "@mui/material"
@@ -17,12 +18,15 @@ const App = observer(() => {
   return (
     <BrowserRouter>
       <Header/>
+      <div style={{marginTop: 70}}>
       <Routes>
         <Route path="home" Component={()=><HomePage/>}/>
         <Route path="portfolios" Component={()=><Portfolios/>}/>
         <Route path="futures" Component={()=><FuturesPage/>}/>
         <Route path="spot" Component={()=><SpotPage/>}/>
+        <Route path="/" Component={()=><WelcomePage/>}/>
       </Routes>
+      </div>
       <Footer/>
     </BrowserRouter>
   )

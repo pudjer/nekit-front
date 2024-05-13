@@ -9,10 +9,13 @@ import { PortfolioList } from '@/widgets/PortfolioList/PortfolioList';
 import { CreatePortfolio } from '@/widgets/CreatePortfolio/CreatePortfolio';
 import { UpdatePortfolio } from '@/widgets/UpdatePortfolio/UpdatePortfolio';
 import { PieChart } from '@mui/x-charts/PieChart';
-import { ExportFunction } from './ExportFunction';
+import { ExportFunction, portfolioToString } from './ExportFunction';
+import { Axios } from '@/api/Axios';
 
 export const Portfolios: React.FC = observer(() => {
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogExportOpen, setDialogExportOpen] = useState(false);
+
   const [UdialogOpen, setUDialogOpen] = useState(false);
   StoreInstance.user?.setPortfolioFromHref()
 
@@ -31,6 +34,14 @@ export const Portfolios: React.FC = observer(() => {
 
   const handleCloseDialog = () => {
     setDialogOpen(false);
+  };
+
+  const handleOpenExportDialog = () => {
+    setDialogExportOpen(true);
+  };
+
+  const handleCloseExportDialog = () => {
+    setDialogExportOpen(false);
   };
 
   // Add more handlers for create, update, and delete operations here
@@ -103,9 +114,9 @@ export const Portfolios: React.FC = observer(() => {
 
   return (
     <div className={styles.page}>
-      <div style={{width: "40vw", flexDirection: 'column', display: "flex", justifyContent: "space-around"}}>
+      <div style={{width: "40vw", flexDirection: 'column', display: "flex", justifyContent: "space-around", minHeight: "80vh"}}>
         <PortfolioList handleSelect={handleSelectPortfolio}/>
-        <div style={{width: "40vw", display: "flex", justifyContent: "space-around"}}>
+        <div style={{width: "100%", display: "flex", justifyContent: "space-around"}}>
 
           <Button variant="contained" color="success" onClick={handleOpenDialog}>
             ДОБАВИТЬ
@@ -119,7 +130,13 @@ export const Portfolios: React.FC = observer(() => {
             УДАЛИТЬ
           </Button>
           <UpdatePortfolio portfolio={StoreInstance.user.portfolio} dialogOpen={UdialogOpen} handleCloseDialog={()=>setUDialogOpen(false)}/>
-          <Button onClick={ExportFunction}>ЭКСПОРТИРОВАТЬ ОТЧЕТ</Button>
+          <Button onClick={handleOpenExportDialog}>ЭКСПОРТИРОВАТЬ ОТЧЕТ</Button>
+          <Dialog open={dialogExportOpen} onClose={handleCloseExportDialog}>
+            <DialogContent>
+              <Button fullWidth onClick={ExportFunction}>ЭКСПОРТИРОВАТЬ В ФАЙЛ</Button>
+              {StoreInstance.user.tgId && <Button fullWidth onClick={()=>Axios.post("/portfolios/tgreport", {report: portfolioToString()})}>ПРИСЛАТЬ В TELEGRAM</Button>}
+            </DialogContent>
+          </Dialog>
           </>
           }
         </div>
@@ -128,7 +145,7 @@ export const Portfolios: React.FC = observer(() => {
       {StoreInstance.user?.portfolio && (
         <div style={{flexDirection: 'column', padding: 5, margin: 10}}>
           <Typography align="center" variant='h3' color="secondary"  style={{width: "100%", wordBreak:"break-word"}} >{StoreInstance.user.portfolio.name}</Typography>
-          <Paper sx={{display:"flex", flexShrink: 1, justifyContent: "space-around", alignItems: "center", flexDirection: "column"}} style={{width: "50vw", wordBreak:"break-word", height: "70vh"}}>
+          <Paper sx={{display:"flex", flexShrink: 1, justifyContent: "space-around", alignItems: "center", flexDirection: "column"}} style={{width: "50vw", wordBreak:"break-word", height: "100%"}}>
             <div style={{display:"flex", flexWrap: 'wrap', justifyContent: "space-around", padding: 20, width: "100%"}}>
               <Card sx={{flexGrow: 2, margin: 5}}>
                 <CardContent>
@@ -170,18 +187,15 @@ export const Portfolios: React.FC = observer(() => {
                   data: lessData,
                   outerRadius: innerRadius-3,
                   paddingAngle: 2,
-                  arcLabel(value){
-                    return value.value.toLocaleString()+' %'
-                  },
+                  cornerRadius: 8
                 },
                 {
                   data: greaterData,
                   outerRadius: outerRadius,
                   innerRadius: innerRadius+3,
                   paddingAngle: 2,
-                  arcLabel(value){
-                    return value.value.toLocaleString()+' %'
-                  }
+                  cornerRadius: 8
+
                 }
               ]}
             />

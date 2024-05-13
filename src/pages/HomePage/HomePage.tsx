@@ -8,14 +8,14 @@ type TokenWithId = Token & {_id: string}
 const cols: Column<TokenWithId>[] = [
   { 
     id: 'symbol',
-    label: 'symbol',
+    label: 'Токен',
     format: (value: TokenWithId) => <div style={{display: "flex", alignItems: "flex-end"}}><img style={{width: 40}} src={value.image}/>{value.symbol}</div>,
     toCompare: (a: TokenWithId, b: TokenWithId) => a.symbol > b.symbol ? 1 : -1
 
   },
   {
     id: 'currentPrice',
-    label: 'currentPrice',
+    label: 'Текущая цена',
     align: 'right',
     format: (value: TokenWithId) => {
       const price = value.current_price
@@ -26,7 +26,7 @@ const cols: Column<TokenWithId>[] = [
   },
   {
     id: 'priceChange24',
-    label: 'priceChange24',
+    label: 'Изменение цены 24 часа',
     align: 'right',
     format: (value: TokenWithId) => {
       const price = value.price_change_24h
@@ -41,7 +41,7 @@ const cols: Column<TokenWithId>[] = [
   },
   {
     id: 'changePerc24',
-    label: 'changePerc24',
+    label: 'Изменение цены 24 часа %',
     align: 'right',
     format: (value: TokenWithId) => {
       const price = value.price_change_percentage_24h
@@ -84,7 +84,7 @@ export const HomePage = observer(()=>{
                       Общая рыночная капитализация криптовалюты
                     </Typography>
                     <Typography variant="h4">
-                      {StoreInstance.convertFromUSD(StoreInstance.global?.total_market_cap)}
+                      {[StoreInstance.convertFromUSD(StoreInstance.global?.total_market_cap)[0].toLocaleString(), StoreInstance.convertFromUSD(StoreInstance.global?.total_market_cap)[1]]}
                     </Typography>
                   </CardContent>
                 </Card>
@@ -94,7 +94,7 @@ export const HomePage = observer(()=>{
                       Объем торгов криптовалют за 24 часа
                     </Typography>
                     <Typography variant="h4">
-                      {StoreInstance.convertFromUSD(StoreInstance.global?.total_volume_24h)}
+                      {[StoreInstance.convertFromUSD(StoreInstance.global?.total_volume_24h)[0].toLocaleString(), StoreInstance.convertFromUSD(StoreInstance.global?.total_market_cap)[1]]}
                     </Typography>
                   </CardContent>
                 </Card>

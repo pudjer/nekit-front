@@ -16,13 +16,39 @@ export const ExportFunction = () => {
   }
 
   let html = "<div><div>Futures</div>"
-  html = html + ReactDOMServer.renderToStaticMarkup(<PosTable onSelect={()=>undefined} cols={futuresColumns} rowsPerP={StoreInstance.user.portfolio.futuresPositions?.length} positions={StoreInstance.user.portfolio.futuresPositions || []}/>)
+  html = html + ReactDOMServer.renderToStaticMarkup(<PosTable onSelect={()=>undefined} cols={futuresColumns} positions={StoreInstance.user.portfolio.futuresPositions || []}/>)
   html = html + "<div>Spot</div>"
-  html = html + ReactDOMServer.renderToStaticMarkup(<PosTable onSelect={()=>undefined} cols={spotColumns} rowsPerP={StoreInstance.user.portfolio.futuresPositions?.length} positions={StoreInstance.user.portfolio.spotPositions || []}/>)
+  html = html + ReactDOMServer.renderToStaticMarkup(<PosTable onSelect={()=>undefined} cols={spotColumns} positions={StoreInstance.user.portfolio.spotPositions || []}/>)
   html = html + "</div>"
   
   download("report.html", cleanUp(html))
 
+}
+
+
+
+export function portfolioToString(){
+  let FuturesTable = "Фьючерс-позиции\n"
+  futuresColumns.forEach(e=>{
+    FuturesTable += e.label + '\t'
+  })
+  StoreInstance.user?.portfolio?.futuresPositions?.forEach((pos)=>{
+    FuturesTable += '\n'
+    futuresColumns.forEach(e=>{
+      FuturesTable += e.format(pos) + '\t'
+    })
+  })
+  let SpotTable = "Спот-позиции\n"
+  futuresColumns.forEach(e=>{
+    SpotTable += e.label + '\t'
+  })
+  StoreInstance.user?.portfolio?.spotPositions?.forEach((pos)=>{
+    SpotTable += '\n'
+    spotColumns.forEach(e=>{
+      SpotTable += e.format(pos) + '\t'
+    })
+  })
+  return FuturesTable + SpotTable
 }
 
 function cleanUp(htmlString: string) {
