@@ -25,10 +25,9 @@ export const CreatePortfolio: React.FC<{dialogOpen:boolean, handleCloseDialog:()
               margin="normal"
             />
             <TextField
-              {...register('public')}
+              {...register('isPublic')}
               label="Публичный"
               variant="outlined"
-              fullWidth
               margin="normal"
               type="checkbox"
             />

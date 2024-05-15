@@ -7,12 +7,12 @@ import { StoreInstance } from "./Store"
 export type createPortfolioDTO = {
   description?: string
   name: string
-  public?: string
+  isPublic?: string
 }
 
 export class User{
   static fromProps(props: Portfolio) {
-    const portfolio = new Portfolio(props._id, props.userId, props.description, props.name)
+    const portfolio = new Portfolio(props._id, props.userId, props.description, props.name, props.isPublic)
     return portfolio
   }
   portfolios?: Portfolio[]
@@ -50,7 +50,7 @@ export class User{
     this.favoritePortfolios = this.favoritePortfolios.filter(e=>e!==portf)
   }
   fromProps(props: Portfolio){
-    const portfolio = new Portfolio(props._id, props.userId, props.description, props.name)
+    const portfolio = new Portfolio(props._id, props.userId, props.description, props.name, props.isPublic)
     return portfolio
   }
   

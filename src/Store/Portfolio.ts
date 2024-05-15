@@ -16,7 +16,8 @@ export class Portfolio{
     public _id: string,
     public userId: string,
     public description: string,
-    public name: string
+    public name: string,
+    public isPublic?: boolean
   ){
     const ready = portfolioMap.get(_id)
     if(ready)return ready

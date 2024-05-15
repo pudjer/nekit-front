@@ -1,7 +1,7 @@
 import { Portfolio } from "@/Store/Portfolio";
 import { StoreInstance } from "@/Store/Store"
 import { createPortfolioDTO } from "@/Store/User";
-import { Dialog, DialogTitle, DialogContent, Box, TextField, Button } from "@mui/material"
+import { Dialog, DialogTitle, DialogContent, Box, TextField, Button, Typography } from "@mui/material"
 import { useForm } from "react-hook-form";
 
 export const UpdatePortfolio: React.FC<{dialogOpen:boolean, handleCloseDialog:()=>void, portfolio: Portfolio}> = ({dialogOpen, handleCloseDialog, portfolio})=> {
@@ -29,14 +29,17 @@ export const UpdatePortfolio: React.FC<{dialogOpen:boolean, handleCloseDialog:()
               defaultValue={portfolio.description}
 
             />
-            <TextField
-              {...register('public')}
-              label="Публичный"
+            <div style={{display: "flex", alignItems: "center"}}>
+              <TextField
+              {...register('isPublic')}
               variant="outlined"
-              fullWidth
               margin="normal"
               type="checkbox"
+              sx={{width: 30, height: 50}}
+              defaultChecked={portfolio.isPublic}
             />
+            <Typography>Публичный</Typography>
+            </div>
             <Button type="submit" variant="contained" color="primary">
               ИЗМЕНИТЬ
             </Button>
