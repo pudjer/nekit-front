@@ -1,6 +1,6 @@
 import { StoreInstance } from "@/Store/Store"
 import { createPortfolioDTO } from "@/Store/User";
-import { Dialog, DialogTitle, DialogContent, Box, TextField, Button } from "@mui/material"
+import { Dialog, DialogTitle, DialogContent, Box, TextField, Button, Typography } from "@mui/material"
 import { useForm } from "react-hook-form";
 
 export const CreatePortfolio: React.FC<{dialogOpen:boolean, handleCloseDialog:()=>void}> = ({dialogOpen, handleCloseDialog})=> {
@@ -24,13 +24,16 @@ export const CreatePortfolio: React.FC<{dialogOpen:boolean, handleCloseDialog:()
               fullWidth
               margin="normal"
             />
-            <TextField
+            <div style={{display: "flex", alignItems: "center"}}>
+              <TextField
               {...register('isPublic')}
-              label="Публичный"
               variant="outlined"
               margin="normal"
               type="checkbox"
+              sx={{width: 30, height: 50}}
             />
+            <Typography>Публичный</Typography>
+            </div>
             <Button type="submit" variant="contained" color="primary">
               Добавить
             </Button>

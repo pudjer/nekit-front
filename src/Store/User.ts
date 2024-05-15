@@ -11,9 +11,10 @@ export type createPortfolioDTO = {
 }
 
 export class User{
-  static fromProps(props: Portfolio) {
-    const portfolio = new Portfolio(props._id, props.userId, props.description, props.name, props.isPublic)
-    return portfolio
+  static fromProps(props: User){
+    //@ts-ignore
+    const user = new User(props.username, props._id, props.blocked, props.isAdmin, props.date_registered, props.email, props.tgId, props.favoritePortfolios)
+    return user
   }
   portfolios?: Portfolio[]
   favoritePortfolios: Portfolio[]
@@ -34,7 +35,7 @@ export class User{
     this.favoritePortfolios = []
     Promise.all(promises).then(res=>{
       console.log(res)
-      const portfs = res.map(e=>this.fromProps(e.data))
+      const portfs = res.map(e=>Portfolio.fromProps(e.data))
       this.favoritePortfolios = portfs
     })
   }
@@ -49,27 +50,18 @@ export class User{
     await Axios.delete(`/user/favorite/${portf._id}`)
     this.favoritePortfolios = this.favoritePortfolios.filter(e=>e!==portf)
   }
-  fromProps(props: Portfolio){
-    const portfolio = new Portfolio(props._id, props.userId, props.description, props.name, props.isPublic)
-    return portfolio
-  }
+
   
   async updatePortfolios(){
     const portfolios: Portfolio[] = (await Axios.get('/portfolios')).data
-    this.portfolios = portfolios.map(e=>this.fromProps(e))
+    this.portfolios = portfolios.map(e=>Portfolio.fromProps(e))
   }
   
-  async setPortfolioFromHref(){
-    const portfolioId = (new URL(location.href)).searchParams.get('portfolio')
-    if(typeof portfolioId === 'string' && portfolioId.length){
-      const res = (await Axios.get(`/portfolios/${portfolioId}`)).data
-      StoreInstance.portfolio = this.fromProps(res)
-    }
-  }
+
 
   async createPortfolio(props : createPortfolioDTO ){
     const res: Portfolio = (await Axios.post('/portfolios', props)).data
-    StoreInstance.portfolio = this.fromProps(res)
+    StoreInstance.portfolio = Portfolio.fromProps(res)
     if(this.portfolios)this.portfolios = [...this.portfolios, StoreInstance.portfolio]
   }
   

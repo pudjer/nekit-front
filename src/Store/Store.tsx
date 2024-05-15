@@ -44,19 +44,21 @@ export class Store {
     Promise.allSettled(loading).then(()=>{this.isLoading = false})
   }
 
-
-  userFromProps(props: User){
-    //@ts-ignore
-    const user = new User(props.username, props._id, props.blocked, props.isAdmin, props.date_registered, props.email, props.tgId, props.favoritePortfolios)
-    return user
+  async setPortfolioFromHref(){
+    const portfolioId = (new URL(location.href)).searchParams.get('portfolio')
+    if(typeof portfolioId === 'string' && portfolioId.length){
+      const res = (await Axios.get(`/portfolios/${portfolioId}`)).data
+      StoreInstance.portfolio = Portfolio.fromProps(res)
+    }
   }
+
   async setGlobal(){
     const glob : Glob = (await Axios.get("exchange/global")).data
     this.global = glob
   }
   async setUser(){
     const props: User = (await Axios.get('/user')).data
-    this.user = this.userFromProps(props)
+    this.user = User.fromProps(props)
   }
   
   async createUser(user: UserCreateDTO){

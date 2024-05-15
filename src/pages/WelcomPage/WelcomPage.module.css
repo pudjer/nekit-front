@@ -1,5 +1,6 @@
 .page{
   width: 100vw;
+  display: flex;
 }
 
 .typography{
@@ -7,4 +8,17 @@
 }
 .listItems{
   text-align: left;
+}
+.description{
+  width: 60vw;
+}
+.list{
+  width: 40vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.listHeader{
+  text-align: center;
 }

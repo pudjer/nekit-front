@@ -4,6 +4,23 @@ import { Axios } from "@/api/Axios"
 import { Position } from "./PositionInterface"
 
 export class FuturesPosition implements Position{
+  static fromProps(props: FuturesPosition){
+    const portfolio = new FuturesPosition(
+      props.portfolioId,
+      props._id,
+      props.symbol,
+      props.currency,
+      props.quantity,
+      props.margin,
+      props.leverage,
+      props.timestamp,
+      props.initialPrice,
+      props.stopLoss,
+      props.takeProfit,
+      props.exitPrice
+    )
+    return portfolio
+  }
   constructor(
     public portfolioId: string,
     public _id: string,

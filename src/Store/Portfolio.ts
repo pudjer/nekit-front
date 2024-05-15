@@ -11,7 +11,10 @@ const portfolioMap = new Map<string, Portfolio>()
 export class Portfolio{
   spotPositions?: SpotPosition[]
   futuresPositions?: FuturesPosition[]
-
+  static fromProps(props: Portfolio) {
+    const portfolio = new Portfolio(props._id, props.userId, props.description, props.name, props.isPublic)
+    return portfolio
+  }
   constructor(
     public _id: string,
     public userId: string,
@@ -26,31 +29,20 @@ export class Portfolio{
     portfolioMap.set(_id, this)
   }
 
-  SpotFromProps(props: SpotPosition){
-    const portfolio = new SpotPosition(
-      props.portfolioId,
-      props._id,
-      props.symbol,
-      props.quantity,
-      props.timestamp,
-      props.initialPrice,
-      props.exitPrice
-    )
-    return portfolio
-  }
+
   async updatePositions(){
     const portfolioId = this._id
     const spot: SpotPosition[] = (await Axios.get(`/spot/all?portfolioId=${portfolioId}`)).data
     const futures: FuturesPosition[] = (await Axios.get(`/futures/all?portfolioId=${portfolioId}`)).data
-    this.spotPositions = spot.map(e=>this.SpotFromProps(e))
-    this.futuresPositions = futures.map(e=>this.FuturesFromProps(e))
+    this.spotPositions = spot.map(e=>SpotPosition.fromProps(e))
+    this.futuresPositions = futures.map(e=>FuturesPosition.fromProps(e))
 
   }
   
   async createSpotPosition(props : CreateSpotPositionDTO ){
     const pos = Object.assign({portfolioId: this._id}, props)
     const res: SpotPosition = (await Axios.post('/spot', pos)).data
-    if(this.spotPositions)this.spotPositions = [...this.spotPositions, this.SpotFromProps(res)]
+    if(this.spotPositions)this.spotPositions = [...this.spotPositions, SpotPosition.fromProps(res)]
   }
   
   async deleteSpotPosition(id: string){
@@ -63,31 +55,12 @@ export class Portfolio{
   }
 
   
-
-
-  FuturesFromProps(props: FuturesPosition){
-    const portfolio = new FuturesPosition(
-      props.portfolioId,
-      props._id,
-      props.symbol,
-      props.currency,
-      props.quantity,
-      props.margin,
-      props.leverage,
-      props.timestamp,
-      props.initialPrice,
-      props.stopLoss,
-      props.takeProfit,
-      props.exitPrice
-    )
-    return portfolio
-  }
   
   
   async createFuturesPosition(props : CreateFuturesPositionDTO ){
     const pos = Object.assign({portfolioId: this._id}, props)
     const res: FuturesPosition = (await Axios.post('/futures', pos)).data
-    if(this.futuresPositions)this.futuresPositions = [...this.futuresPositions, this.FuturesFromProps(res)]
+    if(this.futuresPositions)this.futuresPositions = [...this.futuresPositions, FuturesPosition.fromProps(res)]
 
   }
   

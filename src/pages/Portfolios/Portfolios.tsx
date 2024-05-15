@@ -29,9 +29,9 @@ export const Portfolios: React.FC = observer(() => {
   const [UdialogOpen, setUDialogOpen] = useState(false);
   let [portfoliosChoise, setChoise] = useState<PortfoliosChoise>(PortfoliosChoise.PUBLIC)
   const [publicPortfs, setPublicPortfs] = useState<Portfolio[]>([])
-  StoreInstance.user?.setPortfolioFromHref()
+  StoreInstance.setPortfolioFromHref()
   useEffect(()=>{
-    const res = Axios.get("/portfolios/public").then(res=>res.data.map((portf: Portfolio)=>User.fromProps(portf)))
+    const res = Axios.get("/portfolios/public").then(res=>res.data.map((portf: Portfolio)=>Portfolio.fromProps(portf)))
     res.then(e=>setPublicPortfs(e))
   }, [])
   const handleChange = (event: unknown) => {

@@ -4,6 +4,18 @@ import { Axios } from "@/api/Axios"
 import { Position } from "./PositionInterface"
 
 export class SpotPosition implements Position{
+  static fromProps(props: SpotPosition){
+    const portfolio = new SpotPosition(
+      props.portfolioId,
+      props._id,
+      props.symbol,
+      props.quantity,
+      props.timestamp,
+      props.initialPrice,
+      props.exitPrice
+    )
+    return portfolio
+  }
   constructor(
     public portfolioId: string,
     public _id: string,

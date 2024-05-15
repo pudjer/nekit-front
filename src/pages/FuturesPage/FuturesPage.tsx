@@ -10,9 +10,8 @@ import { useState } from "react";
 export const FuturesPage = observer(()=>{
   const [openCreate, setOpenCreate] = useState<boolean>(false)
   const [openUpdate, setOpenUpdate] = useState<boolean>(false)
-
   const [selected, Select] = useState<FuturesPosition | undefined>()
-  StoreInstance.user?.setPortfolioFromHref()
+  StoreInstance.setPortfolioFromHref()
   if(!StoreInstance.portfolio){
     return <Typography variant="h1">Select portfolio!!</Typography>
   }

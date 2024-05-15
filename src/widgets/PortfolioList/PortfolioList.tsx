@@ -11,7 +11,7 @@ interface Props  {
 }
 export const PortfolioList : React.FC<Props>=  observer(({handleSelect, portfolios}) => {
   return (
-    <div style={{display: "flex", flexDirection: 'column',justifyContent: "space-around", alignItems: "stretch", height: "100%", width: "100%"}}>
+    <div style={{display: "flex", flexDirection: 'column',justifyContent: "space-around", alignItems: "stretch", height: "100%", width: "100%", maxHeight: "78vh"}}>
       <List sx={{
         maxWidth: "40vw",
         height: "100%",

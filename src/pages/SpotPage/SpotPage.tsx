@@ -10,7 +10,7 @@ import { useState } from "react";
 export const SpotPage = observer(()=>{
   const [openCreate, setOpenCreate] = useState<boolean>(false)
   const [openUpdate, setOpenUpdate] = useState<boolean>(false)
-  StoreInstance.user?.setPortfolioFromHref()
+  StoreInstance.setPortfolioFromHref()
 
   const [selected, Select] = useState<SpotPosition | undefined>()
   if(!StoreInstance.portfolio){
