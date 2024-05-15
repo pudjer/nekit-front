@@ -1,4 +1,5 @@
 import { StoreInstance } from "@/Store/Store"
+import ErrorPage from "@/pages/ErrorPage/ErrorPage"
 import { FuturesPage } from "@/pages/FuturesPage/FuturesPage"
 import { HomePage } from "@/pages/HomePage/HomePage"
 import { Portfolios } from "@/pages/Portfolios/Portfolios"
@@ -15,10 +16,13 @@ const App = observer(() => {
   if(StoreInstance.isLoading){
     return <Typography variant="h1">Loading...</Typography>
   }
+  if(StoreInstance.error){
+    return <ErrorPage/>
+  }
   return (
     <BrowserRouter>
       <Header/>
-      <div style={{marginTop: 70}}>
+      <div style={{marginTop: 70, width:"100vw"}}>
       <Routes>
         <Route path="home" Component={()=><HomePage/>}/>
         <Route path="portfolios" Component={()=><Portfolios/>}/>

@@ -13,17 +13,22 @@ export const FuturesPage = observer(()=>{
 
   const [selected, Select] = useState<FuturesPosition | undefined>()
   StoreInstance.user?.setPortfolioFromHref()
-  if(!StoreInstance.user?.portfolio){
+  if(!StoreInstance.portfolio){
     return <Typography variant="h1">Select portfolio!!</Typography>
   }
-  return (
-    <div>
-      <FuturesTable onSelect={Select}/>
-      <CreateFutures onClose={()=>setOpenCreate(false)} open={openCreate}/>
-      <Button variant="contained" color='success' onClick={()=>setOpenCreate(true)}>Добавить</Button>
-      {selected && <Button variant="contained" color='info'  onClick={()=>setOpenUpdate(true)}>Изменить</Button>}
-      {selected && openUpdate && <UpdateFutures open onClose={()=>setOpenUpdate(false)} pos={selected}/>}
-      {selected && <Button variant="contained" color='error' onClick={()=>StoreInstance.user?.portfolio?.deleteFuturesPosition(selected._id)}>УДАЛИТЬ</Button>}
-    </div>
+  return (<>
+    <FuturesTable onSelect={Select}/>
+      <div style={{display: "flex", justifyContent: "space-around", flexDirection: "row", flexGrow: 4}}>
+        <CreateFutures onClose={()=>setOpenCreate(false)} open={openCreate}/>
+        {StoreInstance.portfolio && StoreInstance.user?.portfolios?.includes(StoreInstance.portfolio) && <>
+          <Button variant="contained" color='success' onClick={()=>setOpenCreate(true)}>Добавить</Button>
+          {selected &&<>
+            <Button variant="contained" color='info'  onClick={()=>setOpenUpdate(true)}>Изменить</Button>
+            <UpdateFutures open={openUpdate} onClose={()=>setOpenUpdate(false)} pos={selected}/>
+            <Button variant="contained" color='error' onClick={()=>StoreInstance.portfolio?.deleteFuturesPosition(selected._id)}>УДАЛИТЬ</Button>
+          </>}
+        </>}
+      </div>
+    </>
   )
 })

@@ -4,11 +4,13 @@ import { Currency } from "./Currency";
 import { Token } from "./Token";
 import { Axios } from "@/api/Axios";
 import { Typography } from "@mui/material";
+import { AxiosError } from "axios";
+import { Portfolio } from "./Portfolio";
 type Glob = {
-  "eth_dominance": 15.54915795644,
-  "btc_dominance": 53.204077126219,
-  "total_market_cap": 2251885193123.512,
-  "total_volume_24h": 67644895476.9,
+  "eth_dominance": number,
+  "btc_dominance": number,
+  "total_market_cap": number,
+  "total_volume_24h": number,
 }
 
 
@@ -26,14 +28,16 @@ export class Store {
   currency?: Currency
   tokens: Token[] = []
   tokensMap = new Map<string, Token>()
+  portfolio?: Portfolio
   global?: Glob
+  error?: AxiosError
   constructor(){
     makeAutoObservable(this)
     const loading = []
     loading.push(this.setUser())
-    loading.push(this.setTokens())
-    loading.push(this.setCurrencies().then(()=>{this.currency = this.currencies[0] || undefined}))    
-    loading.push(this.setGlobal())   
+    loading.push(this.setTokens().catch(e=>this.error=e))
+    loading.push(this.setCurrencies().then(()=>{this.currency = this.currencies[0] || undefined}).catch(e=>this.error=e))    
+    loading.push(this.setGlobal().catch(e=>this.error = e))   
     setInterval(this.setGlobal.bind(this), 1000 * 60 * 10)
     setInterval(this.setTokens.bind(this), 1000 * 60 * 10)
     setInterval(this.setCurrencies.bind(this), 1000 * 60 * 60 * 24)
@@ -42,7 +46,8 @@ export class Store {
 
 
   userFromProps(props: User){
-    const user = new User(props.username, props._id, props.blocked, props.isAdmin, props.date_registered, props.email, props.tgId)
+    //@ts-ignore
+    const user = new User(props.username, props._id, props.blocked, props.isAdmin, props.date_registered, props.email, props.tgId, props.favoritePortfolios)
     return user
   }
   async setGlobal(){
@@ -67,8 +72,8 @@ export class Store {
     localStorage.setItem('access_token', token.access_token)
     await this.setUser()
   }
-  async tgLogin(pass: number, username: string){
-    const body: TgPassword = { tgPassword: pass, username}
+  async tgLogin(pass: number, username: string, password: string){
+    const body: TgPassword = { tgPassword: pass, username, password}
     const token: AuthToken=(await Axios.post('/user/tgauth', body)).data
     localStorage.setItem('access_token', token.access_token)
     await this.setUser()
@@ -110,7 +115,7 @@ export class Store {
     return cur ? [p * cur.exchangeRateToUsd , " "+cur.symbol] : [p,' USD']
   }
   formatChange(price: number, curr: string, nice = price){
-    return <Typography color={nice<0?"error":"lightgreen"}>{(nice>0?'+':'')+price.toLocaleString()+curr}</Typography>
+    return <Typography color={nice<0?"error":"lightgreen"}>{(nice>0?'+':'')+(price ? price.toLocaleString()+curr : "N/A")}</Typography>
   }
 }
 
@@ -122,4 +127,5 @@ export interface AuthToken{access_token: string, tgrequired?: true}
 export interface TgPassword{
   username: string
   tgPassword: number
+  password: string
 }

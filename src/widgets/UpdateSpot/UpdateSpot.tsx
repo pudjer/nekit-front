@@ -74,7 +74,7 @@ export const UpdateSpot: React.FC<{open: boolean, onClose: ()=>void, pos: SpotPo
         <TextField
           margin="dense"
           name="initialPrice"
-          label="Цена покупки"
+          label="Начальная цена"
           type="number"
           fullWidth
           value={formData.initialPrice}

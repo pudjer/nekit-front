@@ -64,21 +64,21 @@ export const futuresColumns: Column<FuturesPosition>[]= [
 
 
 const hightlight = (value: FuturesPosition)=>{
-  if(value.getValue()<0) return "darkred";
+  if(value.getValue()<=0) return "#200808";
   if(value.takeProfit){
     if(value.quantity>0){
       if(value.getCurrentPrice()>=(value.takeProfit || NaN)){
-        return "darkgreen"
+        return "#081b07"
       }
       if(value.getCurrentPrice()<=(value.stopLoss || NaN)){
-        return "darkred"
+        return "#200808"
       }
     }else{
       if(value.getCurrentPrice()<=(value.takeProfit || NaN)){
-        return "darkgreen"
+        return "#081b07"
       }
       if(value.getCurrentPrice()>=(value.stopLoss || NaN)){
-        return "darkred"
+        return "#200808"
       }
     }
   }
@@ -87,16 +87,9 @@ const hightlight = (value: FuturesPosition)=>{
 
 
 export const FuturesTable: React.FC<{onSelect: (pos: FuturesPosition)=>void}> = observer(({onSelect}) => {
-  const nav = useNavigate()
-  if(!StoreInstance.user?.portfolio?.futuresPositions){
-    if(!StoreInstance.isLoading)return ""
-    nav("/portfolios")
-    return ""
-  }
-
 
   return <div style={{display: "flex", alignItems: "center",margin: 10, flexDirection: "column"}}>
     <Typography variant='h2'>Фючерс-позиции</Typography>
-    <PosTable sx={{width: "97vw", height: "80vh"}} onSelect={onSelect} positions={StoreInstance.user.portfolio.futuresPositions} cols={futuresColumns}  highlighted={hightlight}/>
+    <PosTable sx={{width: "97vw", height: "80vh"}} onSelect={onSelect} positions={StoreInstance.portfolio?.futuresPositions || []} cols={futuresColumns}  highlighted={hightlight}/>
   </div>
 })

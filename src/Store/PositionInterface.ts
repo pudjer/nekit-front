@@ -8,7 +8,6 @@ export interface Position{
   initialPrice: number,
   exitPrice?: number
   getCurrentPrice(): number
-  getCurrentVolume():number
   getPriceChange(): number
   getPriceChangePerc(): number
   getValue(): number

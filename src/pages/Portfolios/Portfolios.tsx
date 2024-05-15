@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { List, ListItem, ListItemText, Button, Dialog, DialogTitle, DialogContent, TextField, DialogActions, Box, Typography, Paper, CardContent, Card } from '@mui/material';
+import React, { useState, useEffect, ChangeEvent } from 'react';
+import { List, ListItem, ListItemText, Button, Dialog, DialogTitle, DialogContent, TextField, DialogActions, Box, Typography, Paper, CardContent, Card, Divider, MenuItem, Select, InputLabel, FormControl } from '@mui/material';
 import { Portfolio } from '@/Store/Portfolio';
 import styles from "./Portfolios.module.css"
 import { StoreInstance } from '@/Store/Store';
@@ -11,21 +11,38 @@ import { UpdatePortfolio } from '@/widgets/UpdatePortfolio/UpdatePortfolio';
 import { PieChart } from '@mui/x-charts/PieChart';
 import { ExportFunction, portfolioToString } from './ExportFunction';
 import { Axios } from '@/api/Axios';
+import { User } from '@/Store/User';
+
+
+
+enum PortfoliosChoise{
+  MY,
+  PUBLIC,
+  FAVORITE,
+}
+
 
 export const Portfolios: React.FC = observer(() => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogExportOpen, setDialogExportOpen] = useState(false);
-
+  const [dataIndex, setDataIndex] = useState<number>();
   const [UdialogOpen, setUDialogOpen] = useState(false);
+  let [portfoliosChoise, setChoise] = useState<PortfoliosChoise>(PortfoliosChoise.PUBLIC)
+  const [publicPortfs, setPublicPortfs] = useState<Portfolio[]>([])
   StoreInstance.user?.setPortfolioFromHref()
-
+  useEffect(()=>{
+    const res = Axios.get("/portfolios/public").then(res=>res.data.map((portf: Portfolio)=>User.fromProps(portf)))
+    res.then(e=>setPublicPortfs(e))
+  }, [])
+  const handleChange = (event: unknown) => {
+    //@ts-ignore
+    setChoise(event.target.value);
+  };
   const nav = useNavigate()
-  if(!StoreInstance.user){
-    return <Typography variant="h1">Sign in!!</Typography>
-  }
+
   const handleSelectPortfolio = (portfolio: Portfolio) => {
-    StoreInstance.user!.portfolio = (portfolio);
-    nav("/portfolios?portfolio="+StoreInstance.user?.portfolio?._id, {replace: true})
+    StoreInstance.portfolio = (portfolio);
+    nav("/portfolios?portfolio="+StoreInstance.portfolio?._id, {replace: true})
   };
 
   const handleOpenDialog = () => {
@@ -44,118 +61,85 @@ export const Portfolios: React.FC = observer(() => {
     setDialogExportOpen(false);
   };
 
-  // Add more handlers for create, update, and delete operations here
-  if(!StoreInstance.user.portfolios){
-    return <div>Error during load portfolios</div>
-  }
 
-  const outerRadius = 200
-
-  const [positive, negative]: [{[key: string]: number}, {[key: string]: number}] = [{}, {}]
-  const Stats = StoreInstance.user.portfolio?.getStats()
+  const Stats = StoreInstance.portfolio?.getStats()
+  let valueSum = 0
   for(const symbol in Stats){
-    if(Stats[symbol]>0){
-      positive[symbol] = Stats[symbol]
-    }else{
-      negative[symbol] = Stats[symbol]
-    }
+    const stat = Stats[symbol]
+
+    valueSum=valueSum+stat
   }
-
-  let negativeSum = 0
-  let positiveSum = 0
-  let negativeMin = 0
-  let positiveMax = 0
-  for(const symbol in negative){
-    const stat = negative[symbol]
-    negativeSum=negativeSum+stat
-    if(stat<negativeMin){
-      negativeMin = stat
-    }
+  type Data = {value: number, label: string}[]
+  const data: Data = []
+  for(const symbol in Stats){
+    const stat = Stats[symbol]
+    data.push({value: (stat/valueSum)*100, label: symbol})
   }
-  for(const symbol in positive){
-    const stat = positive[symbol]
-    positiveSum=positiveSum+stat
-    if(stat>positiveMax){
-      positiveMax = stat
-    }
+  const value = StoreInstance.convertFromUSD(valueSum)
+
+  const variants = {
+    [PortfoliosChoise.MY]: StoreInstance.user?.portfolios,
+    [PortfoliosChoise.FAVORITE]: StoreInstance.user?.favoritePortfolios,
+    [PortfoliosChoise.PUBLIC]: publicPortfs
   }
-  const [greater, less, greaterStats, lessStats] = Math.abs(positiveSum) > Math.abs(negativeSum) ? [positiveSum, negativeSum, positive, negative] : [negativeSum, positiveSum, negative, positive] 
-
-  const minusRadius = outerRadius *(1 - Math.sqrt(Math.abs(less)/Math.abs(greater)))
-  const innerRadius = outerRadius - minusRadius
-
-  function getColor(number: number, high: number) {
-    const minus = number > 0 ? false : true
-    number = Math.round(number)
-
-    number = ((Math.abs(number) / Math.abs(high))*200)+55
-    number = Math.round(number)
-    console.log(number)
-    var hex = number.toString(16).padStart(2, '0');
-    console.log(hex)
-    // Возвращаем строку в формате RGB
-    return minus ? '#' + hex + '3333' : '#' + '33' + hex + '33'; // Здесь синий компонент всегда 00
-  }
-
-  type data = {value: number, label: string, color: string}[]
-
-  const greaterData: data = []
-  for(const symbol in greaterStats){
-    const stat = greaterStats[symbol]
-    greaterData.push({value: (Math.abs(stat)/Math.abs(positiveSum+negativeSum)*100), label: ( stat > 0 ? "" : "-")+ symbol, color: stat > 0 ? getColor(stat, positiveMax) : getColor(stat, negativeMin)})
-  }
-  const lessData: data = []
-  for(const symbol in lessStats){
-    const stat = lessStats[symbol]
-    lessData.push({value: (Math.abs(stat)/Math.abs(positiveSum+negativeSum)*100), label: ( stat > 0 ? "" : "-")+ symbol, color: stat > 0 ? getColor(stat, positiveMax) : getColor(stat, negativeMin)})
-  }
-
-
-
   return (
     <div className={styles.page}>
-      <div style={{width: "40vw", flexDirection: 'column', display: "flex", justifyContent: "space-around", minHeight: "80vh"}}>
-        <PortfolioList handleSelect={handleSelectPortfolio}/>
+      <div style={{width: "40vw", flexDirection: 'column', display: "flex", justifyContent: "space-around", minHeight: "80vh", alignItems: "center", flexShrink: 0}}>
+        {StoreInstance.user && <FormControl sx={{width: "100%", marginLeft: 10}}>
+        <InputLabel id="portfolio-select-label">Выберите портфели</InputLabel>
+          <Select
+            labelId="portfolio-select-label"
+            value={portfoliosChoise}
+            onChange={handleChange}
+            label="Выберите портфели"
+            sx={{width: "60%"}}
+          >
+            <MenuItem value={PortfoliosChoise.PUBLIC}>Публичные портфели</MenuItem>
+            <MenuItem value={PortfoliosChoise.MY}>Мои портфели</MenuItem>
+            <MenuItem value={PortfoliosChoise.FAVORITE}>Избранные портфели</MenuItem>
+          </Select>
+        </FormControl>}
+        {variants[portfoliosChoise] && <PortfolioList portfolios={
+          variants[portfoliosChoise] || []
+        } handleSelect={handleSelectPortfolio}/>}
         <div style={{width: "100%", display: "flex", justifyContent: "space-around"}}>
 
-          <Button variant="contained" color="success" onClick={handleOpenDialog}>
+          {portfoliosChoise === PortfoliosChoise.MY && <Button variant="contained" color="success" onClick={handleOpenDialog}>
             ДОБАВИТЬ
-          </Button>
-          {
-          StoreInstance.user.portfolio && <>
-          <Button variant="contained" color="info" onClick={()=>setUDialogOpen(true)}>
-            ИЗМЕНИТЬ
-          </Button>
-          <Button variant="contained" color="error" onClick={()=>StoreInstance.user!.deletePortfolio(StoreInstance.user!.portfolio!._id)}>
-            УДАЛИТЬ
-          </Button>
-          <UpdatePortfolio portfolio={StoreInstance.user.portfolio} dialogOpen={UdialogOpen} handleCloseDialog={()=>setUDialogOpen(false)}/>
-          <Button onClick={handleOpenExportDialog}>ЭКСПОРТИРОВАТЬ ОТЧЕТ</Button>
-          <Dialog open={dialogExportOpen} onClose={handleCloseExportDialog}>
-            <DialogContent>
-              <Button fullWidth onClick={ExportFunction}>ЭКСПОРТИРОВАТЬ В ФАЙЛ</Button>
-              {StoreInstance.user.tgId && <Button fullWidth onClick={()=>Axios.post("/portfolios/tgreport", {report: portfolioToString()})}>ПРИСЛАТЬ В TELEGRAM</Button>}
-            </DialogContent>
-          </Dialog>
-          </>
-          }
+          </Button>}
+          
+          {StoreInstance.portfolio?.userId === (StoreInstance.user?._id || 0) && <>
+            <Button variant="contained" color="info" onClick={()=>setUDialogOpen(true)}>
+              ИЗМЕНИТЬ
+            </Button>
+            <Button variant="contained" color="error" onClick={()=>StoreInstance.user!.deletePortfolio(StoreInstance.portfolio!._id)}>
+              УДАЛИТЬ
+            </Button>
+            <UpdatePortfolio portfolio={StoreInstance.portfolio} dialogOpen={UdialogOpen} handleCloseDialog={()=>setUDialogOpen(false)}/>
+            <Button onClick={handleOpenExportDialog}>ЭКСПОРТИРОВАТЬ ОТЧЕТ</Button>
+            <Dialog open={dialogExportOpen} onClose={handleCloseExportDialog}>
+              <DialogContent>
+                <Button fullWidth onClick={ExportFunction}>ЭКСПОРТИРОВАТЬ В ФАЙЛ</Button>
+                {StoreInstance.user?.tgId && <Button fullWidth onClick={()=>Axios.post("/portfolios/tgreport", {report: portfolioToString()})}>ПРИСЛАТЬ В TELEGRAM</Button>}
+              </DialogContent>
+            </Dialog>
+          </>}
+
         </div>
       </div>
       <CreatePortfolio dialogOpen={dialogOpen} handleCloseDialog={handleCloseDialog} />
-      {StoreInstance.user?.portfolio && (
+
+      {(StoreInstance.portfolio) && (
         <div style={{flexDirection: 'column', padding: 5, margin: 10}}>
-          <Typography align="center" variant='h3' color="secondary"  style={{width: "100%", wordBreak:"break-word"}} >{StoreInstance.user.portfolio.name}</Typography>
-          <Paper sx={{display:"flex", flexShrink: 1, justifyContent: "space-around", alignItems: "center", flexDirection: "column"}} style={{width: "50vw", wordBreak:"break-word", height: "100%"}}>
+          <Typography align="center" variant='h3' color="secondary"  style={{width: "100%", wordBreak:"break-word", marginBottom: 20}} >{StoreInstance.portfolio.name}</Typography>
+          <Paper sx={{display:"flex", flexShrink: 1, justifyContent: "space-around", alignItems: "center", flexDirection: "column"}} style={{width: "50vw", wordBreak:"break-word", height: "100%", borderRadius: 30}}>
             <div style={{display:"flex", flexWrap: 'wrap', justifyContent: "space-around", padding: 20, width: "100%"}}>
               <Card sx={{flexGrow: 2, margin: 5}}>
                 <CardContent>
                   <Typography variant="h5">
                     Стоимость
                   </Typography>
-                  {(()=>{
-                    const res = StoreInstance.convertFromUSD(positiveSum+negativeSum)
-                    return [<Typography>{[res[0].toLocaleString(), res[1]]}</Typography>]
-                    })()}
+                  {[value[0].toLocaleString(), value[1]]}
                 </CardContent>
               </Card>
               <Card sx={{flexGrow: 2, margin: 5}}>
@@ -164,7 +148,7 @@ export const Portfolios: React.FC = observer(() => {
                     Прибыль
                   </Typography>
                   <Typography variant="h4">
-                    {StoreInstance.formatChange(...StoreInstance.convertFromUSD(StoreInstance.user.portfolio.getVolumeChange()))}
+                    {StoreInstance.formatChange(...StoreInstance.convertFromUSD(StoreInstance.portfolio.getVolumeChange()))}
                   </Typography>
                 </CardContent>
               </Card>
@@ -174,37 +158,50 @@ export const Portfolios: React.FC = observer(() => {
                     Доходность
                   </Typography>
                   <Typography variant="h4">
-                    {StoreInstance.formatChange(StoreInstance.user.portfolio.getIncomePerc()," %")}
+                    {StoreInstance.formatChange(StoreInstance.portfolio.getIncomePerc()," %")}
                   </Typography>
                 </CardContent>
               </Card>
             </div>
             <Typography variant='h4'>Диверсификация</Typography>
             <div>
-            <PieChart height={500} width={500}
-              series={[
-                {
-                  data: lessData,
-                  outerRadius: innerRadius-3,
-                  paddingAngle: 2,
-                  cornerRadius: 8
-                },
-                {
-                  data: greaterData,
-                  outerRadius: outerRadius,
-                  innerRadius: innerRadius+3,
-                  paddingAngle: 2,
-                  cornerRadius: 8
-
-                }
-              ]}
-            />
+              <PieChart height={500} width={500}
+                series={[
+                  {
+                    data: data,
+                    outerRadius: 200,
+                    innerRadius: 100,
+                    paddingAngle: 0.3,
+                    cornerRadius: 8,
+                  }
+                ]}
+                slotProps={{
+                  legend: { hidden: true },
+                }}
+                onItemClick={(e, d)=>setDataIndex(d.dataIndex)}
+              />
+              {dataIndex !== undefined && dataIndex<data.length ? <div className={styles.box}>
+                  <Typography variant="h5">
+                    {"Доля портфеля: "+data[dataIndex].value.toLocaleString()+" %"}
+                  </Typography>
+                  <Typography variant="h5">
+                    <img style={{height: 30, width: 30}} src={StoreInstance.tokensMap.get(data[dataIndex].label)?.image}/>
+                    {data[dataIndex].label}
+                  </Typography>
+                  <Divider/>
+                  <Typography variant='h5'>
+                    {Stats && (()=>{
+                      const res = StoreInstance.convertFromUSD(Stats[data[dataIndex].label])
+                      return ["Количество: "+res[0].toLocaleString(), res[1]]
+                    })()}
+                  </Typography>
+              </div> : undefined}
             </div>
             <div style={{display: "flex", justifyContent: "space-around", width: "100%", padding: 30}}>
-              <Button size="large" variant="contained" color="secondary" onClick={()=>nav("/spot?portfolio="+StoreInstance.user?.portfolio?._id)}>
+              <Button size="large" variant="contained" color="secondary" onClick={()=>nav("/spot?portfolio="+StoreInstance.portfolio?._id)}>
                 СПОТ
               </Button>
-              <Button size="large" variant="contained" color="secondary" onClick={()=>nav("/futures?portfolio="+StoreInstance.user?.portfolio?._id)}>
+              <Button size="large" variant="contained" color="secondary" onClick={()=>nav("/futures?portfolio="+StoreInstance.portfolio?._id)}>
                 ФЬЮЧЕРСЫ
               </Button>
             </div>

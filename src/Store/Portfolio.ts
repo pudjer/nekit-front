@@ -3,6 +3,11 @@ import { CreateSpotPositionDTO, SpotPosition } from "./SpotPosition";
 import { CreateFuturesPositionDTO, FuturesPosition } from "./FuturesPosition";
 import { Axios } from "@/api/Axios";
 
+
+
+
+const portfolioMap = new Map<string, Portfolio>()
+
 export class Portfolio{
   spotPositions?: SpotPosition[]
   futuresPositions?: FuturesPosition[]
@@ -13,8 +18,11 @@ export class Portfolio{
     public description: string,
     public name: string
   ){
+    const ready = portfolioMap.get(_id)
+    if(ready)return ready
     makeAutoObservable(this)
     this.updatePositions()
+    portfolioMap.set(_id, this)
   }
 
   SpotFromProps(props: SpotPosition){
@@ -94,12 +102,18 @@ export class Portfolio{
     let sum = 0
     if(this.spotPositions){
       for(const pos of this.spotPositions){
-        sum = sum + pos.getValue()
+        const value = pos.getValue()
+        if(value>0){
+          sum = sum + value
+        }
       }
     }
     if(this.futuresPositions){
       for(const pos of this.futuresPositions){
-        sum = sum + pos.getValue()
+        const value = pos.getValue()
+        if(value>0){
+          sum = sum + value
+        }
       }
     }
     return sum
@@ -127,12 +141,12 @@ export class Portfolio{
     const symbolValueMap: {[key: string]: number} = {}
     if(this.spotPositions){
       for(const pos of this.spotPositions){
-        symbolValueMap[pos.symbol] = (symbolValueMap[pos.symbol] || 0) + pos.getValue()
+          symbolValueMap[pos.symbol] = (symbolValueMap[pos.symbol] || 0) + pos.getValue()
       }
     }
     if(this.futuresPositions){
       for(const pos of this.futuresPositions){
-        symbolValueMap[pos.symbol] = (symbolValueMap[pos.symbol] || 0) + pos.getValue()
+          symbolValueMap[pos.symbol] = (symbolValueMap[pos.symbol] || 0) + pos.getValue()
       }
     }
     return symbolValueMap
@@ -144,12 +158,12 @@ export class Portfolio{
     let sum = 0
     if(this.spotPositions){
       for(const pos of this.spotPositions){
-        sum = sum + pos.getValueChange()
+          sum = sum + pos.getValueChange()
       }
     }
     if(this.futuresPositions){
       for(const pos of this.futuresPositions){
-        sum = sum + pos.getValueChange()
+          sum = sum + pos.getValueChange()
       }
     }
     return sum

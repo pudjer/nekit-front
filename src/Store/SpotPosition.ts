@@ -18,14 +18,15 @@ export class SpotPosition implements Position{
 
   getCurrentPrice(){
     const symbol = StoreInstance.tokensMap.get(this.symbol)
+    if(this.exitPrice)return this.exitPrice
     if(!symbol)return 0
     return symbol.current_price
   }
   getValue(){
-    return (this.exitPrice || this.getCurrentPrice())*this.quantity
+    return (this.getCurrentPrice())*this.quantity
   }
   getPriceChange(){
-    return (this.exitPrice || this.getCurrentPrice()) - this.initialPrice
+    return ( this.getCurrentPrice()) - this.initialPrice
   }
   getValueChange(){
     return this.getPriceChange()*this.quantity
@@ -34,20 +35,20 @@ export class SpotPosition implements Position{
     return this.initialPrice*this.quantity
   }
   getCurrentVolume(){
-    return (this.exitPrice || this.getCurrentPrice())*this.quantity
+    return (this.getCurrentPrice())*this.quantity
   }
   getValueChangePerc(){
-    return (((this.exitPrice || this.getCurrentPrice()) / this.initialPrice) - 1) * 100
+    return (((this.getCurrentPrice()) / this.initialPrice) - 1) * 100
   }
   getPriceChangePerc(){
-    return (((this.exitPrice || this.getCurrentPrice()) / this.initialPrice) - 1) * 100
+    return (((this.getCurrentPrice()) / this.initialPrice) - 1) * 100
   }
   async update(upd: CreateSpotPositionDTO){
     const res: SpotPosition = (await Axios.patch(`/spot/${this._id}`, upd)).data
     Object.assign(this, res)
   }
   getPortfolioPerc(){
-    const portfolioValue = Math.abs(StoreInstance.user!.portfolio!.getValue())
+    const portfolioValue = Math.abs(StoreInstance.portfolio!.getValue())
     return (this.getValue() / portfolioValue) * 100
   }
 

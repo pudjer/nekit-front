@@ -17,7 +17,7 @@ export interface Column<T = any> {
 
 
 
-type TTable = <T extends {_id: string, [key: string]: any}[], TypeMap extends OverridableTypeMap>(props: {onSelect: (pos: T[number])=>void, positions: T, cols: Column<T[number]>[], highlighted?: (value: T[number])=>"darkred" | "darkgreen" |undefined} & DefaultComponentProps<TypeMap>)=>React.ReactNode
+type TTable = <T extends {_id: string, [key: string]: any}[], TypeMap extends OverridableTypeMap>(props: {onSelect: (pos: T[number])=>void, positions: T, cols: Column<T[number]>[], highlighted?: (value: T[number])=>string |undefined} & DefaultComponentProps<TypeMap>)=>React.ReactNode
 enum Compare{
   NOT,
   GREATER,

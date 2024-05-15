@@ -12,14 +12,14 @@ const PortfolioSelect = observer(() => {
       <InputLabel>Portfolio</InputLabel>
       <Select style={{overflow: "hidden"} }
         labelId={styles.portfolioSelect}
-        value={ StoreInstance?.user?.portfolio?.name || ''}
+        value={ StoreInstance.portfolio?.name || ''}
         label="Portfolio"
       >
         {
-        StoreInstance?.user?.portfolios
+        StoreInstance.user?.portfolios
         &&
-        StoreInstance?.user?.portfolios.map((portfolio) => (
-          <MenuItem key={portfolio._id} value={portfolio.name} style={{maxWidth: "50vw"}} onClick={()=>{StoreInstance.user!.portfolio = portfolio}}>
+        StoreInstance.user?.portfolios.map((portfolio) => (
+          <MenuItem key={portfolio._id} value={portfolio.name} style={{maxWidth: "50vw"}} onClick={()=>{StoreInstance.portfolio = portfolio}}>
             {portfolio.name}
           </MenuItem>
         ))}

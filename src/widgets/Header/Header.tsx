@@ -14,7 +14,7 @@ const Header: React.FC = observer(() => {
     <AppBar>
       <Toolbar className={styles.header}>
 
-      <Link to={'/home'}>
+      <Link to={'/'}>
         <img src={logo}/>
       </Link>
 

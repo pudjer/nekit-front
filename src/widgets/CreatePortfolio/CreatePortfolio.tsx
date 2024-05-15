@@ -5,12 +5,11 @@ import { useForm } from "react-hook-form";
 
 export const CreatePortfolio: React.FC<{dialogOpen:boolean, handleCloseDialog:()=>void}> = ({dialogOpen, handleCloseDialog})=> {
   const { register, handleSubmit } = useForm<createPortfolioDTO>();
-
   return(
     <Dialog open={dialogOpen} onClose={handleCloseDialog}>
         <DialogTitle>Добавить портфель</DialogTitle>
         <DialogContent>
-          <Box component="form" onSubmit={handleSubmit((d)=>StoreInstance.user!.createPortfolio(d))} noValidate autoComplete="off">
+          <Box component="form" onSubmit={handleSubmit((d)=>{StoreInstance.user!.createPortfolio(d)})} noValidate autoComplete="off">
             <TextField
               {...register('name', { required: true })}
               label="Название"
@@ -24,6 +23,14 @@ export const CreatePortfolio: React.FC<{dialogOpen:boolean, handleCloseDialog:()
               variant="outlined"
               fullWidth
               margin="normal"
+            />
+            <TextField
+              {...register('public')}
+              label="Публичный"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              type="checkbox"
             />
             <Button type="submit" variant="contained" color="primary">
               Добавить

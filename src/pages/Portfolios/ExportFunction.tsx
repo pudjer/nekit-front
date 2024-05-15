@@ -6,7 +6,7 @@ import ReactDOMServer from 'react-dom/server';
 
 
 export const ExportFunction = () => {
-  if(!StoreInstance.user?.portfolio){
+  if(!StoreInstance.portfolio){
     alert("select portfolio!!")
     return
   }
@@ -16,9 +16,9 @@ export const ExportFunction = () => {
   }
 
   let html = "<div><div>Futures</div>"
-  html = html + ReactDOMServer.renderToStaticMarkup(<PosTable onSelect={()=>undefined} cols={futuresColumns} positions={StoreInstance.user.portfolio.futuresPositions || []}/>)
+  html = html + ReactDOMServer.renderToStaticMarkup(<PosTable onSelect={()=>undefined} cols={futuresColumns} positions={StoreInstance.portfolio.futuresPositions || []}/>)
   html = html + "<div>Spot</div>"
-  html = html + ReactDOMServer.renderToStaticMarkup(<PosTable onSelect={()=>undefined} cols={spotColumns} positions={StoreInstance.user.portfolio.spotPositions || []}/>)
+  html = html + ReactDOMServer.renderToStaticMarkup(<PosTable onSelect={()=>undefined} cols={spotColumns} positions={StoreInstance.portfolio.spotPositions || []}/>)
   html = html + "</div>"
   
   download("report.html", cleanUp(html))
@@ -32,7 +32,7 @@ export function portfolioToString(){
   futuresColumns.forEach(e=>{
     FuturesTable += e.label + '\t'
   })
-  StoreInstance.user?.portfolio?.futuresPositions?.forEach((pos)=>{
+  StoreInstance.portfolio?.futuresPositions?.forEach((pos)=>{
     FuturesTable += '\n'
     futuresColumns.forEach(e=>{
       FuturesTable += e.format(pos) + '\t'
@@ -42,7 +42,7 @@ export function portfolioToString(){
   futuresColumns.forEach(e=>{
     SpotTable += e.label + '\t'
   })
-  StoreInstance.user?.portfolio?.spotPositions?.forEach((pos)=>{
+  StoreInstance.portfolio?.spotPositions?.forEach((pos)=>{
     SpotTable += '\n'
     spotColumns.forEach(e=>{
       SpotTable += e.format(pos) + '\t'

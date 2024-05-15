@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TextField, Button, Alert, Checkbox, FormControlLabel, Switch, DialogContent, Input } from '@mui/material';
+import { TextField, Button, Alert, Checkbox, FormControlLabel, Switch, DialogContent, Input, Typography } from '@mui/material';
 import { AxiosError } from 'axios';
 import { StoreInstance } from '@/Store/Store';
 
@@ -25,7 +25,7 @@ const SignInForm: React.FC<{close: ()=>void}> = ({close}) => {
       close()
     }catch(e: unknown){
       if(e instanceof AxiosError){
-        setError(e.response.data.message)
+        setError(e.response?.data.message)
       }
     }
 
@@ -42,22 +42,23 @@ const SignInForm: React.FC<{close: ()=>void}> = ({close}) => {
       }
     }catch(e: unknown){
       if(e instanceof AxiosError){
-        setError(e.response.data.message)
+        setError(e.response?.data.message)
       }
     }
   };
   if(tgPassRequired){
     return <DialogContent>
         {error && <Alert severity="error">{error}</Alert>}
+        <Typography variant='h5'>Введите одноразовый пароль от telegram-бота</Typography>
         <TextField type="number" value={tgValue} onChange={e=>{
           setError(undefined)
           setTgValue(Number(e.target.value))
         }}/>
         <Button onClick={async ()=>{
           try{
-            tgValue && await StoreInstance.tgLogin(tgValue, username)
+            tgValue && await StoreInstance.tgLogin(tgValue, username, password)
           }catch(e){
-            if(e instanceof AxiosError)setError(e.message)
+            if(e instanceof AxiosError)setError(e.response?.data.message)
           }
           close()
         }}>Подтвердить</Button>

@@ -13,17 +13,22 @@ export const SpotPage = observer(()=>{
   StoreInstance.user?.setPortfolioFromHref()
 
   const [selected, Select] = useState<SpotPosition | undefined>()
-  if(!StoreInstance.user?.portfolio){
+  if(!StoreInstance.portfolio){
     return <Typography variant="h1">Select portfolio!!</Typography>
   }
-  return (
-    <div>
-      <SpotTable onSelect={Select}/>
-      <CreateSpot onClose={()=>setOpenCreate(false)} open={openCreate}/>
-      <Button variant="contained" color='success' onClick={()=>setOpenCreate(true)}>Добавить</Button>
-      {selected && <Button variant="contained" color='info'  onClick={()=>setOpenUpdate(true)}>Изменить</Button>}
-      {selected && openUpdate && <UpdateSpot open onClose={()=>setOpenUpdate(false)} pos={selected}/>}
-      {selected && <Button variant="contained" color='error' onClick={()=>StoreInstance.user?.portfolio?.deleteSpotPosition(selected._id)}>УДАЛИТЬ</Button>}
-    </div>
+  return (<>
+    <SpotTable onSelect={Select}/>
+      <div style={{display: "flex", justifyContent: "space-around", flexDirection: "row", flexGrow: 4}}>
+        <CreateSpot onClose={()=>setOpenCreate(false)} open={openCreate}/>
+        {StoreInstance.portfolio && StoreInstance.user?.portfolios?.includes(StoreInstance.portfolio) && <>
+          <Button variant="contained" color='success' onClick={()=>setOpenCreate(true)}>Добавить</Button>
+          {selected && <>
+            <Button variant="contained" color='info'  onClick={()=>setOpenUpdate(true)}>Изменить</Button>
+            <UpdateSpot open={openUpdate} onClose={()=>setOpenUpdate(false)} pos={selected}/>
+            <Button variant="contained" color='error' onClick={()=>StoreInstance.portfolio?.deleteSpotPosition(selected._id)}>УДАЛИТЬ</Button>
+          </>}
+        </>}
+      </div>
+    </>
   )
 })

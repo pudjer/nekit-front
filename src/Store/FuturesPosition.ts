@@ -22,33 +22,41 @@ export class FuturesPosition implements Position{
   }
 
   getCurrentPrice(){
+    if(this.exitPrice)return this.exitPrice
     const symbol = StoreInstance.tokensMap.get(this.symbol)
+    if(symbol && this.quantity){
+      if(this.quantity>0){
+        if(this.takeProfit && this.takeProfit>=symbol.current_price)return this.takeProfit
+        if(this.stopLoss && this.stopLoss<=symbol.current_price)return this.stopLoss
+      }else{
+        if(this.takeProfit && this.takeProfit<=symbol.current_price)return this.takeProfit
+        if(this.stopLoss && this.stopLoss>=symbol.current_price)return this.stopLoss
+      }
+      if(this.margin + (symbol.current_price * this.quantity - this.initialPrice * this.quantity) <= 0){
+        return this.initialPrice - (this.margin / this.quantity)
+      }
+    }
     if(!symbol)return 0
     return symbol.current_price
   }
-  getCurrentVolume(){
-    return (this.exitPrice || this.getCurrentPrice())*this.quantity
-  }
+
   getPriceChange(){
-    return (this.exitPrice || this.getCurrentPrice())-this.initialPrice
+    return (this.getCurrentPrice())-this.initialPrice
   }
   getValueChange(){
-    return this.getCurrentVolume() - this.getInitialVolume()
+    return this.getValue() - this.getInitialValue()
   }
-  getInitialVolume(){
-    return this.initialPrice*this.quantity
-  }
+
   getInitialValue() {
     return this.margin
   }
   getPriceChangePerc(){
-    return (((this.exitPrice || this.getCurrentPrice()) / this.initialPrice) - 1) * 100
+    return ((this.getCurrentPrice() / this.initialPrice) - 1) * 100
   }
-  getVolumeChangePerc(){
-    return ((this.getCurrentVolume() / this.getInitialVolume()) - 1) * 100
-  }
+  
   getValue(){
-    return this.margin + this.getValueChange()
+    const volume  = this.margin + (this.getCurrentPrice() * this.quantity - this.initialPrice * this.quantity)
+    return volume >= 0 ? volume : 0
   }
   getValueChangePerc(){
     return ((this.getValue() / this.margin) - 1) * 100
@@ -58,7 +66,7 @@ export class FuturesPosition implements Position{
     Object.assign(this, res)
   }
   getPortfolioPerc(){
-    const portfolioValue = Math.abs(StoreInstance.user!.portfolio!.getValue())
+    const portfolioValue = Math.abs(StoreInstance.portfolio!.getValue())
     return (this.getValue() / portfolioValue) * 100
   }
 }

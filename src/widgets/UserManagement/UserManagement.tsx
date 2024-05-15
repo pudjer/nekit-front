@@ -19,7 +19,7 @@ const UserManagement: React.FC<{close: ()=>void}> = ({close}) => {
       close()
     }catch(e: unknown){
       if(e instanceof AxiosError){
-        setError(e.message)
+        setError(e.response?.data)
       }
     }
   };
@@ -32,8 +32,7 @@ const UserManagement: React.FC<{close: ()=>void}> = ({close}) => {
       close()
     }catch(e: unknown){
       if(e instanceof AxiosError){
-        console.log(e)
-        setError(e.message)
+        setError(e.response?.data)
       }
     }
   };

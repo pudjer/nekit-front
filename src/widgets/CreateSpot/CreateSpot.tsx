@@ -45,7 +45,7 @@ export const CreateSpot: React.FC<{open: boolean, onClose: ()=>void}> = ({open, 
       }
     }
     //@ts-ignore
-    StoreInstance.user?.portfolio?.createSpotPosition(toUsd)
+    StoreInstance.portfolio?.createSpotPosition(toUsd)
 
   };
 
@@ -76,7 +76,7 @@ export const CreateSpot: React.FC<{open: boolean, onClose: ()=>void}> = ({open, 
         <TextField
           margin="dense"
           name="initialPrice"
-          label="Цена покупки"
+          label="Начальная цена"
           type="number"
           fullWidth
           value={formData.initialPrice}

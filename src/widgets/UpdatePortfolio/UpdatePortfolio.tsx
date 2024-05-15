@@ -29,6 +29,14 @@ export const UpdatePortfolio: React.FC<{dialogOpen:boolean, handleCloseDialog:()
               defaultValue={portfolio.description}
 
             />
+            <TextField
+              {...register('public')}
+              label="Публичный"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              type="checkbox"
+            />
             <Button type="submit" variant="contained" color="primary">
               ИЗМЕНИТЬ
             </Button>

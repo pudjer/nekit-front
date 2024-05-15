@@ -1,16 +1,23 @@
 import { makeAutoObservable } from "mobx"
 import { Portfolio } from "./Portfolio"
 import { Axios } from "@/api/Axios"
+import { StoreInstance } from "./Store"
 
 
 export type createPortfolioDTO = {
   description?: string
   name: string
+  public?: string
 }
 
 export class User{
+  static fromProps(props: Portfolio) {
+    const portfolio = new Portfolio(props._id, props.userId, props.description, props.name)
+    return portfolio
+  }
   portfolios?: Portfolio[]
-  portfolio?: Portfolio 
+  favoritePortfolios: Portfolio[]
+
   constructor(
       public username: string,
       public _id: string,
@@ -18,13 +25,30 @@ export class User{
       public isAdmin: string,
       public date_registered: string,
       public email?: string,
-      public tgId?: string
+      public tgId?: string,
+      favoritePortfolios: string[] = [],
   ){
     makeAutoObservable(this)
     this.updatePortfolios()
+    const promises = favoritePortfolios.map((e: any)=>Axios.get(`/portfolios/${e}`))
+    this.favoritePortfolios = []
+    Promise.all(promises).then(res=>{
+      console.log(res)
+      const portfs = res.map(e=>this.fromProps(e.data))
+      this.favoritePortfolios = portfs
+    })
   }
 
 
+
+  async addFavorite(portf: Portfolio){
+    await Axios.post(`/user/favorite/${portf._id}`)
+    this.favoritePortfolios.push(portf)
+  }
+  async deleteFavorite(portf: Portfolio){
+    await Axios.delete(`/user/favorite/${portf._id}`)
+    this.favoritePortfolios = this.favoritePortfolios.filter(e=>e!==portf)
+  }
   fromProps(props: Portfolio){
     const portfolio = new Portfolio(props._id, props.userId, props.description, props.name)
     return portfolio
@@ -33,28 +57,28 @@ export class User{
   async updatePortfolios(){
     const portfolios: Portfolio[] = (await Axios.get('/portfolios')).data
     this.portfolios = portfolios.map(e=>this.fromProps(e))
-
   }
   
-  setPortfolioFromHref(){
+  async setPortfolioFromHref(){
     const portfolioId = (new URL(location.href)).searchParams.get('portfolio')
     if(typeof portfolioId === 'string' && portfolioId.length){
-      this.portfolio = this.portfolios?.find(e=>e._id===portfolioId)
+      const res = (await Axios.get(`/portfolios/${portfolioId}`)).data
+      StoreInstance.portfolio = this.fromProps(res)
     }
   }
 
   async createPortfolio(props : createPortfolioDTO ){
     const res: Portfolio = (await Axios.post('/portfolios', props)).data
-    this.portfolio = this.fromProps(res)
-    if(this.portfolios)this.portfolios = [...this.portfolios, this.portfolio]
+    StoreInstance.portfolio = this.fromProps(res)
+    if(this.portfolios)this.portfolios = [...this.portfolios, StoreInstance.portfolio]
   }
   
   
   
   async deletePortfolio(id: string){
     await Axios.delete(`/portfolios/${id}`)
-    if(this.portfolio?._id === id){
-      this.portfolio = undefined
+    if(StoreInstance.portfolio?._id === id){
+      StoreInstance.portfolio = undefined
     }
     if(this.portfolios)this.portfolios = this.portfolios.filter(e=>e._id !== id)
   }
@@ -63,6 +87,6 @@ export class User{
     const res: Portfolio = (await Axios.patch(`/portfolios/${id}`, portfolio)).data
     const portf = this.portfolios?.find(e=>e._id === id)
     if(portf)Object.assign(portf, res)
-    this.portfolio = portf
+    StoreInstance.portfolio = portf
   }
 }

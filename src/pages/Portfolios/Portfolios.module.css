@@ -3,3 +3,21 @@
   justify-content: space-around;
   flex-grow: 1;
 }
+
+.box{
+  position: relative;
+  top: -320px;
+  width: 370px;
+  height: 100px;
+  display: flex;
+  padding: 20px;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5); /* Полупрозрачный черный цвет */
+  border-radius: 15px; /* Закругление углов, можно изменить значение по необходимости */
+  color: white; /* Белый цвет текста для контраста */
+  max-width: 400px; /* Максимальная ширина контейнера */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}

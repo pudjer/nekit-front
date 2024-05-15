@@ -17,6 +17,7 @@ import { CreateFuturesPositionDTO, FuturesPosition } from '@/Store/FuturesPositi
 
 export const CreateFutures: React.FC<{open: boolean, onClose: ()=>void}> = ({open, onClose}) => {
   const [formData, setFormData] = useState<Partial<CreateFuturesPositionDTO>>({
+    quantity: 0,
     timestamp: (new Date()).toISOString().slice(0, 16), // Initial timestamp as ISO string
     initialPrice: 0,
     currency: "",
@@ -28,9 +29,14 @@ export const CreateFutures: React.FC<{open: boolean, onClose: ()=>void}> = ({ope
   const [long, setIsLong] = useState(true)
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     let { name, value } = event.target;
+    const changes: {[key: string]: any} = {}
+    if(name==="leverage" && formData.margin){
+      changes.quantity = formData.margin * Number(value)
+    }
     setFormData({
       ...formData,
       [name]: (value),
+      ...changes
     });
 
   };
@@ -52,7 +58,7 @@ export const CreateFutures: React.FC<{open: boolean, onClose: ()=>void}> = ({ope
     if(!long && toUsd.quantity)toUsd.quantity = -toUsd.quantity
     toUsd.currency = StoreInstance.currency.symbol
     //@ts-ignore
-    StoreInstance.user?.portfolio?.createFuturesPosition(toUsd)
+    StoreInstance.portfolio?.createFuturesPosition(toUsd)
   };
 
   return (
@@ -75,7 +81,7 @@ export const CreateFutures: React.FC<{open: boolean, onClose: ()=>void}> = ({ope
         <TextField
           margin="dense"
           name="initialPrice"
-          label="Цена покупки"
+          label="Начальная цена"
           type="number"
           fullWidth
           value={formData.initialPrice}

@@ -16,6 +16,7 @@ import { CurrencySelect } from '../CurrencySelect/CurrencySelect';
 
 
 export const UpdateFutures: React.FC<{open: boolean, onClose: ()=>void, pos: FuturesPosition}> = ({open, onClose,pos}) => {
+  StoreInstance.currency = StoreInstance.currencies.find(e=>e.symbol===pos.currency)
   const [formData, setFormData] = useState<CreateFuturesPositionDTO>({
     symbol: pos.symbol,
     quantity: Math.abs(pos.quantity),
@@ -32,10 +33,15 @@ export const UpdateFutures: React.FC<{open: boolean, onClose: ()=>void, pos: Fut
   
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     let { name, value } = event.target;
+    const changes: {[key: string]: any} = {}
+    if(name==="leverage"){
+      changes.quantity = formData.margin * Number(value)
+    }
 
     setFormData({
       ...formData,
       [name]: (value),
+      ...changes
     });
   };
   const keysToUsd = ['initialPrice', 'margin', 'stopLoss', 'takeProfit', 'exitPrice'] satisfies (keyof FuturesPosition)[]
@@ -83,7 +89,7 @@ export const UpdateFutures: React.FC<{open: boolean, onClose: ()=>void, pos: Fut
         <TextField
           margin="dense"
           name="initialPrice"
-          label="Цена покупки"
+          label="Начальная цена"
           type="number"
           fullWidth
           value={formData.initialPrice}
