@@ -22,7 +22,7 @@ const App = observer(() => {
   return (
     <BrowserRouter>
       <Header/>
-      <div style={{marginTop: 70, width:"100vw"}}>
+      <div style={{marginTop: 52, width:"100vw"}}>
       <Routes>
         <Route path="home" Component={()=><HomePage/>}/>
         <Route path="portfolios" Component={()=><Portfolios/>}/>

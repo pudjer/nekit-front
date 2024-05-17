@@ -144,6 +144,7 @@ export const futuresColumns: Column<FuturesPosition>[]= [
     align: 'right',
     format: (value: FuturesPosition) => {
       const price = value.getPortfolioPerc()
+      if(!price)return "N/A"
       return [price.toLocaleString(), " %"]
     },
     toCompare: (a: FuturesPosition, b: FuturesPosition) => a.getPortfolioPerc() - b.getPortfolioPerc()

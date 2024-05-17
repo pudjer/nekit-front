@@ -12,8 +12,9 @@ export const CurrencySelect : React.FC<{fullWidth?: boolean, onSelect?: (cur: Cu
       id: curr
     }))
   return (
-    <FormControl variant='standard' fullWidth style={fullWidth ? {} : {width: "200px"} }>
+    <FormControl variant='standard' fullWidth style={fullWidth ? {} : {width: "200px"}}>
       <Autocomplete
+
         fullWidth={fullWidth}
         freeSolo
         options={options}

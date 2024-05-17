@@ -1,7 +1,8 @@
 import { Portfolio } from "@/Store/Portfolio";
 import { StoreInstance } from "@/Store/Store";
-import { Button, List, ListItem, ListItemText, Typography } from "@mui/material";
+import { Button, List, ListItem, ListItemText, Popover, Typography } from "@mui/material";
 import { observer } from "mobx-react-lite";
+import { useState } from "react";
 
 
 
@@ -10,6 +11,16 @@ interface Props  {
   portfolios: Portfolio[]
 }
 export const PortfolioList : React.FC<Props>=  observer(({handleSelect, portfolios}) => {
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+
+  const handlePopoverOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handlePopoverClose = () => {
+    setAnchorEl(null);
+  };
+  const open = Boolean(anchorEl);
   return (
     <div style={{display: "flex", flexDirection: 'column',justifyContent: "space-around", alignItems: "stretch", height: "100%", width: "100%", maxHeight: "78vh"}}>
       <List sx={{
@@ -24,12 +35,39 @@ export const PortfolioList : React.FC<Props>=  observer(({handleSelect, portfoli
           const res = StoreInstance.convertFromUSD(portfolio.getValue())
           return <ListItem
             key={portfolio._id}
-            style={{  border: "1px solid #ccc", display: "flex", justifyContent: "space-between",borderRadius: 10, ...(portfolio === StoreInstance.portfolio ? {backgroundColor: "#080721"}: {})}}
+            style={{ height: 80, width: "100%", margin: 3, border: "1px solid #ccc", display: "flex", justifyContent: "space-between",borderRadius: 10, ...(portfolio === StoreInstance.portfolio ? {backgroundColor: "#080721"}: {})}}
             onClick={() => handleSelect(portfolio)}
           >
-            <div>
+            <div style={{width: "30%"}}>
             <Typography variant="h5">{portfolio.name}</Typography>
-            <Typography>{portfolio.description}</Typography>
+            <Popover
+              id="mouse-over-popover"
+              sx={{
+                pointerEvents: 'none',
+              }}
+              open={open}
+              anchorEl={anchorEl}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'left',
+              }}
+              onClose={handlePopoverClose}
+              disableRestoreFocus
+            >
+            <Typography sx={{ p: 1, maxWidth : "50vw", overflowWrap: "break-word" }}>{anchorEl?.innerText}</Typography>
+            </Popover>
+            <Typography
+              aria-owns={open ? 'mouse-over-popover' : undefined}
+              aria-haspopup="true"
+              onMouseEnter={handlePopoverOpen}
+              onMouseLeave={handlePopoverClose}
+              style={{textOverflow: "ellipsis", width: "100%", overflow: "hidden"}}>
+                {portfolio.description}
+            </Typography>
             </div>
 
             {StoreInstance.user && (

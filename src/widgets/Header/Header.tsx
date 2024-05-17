@@ -11,16 +11,16 @@ import { CurrencySelect } from '../CurrencySelect/CurrencySelect';
 const Header: React.FC = observer(() => {
   const nav = useNavigate()
   return (
-    <AppBar>
+    <AppBar sx={{width: "100vw", margin: 0}}>
       <Toolbar className={styles.header}>
 
       <Link to={'/'}>
-        <img src={logo}/>
+        <Typography className={styles.icon}  variant='h4'>CoinTrackX</Typography>
       </Link>
 
-      {[{title: "ДОМОЙ", to: '/home'}, {title: "ПОРТФЕЛИ", to: '/portfolios'}].map((link, index) => (
-        <Typography variant="h5" margin={1}  key={index}>
-            <Link to={link.to}>
+      {[{title: "ОБЗОР РЫНКА", to: '/home'}, {title: "ПОРТФЕЛИ", to: '/portfolios'}].map((link, index) => (
+        <Typography  variant="h5" margin={1}  key={index}>
+            <Link to={link.to} className={styles.links}>
               {link.title}
             </Link>
         </Typography>

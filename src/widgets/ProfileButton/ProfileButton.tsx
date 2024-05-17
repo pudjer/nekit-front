@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import Dialog from '@mui/material/Dialog';
-import { Button } from '@mui/material';
+import { Button, Typography } from '@mui/material';
 import { StoreInstance } from '@/Store/Store';
 import { observer } from 'mobx-react-lite';
 import UserManagement from '../UserManagement/UserManagement';
@@ -21,7 +21,7 @@ const ProfileButton = observer(() => {
   const user = StoreInstance.user
   return (
     <div>
-      <Button onClick={handleOpen} variant='text'>{user ? user.username : 'Войти'}</Button>
+      <Button onClick={handleOpen} size="large" variant='text'><Typography variant='h6'>{user ? user.username : 'Войти'}</Typography></Button>
       <Dialog open={open} onClose={handleClose}>
         {user ? <UserManagement  close={handleClose}/> : <SignInForm close={handleClose}/>}
       </Dialog>

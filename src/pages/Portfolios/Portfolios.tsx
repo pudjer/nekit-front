@@ -9,10 +9,8 @@ import { PortfolioList } from '@/widgets/PortfolioList/PortfolioList';
 import { CreatePortfolio } from '@/widgets/CreatePortfolio/CreatePortfolio';
 import { UpdatePortfolio } from '@/widgets/UpdatePortfolio/UpdatePortfolio';
 import { PieChart } from '@mui/x-charts/PieChart';
-import { ExportFunction, portfolioToString } from './ExportFunction';
+import { ExportFunction, download } from './ExportFunction';
 import { Axios } from '@/api/Axios';
-import { User } from '@/Store/User';
-import { Chart } from '@/widgets/Chart/Chart';
 
 
 
@@ -120,8 +118,8 @@ export const Portfolios: React.FC = observer(() => {
             <Button onClick={handleOpenExportDialog}>ЭКСПОРТИРОВАТЬ ОТЧЕТ</Button>
             <Dialog open={dialogExportOpen} onClose={handleCloseExportDialog}>
               <DialogContent>
-                <Button fullWidth onClick={ExportFunction}>ЭКСПОРТИРОВАТЬ В ФАЙЛ</Button>
-                {StoreInstance.user?.tgId && <Button fullWidth onClick={()=>Axios.post("/portfolios/tgreport", {report: portfolioToString()})}>ПРИСЛАТЬ В TELEGRAM</Button>}
+                <Button fullWidth onClick={download}>ЭКСПОРТИРОВАТЬ В ФАЙЛ</Button>
+                {StoreInstance.user?.tgId && <Button fullWidth onClick={()=>Axios.post("/portfolios/tgreport", {report: ExportFunction()})}>ПРИСЛАТЬ В TELEGRAM</Button>}
               </DialogContent>
             </Dialog>
           </>}

@@ -1,13 +1,17 @@
 .page{
   width: 100vw;
   display: flex;
+  background-image: url("https://furman.top/uploads/posts/2022-08/1660164943_2-furman-top-p-prognozirovanie-fon-krasivo-2.jpg");
 }
 
 .typography{
   text-align: left;
+
 }
 .listItems{
   text-align: left;
+  display: block;
+  width: 50%;
 }
 .description{
   width: 60vw;

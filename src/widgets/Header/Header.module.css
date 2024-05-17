@@ -4,9 +4,18 @@
   flex-direction: row;
 
 }
-
-
+.icon{
+  color: white
+}
+.icon:hover{
+  color: cyan
+}
 
 .links{
   display: flex;
+  color: white;
+}
+
+.links:hover{
+  color: cyan
 }
