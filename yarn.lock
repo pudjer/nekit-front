@@ -175,7 +175,7 @@
   dependencies:
     "@babel/helper-plugin-utils" "^7.24.0"
 
-"@babel/runtime@^7.12.5", "@babel/runtime@^7.15.4", "@babel/runtime@^7.18.3", "@babel/runtime@^7.23.9", "@babel/runtime@^7.24.0", "@babel/runtime@^7.5.5", "@babel/runtime@^7.8.7", "@babel/runtime@^7.9.2":
+"@babel/runtime@^7.12.5", "@babel/runtime@^7.15.4", "@babel/runtime@^7.18.3", "@babel/runtime@^7.23.9", "@babel/runtime@^7.24.0", "@babel/runtime@^7.24.5", "@babel/runtime@^7.5.5", "@babel/runtime@^7.8.7", "@babel/runtime@^7.9.2":
   version "7.24.5"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.24.5.tgz#230946857c053a36ccc66e1dd03b17dd0c4ed02c"
   integrity sha512-Nms86NXrsaeU9vbBJKni6gXiEXZ4CVpYVzEjDH9Sb8vmZ3UljyA1GSOJl/6LGPO8EHLuSF9H+IxNXHPX8QHJ4g==
@@ -606,6 +606,43 @@
     d3-scale "^4.0.2"
     d3-shape "^3.2.0"
     prop-types "^15.8.1"
+
+"@mui/x-date-pickers-pro@^7.5.0":
+  version "7.5.0"
+  resolved "https://registry.yarnpkg.com/@mui/x-date-pickers-pro/-/x-date-pickers-pro-7.5.0.tgz#7677139e5b3381da64f6ac9dc02acc410ef6e330"
+  integrity sha512-bTli7vHbMT2wzuFRbMU8VkEg9N7FMsd8bxvp706uts5IK7ZM0VB7CRm1Nz8AY7PMOYKOedFUs9yT7rXCZIRrAg==
+  dependencies:
+    "@babel/runtime" "^7.24.5"
+    "@mui/base" "^5.0.0-beta.40"
+    "@mui/system" "^5.15.14"
+    "@mui/utils" "^5.15.14"
+    "@mui/x-date-pickers" "7.5.0"
+    "@mui/x-license" "7.2.0"
+    clsx "^2.1.1"
+    prop-types "^15.8.1"
+    react-transition-group "^4.4.5"
+
+"@mui/x-date-pickers@7.5.0":
+  version "7.5.0"
+  resolved "https://registry.yarnpkg.com/@mui/x-date-pickers/-/x-date-pickers-7.5.0.tgz#3d1ce784079e874196007f853108183a5660a1b8"
+  integrity sha512-azm9AX36/XzllKtfyHn8u8iYDsxf425/LacP4oVaCeQQgIasajSRFxU/g8vxpNWwgTuzIeWwKjj8cvTc/2UBAw==
+  dependencies:
+    "@babel/runtime" "^7.24.5"
+    "@mui/base" "^5.0.0-beta.40"
+    "@mui/system" "^5.15.14"
+    "@mui/utils" "^5.15.14"
+    "@types/react-transition-group" "^4.4.10"
+    clsx "^2.1.1"
+    prop-types "^15.8.1"
+    react-transition-group "^4.4.5"
+
+"@mui/x-license@7.2.0":
+  version "7.2.0"
+  resolved "https://registry.yarnpkg.com/@mui/x-license/-/x-license-7.2.0.tgz#55c2618cacd9282b0bdb4512b26ca7cf7a0abaff"
+  integrity sha512-z9mqsfNPVFqjfxcPgz15o29Vb3FupSImwpMd5CFjZqNasJu3ptLpKxbIUnTtJMUicRdhsVfm3d93Z5XQkq1JuQ==
+  dependencies:
+    "@babel/runtime" "^7.24.0"
+    "@mui/utils" "^5.15.14"
 
 "@popperjs/core@^2.11.8":
   version "2.11.8"

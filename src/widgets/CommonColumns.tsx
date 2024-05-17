@@ -35,7 +35,7 @@ export const CommonColumns: Column<Position>[] = [
   },
   {
     id: 'currentVolume',
-    label: 'Текущая ценность',
+    label: 'Текущий объем',
     align: 'right',
     format: (value: Position) => {
       const price = value.getValue()
@@ -48,7 +48,7 @@ export const CommonColumns: Column<Position>[] = [
   },
   {
     id: 'initialVolume',
-    label: 'Начальная ценность',
+    label: 'Начальный объем',
     align: 'right',
     format: (value: Position) => {
       const price = value.getInitialValue()
@@ -91,7 +91,7 @@ export const CommonColumns: Column<Position>[] = [
   },
   {
     id: 'volumeChange',
-    label: 'Изменение ценности',
+    label: 'Прибыль',
     align: 'right',
     format: (value: Position) => {
       const price = value.getValueChange()
@@ -106,7 +106,7 @@ export const CommonColumns: Column<Position>[] = [
   },
   {
     id: 'changePerc',
-    label: 'Изменение ценности %',
+    label: 'Прибыль %',
     align: 'right',
     format: (value: Position) => {
       const price = value.getValueChangePerc()
@@ -121,7 +121,7 @@ export const CommonColumns: Column<Position>[] = [
     align: 'right',
     format: (value: Position) => {
       const price = value.getPortfolioPerc()
-      return StoreInstance.formatChange(price, " %")
+      return [price.toLocaleString(), " %"]
     },
     toCompare: (a: Position, b: Position) => a.getPortfolioPerc() - b.getPortfolioPerc()
 
@@ -141,4 +141,31 @@ export const CommonColumns: Column<Position>[] = [
 
   },
 
+  {
+    id: 'exitPrice',
+    label: 'Цена закрытия',
+    align: 'right',
+    format: (value: Position) => {
+      const price = value.exitPrice
+      if(!price)return "N/A"
+      const res = StoreInstance.convertFromUSD(price, value.currency)
+      return [res[0].toLocaleString(), res[1]]
+    },
+    toCompare: (a: Position, b: Position) => {
+      if(!a.exitPrice || !b.exitPrice)return 0
+      return a.exitPrice-b.exitPrice
+    }
+  },
+  {
+    id: 'exitTimestamp',
+    label: 'Время закрытия',
+    align: 'right',
+    format: (value: Position) => (new Date(value.timestamp)).toLocaleString(),
+    toCompare: (a: Position, b: Position) => {
+      if(!a.timestamp || !b.timestamp)return 0
+      return a.timestamp>b.timestamp ? 1 : -1
+    }
+      
+      
+  },
 ];

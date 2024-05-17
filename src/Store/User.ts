@@ -34,7 +34,6 @@ export class User{
     const promises = favoritePortfolios.map((e: any)=>Axios.get(`/portfolios/${e}`))
     this.favoritePortfolios = []
     Promise.all(promises).then(res=>{
-      console.log(res)
       const portfs = res.map(e=>Portfolio.fromProps(e.data))
       this.favoritePortfolios = portfs
     })

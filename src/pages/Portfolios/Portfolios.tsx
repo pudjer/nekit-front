@@ -12,6 +12,7 @@ import { PieChart } from '@mui/x-charts/PieChart';
 import { ExportFunction, portfolioToString } from './ExportFunction';
 import { Axios } from '@/api/Axios';
 import { User } from '@/Store/User';
+import { Chart } from '@/widgets/Chart/Chart';
 
 
 
@@ -115,7 +116,7 @@ export const Portfolios: React.FC = observer(() => {
             <Button variant="contained" color="error" onClick={()=>StoreInstance.user!.deletePortfolio(StoreInstance.portfolio!._id)}>
               УДАЛИТЬ
             </Button>
-            <UpdatePortfolio portfolio={StoreInstance.portfolio} dialogOpen={UdialogOpen} handleCloseDialog={()=>setUDialogOpen(false)}/>
+            <UpdatePortfolio key={StoreInstance.portfolio._id} portfolio={StoreInstance.portfolio} dialogOpen={UdialogOpen} handleCloseDialog={()=>setUDialogOpen(false)}/>
             <Button onClick={handleOpenExportDialog}>ЭКСПОРТИРОВАТЬ ОТЧЕТ</Button>
             <Dialog open={dialogExportOpen} onClose={handleCloseExportDialog}>
               <DialogContent>
@@ -170,7 +171,7 @@ export const Portfolios: React.FC = observer(() => {
                   {
                     data: data,
                     outerRadius: 200,
-                    innerRadius: 100,
+                    innerRadius: 170,
                     paddingAngle: 0.3,
                     cornerRadius: 8,
                   }
@@ -180,9 +181,14 @@ export const Portfolios: React.FC = observer(() => {
                 }}
                 onItemClick={(e, d)=>setDataIndex(d.dataIndex)}
               />
-              {dataIndex !== undefined && dataIndex<data.length ? <div className={styles.box}>
+              {dataIndex !== undefined && dataIndex<data.length ? 
+              <div style={{overflow: "visible", width: 0, height: 0}}>
+                <div className={styles.box}>
                   <Typography variant="h5">
-                    {"Доля портфеля: "+data[dataIndex].value.toLocaleString()+" %"}
+                    Доля портфеля: 
+                  </Typography>
+                  <Typography variant="h5">
+                    {data[dataIndex].value.toLocaleString()+" %"}
                   </Typography>
                   <Typography variant="h5">
                     <img style={{height: 30, width: 30}} src={StoreInstance.tokensMap.get(data[dataIndex].label)?.image}/>
@@ -190,11 +196,15 @@ export const Portfolios: React.FC = observer(() => {
                   </Typography>
                   <Divider/>
                   <Typography variant='h5'>
+                    Количество: 
+                  </Typography>
+                  <Typography variant='h5'>
                     {Stats && (()=>{
                       const res = StoreInstance.convertFromUSD(Stats[data[dataIndex].label])
-                      return ["Количество: "+res[0].toLocaleString(), res[1]]
+                      return [res[0].toLocaleString(), res[1]]
                     })()}
                   </Typography>
+                </div>
               </div> : undefined}
             </div>
             <div style={{display: "flex", justifyContent: "space-around", width: "100%", padding: 30}}>

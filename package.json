@@ -15,6 +15,7 @@
     "@mui/icons-material": "^5.15.16",
     "@mui/material": "^5.15.16",
     "@mui/x-charts": "^7.4.0",
+    "@mui/x-date-pickers-pro": "^7.5.0",
     "@vitejs/plugin-react-swc": "^3.6.0",
     "axios": "^1.6.8",
     "mobx": "^6.12.3",

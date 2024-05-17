@@ -58,8 +58,8 @@ export const HomePage = observer(()=>{
             {StoreInstance.global &&
 
               <div style={{display:"flex", flexGrow: 2, flexWrap: 'wrap', justifyContent: "space-around", padding: 20, width: "100%"}}>
-                <Card style={{flexGrow: 2, margin: 5}} >
-                  <CardContent>
+                <Card sx={{borderRadius: 10}} style={{flexGrow: 2, margin: 5}} >
+                  <CardContent >
                     <Typography variant="h5" component="div">
                       Доминация Bitcoin
                     </Typography>
@@ -68,8 +68,8 @@ export const HomePage = observer(()=>{
                     </Typography>
                   </CardContent>
                 </Card>
-                <Card style={{flexGrow: 2, margin: 5}} >
-                  <CardContent>
+                <Card sx={{borderRadius: 10}} style={{flexGrow: 2, margin: 5}} >
+                  <CardContent >
                     <Typography variant="h5" component="div">
                       Доминация Ethereum
                     </Typography>
@@ -78,7 +78,7 @@ export const HomePage = observer(()=>{
                     </Typography>
                   </CardContent>
                 </Card>
-                <Card style={{flexGrow: 2, margin: 5}} >
+                <Card sx={{borderRadius: 10}}  style={{flexGrow: 2, margin: 5}} >
                   <CardContent>
                     <Typography variant="h5" component="div">
                       Общая рыночная капитализация криптовалюты
@@ -88,8 +88,8 @@ export const HomePage = observer(()=>{
                     </Typography>
                   </CardContent>
                 </Card>
-                <Card style={{flexGrow: 2, margin: 5}} >
-                  <CardContent>
+                <Card sx={{borderRadius: 10}} style={{flexGrow: 2, margin: 5}} >
+                  <CardContent >
                     <Typography variant="h5" component="div">
                       Объем торгов криптовалют за 24 часа
                     </Typography>
@@ -100,7 +100,7 @@ export const HomePage = observer(()=>{
                 </Card>
               </div>
             }
-    <Typography variant='h2'>Список криптовалют</Typography>
+    <Typography sx={{marginBottom: 5}} variant='h2'>Список криптовалют</Typography>
 
     <PosTable sx={{width: "98vw"}} cols={cols} positions={tokens} onSelect={()=>undefined}/>
   </div>

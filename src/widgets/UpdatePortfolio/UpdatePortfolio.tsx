@@ -6,7 +6,6 @@ import { useForm } from "react-hook-form";
 
 export const UpdatePortfolio: React.FC<{dialogOpen:boolean, handleCloseDialog:()=>void, portfolio: Portfolio}> = ({dialogOpen, handleCloseDialog, portfolio})=> {
   const { register, handleSubmit } = useForm<createPortfolioDTO>();
-
   return(
     <Dialog open={dialogOpen} onClose={handleCloseDialog}>
         <DialogTitle>Изменить портфель</DialogTitle>

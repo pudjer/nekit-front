@@ -12,7 +12,8 @@ export class SpotPosition implements Position{
       props.quantity,
       props.timestamp,
       props.initialPrice,
-      props.exitPrice
+      props.exitPrice,
+      props.exitTimestamp
     )
     return portfolio
   }
@@ -23,7 +24,9 @@ export class SpotPosition implements Position{
     public quantity: number,
     public timestamp: string,
     public initialPrice: number,
-    public exitPrice?: number
+    public exitPrice?: number,
+    public exitTimestamp?: string,
+
   ){
     makeAutoObservable(this)
   }
@@ -71,6 +74,8 @@ export type CreateSpotPositionDTO = {
   quantity: number,
   timestamp: string,
   initialPrice: number,
-  exitPrice?: number
+  exitPrice?: number,
+  exitTimestamp?: string,
+
 
 }

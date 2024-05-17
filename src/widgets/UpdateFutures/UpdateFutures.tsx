@@ -25,9 +25,10 @@ export const UpdateFutures: React.FC<{open: boolean, onClose: ()=>void, pos: Fut
     currency: pos.currency,
     leverage: pos.leverage,
     margin: StoreInstance.convertFromUSD(pos.margin, pos.currency)[0],
-    stopLoss: StoreInstance.convertFromUSD(pos.stopLoss, pos.currency)[0],
-    takeProfit: StoreInstance.convertFromUSD(pos.takeProfit, pos.currency)[0],
-    exitPrice: StoreInstance.convertFromUSD(pos.exitPrice, pos.currency)[0]
+    stopLoss: StoreInstance.convertFromUSD(pos.stopLoss, pos.currency)[0] || undefined,
+    takeProfit: StoreInstance.convertFromUSD(pos.takeProfit, pos.currency)[0] || undefined,
+    exitPrice: StoreInstance.convertFromUSD(pos.exitPrice, pos.currency)[0] || undefined,
+    initialCurrencyPrice: pos.initialCurrencyPrice
   });
   const [long, setIsLong] = useState(true)
   
@@ -40,24 +41,20 @@ export const UpdateFutures: React.FC<{open: boolean, onClose: ()=>void, pos: Fut
 
     setFormData({
       ...formData,
-      [name]: (value),
+      [name]: (value === "" ? undefined : value),
+
       ...changes
     });
   };
-  const keysToUsd = ['initialPrice', 'margin', 'stopLoss', 'takeProfit', 'exitPrice'] satisfies (keyof FuturesPosition)[]
   const handleSubmit = () => {
     if(!StoreInstance.currency){
       alert("select currency!!!")
       return
     }
-    const toUsd = {...formData}
-    for(const key of keysToUsd){
-      if(toUsd[key]!==undefined){
-        toUsd[key] = toUsd[key]! / StoreInstance.currency.exchangeRateToUsd
-      }
-    }
-    if(!long && toUsd.quantity)toUsd.quantity = -toUsd.quantity
-    pos.update(toUsd)
+    const toModify = {...formData}
+    if(!long && toModify.quantity)toModify.quantity = -toModify.quantity
+    toModify.currency = StoreInstance.currency.symbol
+    pos.update(toModify)
   };
 
   return (
@@ -80,7 +77,7 @@ export const UpdateFutures: React.FC<{open: boolean, onClose: ()=>void, pos: Fut
         <TextField
           margin="dense"
           name="timestamp"
-          label="Дата и время"
+          label="Время открытия"
           type="datetime-local"
           fullWidth
           value={formData.timestamp}
@@ -138,6 +135,24 @@ export const UpdateFutures: React.FC<{open: boolean, onClose: ()=>void, pos: Fut
           type="number"
           fullWidth
           value={formData.exitPrice}
+          onChange={handleChange}
+        />
+        <TextField
+          margin="dense"
+          name="initialCurrencyPrice"
+          label="Начальная цена валюты к USD"
+          type="number"
+          fullWidth
+          value={formData.initialCurrencyPrice}
+          onChange={handleChange}
+        />
+        <TextField
+          margin="dense"
+          name="exitTimestamp"
+          label="Время закрытия"
+          type="datetime-local"
+          fullWidth
+          value={formData.exitTimestamp}
           onChange={handleChange}
         />
       </DialogContent>

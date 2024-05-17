@@ -26,6 +26,7 @@ export class Store {
   isLoading = true
   currencies: Currency[] = []
   currency?: Currency
+  currencyMap = new Map<string, Currency>()
   tokens: Token[] = []
   tokensMap = new Map<string, Token>()
   portfolio?: Portfolio
@@ -53,7 +54,7 @@ export class Store {
   }
 
   async setGlobal(){
-    const glob : Glob = (await Axios.get("exchange/global")).data
+    const glob : Glob = (await Axios.get("/exchange/global")).data
     this.global = glob
   }
   async setUser(){
@@ -109,6 +110,11 @@ export class Store {
   async setCurrencies(){
     const res = await Axios.get('/exchange/currencies')
     this.currencies = res.data
+    const curMap = new Map<string, Currency>()
+    for(const cur of this.currencies){
+      curMap.set(cur.symbol, cur)
+    }
+    this.currencyMap = curMap
   }
 
   convertFromUSD(p: number | undefined, currency?: string):[number, string]{
@@ -117,7 +123,7 @@ export class Store {
     return cur ? [p * cur.exchangeRateToUsd , " "+cur.symbol] : [p,' USD']
   }
   formatChange(price: number, curr: string, nice = price){
-    return <Typography color={nice<0?"error":"lightgreen"}>{(nice>0?'+':'')+(price ? price.toLocaleString()+curr : "N/A")}</Typography>
+    return <Typography color={nice<0?"error":"lightgreen"}>{(nice>0?'+':'')+(price ? price.toLocaleString()+' '+curr : "N/A")}</Typography>
   }
 }
 

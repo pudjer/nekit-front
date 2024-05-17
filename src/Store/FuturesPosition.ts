@@ -2,7 +2,12 @@ import { makeAutoObservable } from "mobx"
 import { StoreInstance } from "./Store"
 import { Axios } from "@/api/Axios"
 import { Position } from "./PositionInterface"
+export interface ValueMark{
+  timestamp: Date;
 
+  value: number;
+
+}
 export class FuturesPosition implements Position{
   static fromProps(props: FuturesPosition){
     const portfolio = new FuturesPosition(
@@ -15,9 +20,11 @@ export class FuturesPosition implements Position{
       props.leverage,
       props.timestamp,
       props.initialPrice,
+      props.initialCurrencyPrice,
       props.stopLoss,
       props.takeProfit,
-      props.exitPrice
+      props.exitPrice,
+      props.exitTimestamp
     )
     return portfolio
   }
@@ -31,30 +38,35 @@ export class FuturesPosition implements Position{
     public leverage: number,
     public timestamp: string,
     public initialPrice: number,
+    public initialCurrencyPrice: number,
+
     public stopLoss?: number,
     public takeProfit?: number,
     public exitPrice?: number,
+    public exitTimestamp?: string,
   ){
     makeAutoObservable(this)
   }
 
   getCurrentPrice(){
     if(this.exitPrice)return this.exitPrice
-    const symbol = StoreInstance.tokensMap.get(this.symbol)
-    if(symbol && this.quantity){
+    const tokenPrice = StoreInstance.tokensMap.get(this.symbol)?.current_price
+    const currentRate = StoreInstance.currencyMap.get(this.currency)?.exchangeRateToUsd
+    const currentPrice = tokenPrice && currentRate && (tokenPrice * currentRate)
+    if(currentPrice && this.quantity){
       if(this.quantity>0){
-        if(this.takeProfit && this.takeProfit>=symbol.current_price)return this.takeProfit
-        if(this.stopLoss && this.stopLoss<=symbol.current_price)return this.stopLoss
+        if(this.takeProfit && this.takeProfit>=currentPrice)return this.takeProfit
+        if(this.stopLoss && this.stopLoss<=currentPrice)return this.stopLoss
       }else{
-        if(this.takeProfit && this.takeProfit<=symbol.current_price)return this.takeProfit
-        if(this.stopLoss && this.stopLoss>=symbol.current_price)return this.stopLoss
+        if(this.takeProfit && this.takeProfit<=currentPrice)return this.takeProfit
+        if(this.stopLoss && this.stopLoss>=currentPrice)return this.stopLoss
       }
-      if(this.margin + (symbol.current_price * this.quantity - this.initialPrice * this.quantity) <= 0){
-        return this.initialPrice - (this.margin / this.quantity)
+      if(this.margin + (this.quantity * (currentPrice - this.initialPrice)) <=0){
+        return this.initialPrice-(this.margin /this.quantity)
       }
     }
-    if(!symbol)return 0
-    return symbol.current_price
+    if(!tokenPrice)return 0
+    return currentPrice || 0
   }
 
   getPriceChange(){
@@ -72,7 +84,7 @@ export class FuturesPosition implements Position{
   }
   
   getValue(){
-    const volume  = this.margin + (this.getCurrentPrice() * this.quantity - this.initialPrice * this.quantity)
+    const volume  = this.margin + ((this.getCurrentPrice() * this.quantity) - (this.initialPrice * this.quantity))
     return volume >= 0 ? volume : 0
   }
   getValueChangePerc(){
@@ -84,20 +96,24 @@ export class FuturesPosition implements Position{
   }
   getPortfolioPerc(){
     const portfolioValue = Math.abs(StoreInstance.portfolio!.getValue())
-    return (this.getValue() / portfolioValue) * 100
+    const currentRate = StoreInstance.currencyMap.get(this.currency)?.exchangeRateToUsd
+
+    return currentRate ? ((this.getValue() / currentRate )/ portfolioValue) * 100 : 0
   }
 }
 
-export type CreateFuturesPositionDTO = {
-  symbol: string
-  currency: string
-  quantity: number
-  margin: number
-  leverage: number
-  timestamp: string
+export interface CreateFuturesPositionDTO {
+  symbol: string,
+  currency: string,
+  quantity: number,
+  margin: number,
+  leverage: number,
+  timestamp: string,
   initialPrice: number,
-  stopLoss?: number
-  takeProfit?: number
-  exitPrice?: number
+  initialCurrencyPrice: number,
+  stopLoss?: number,
+  takeProfit?: number,
+  exitPrice?: number,
+  exitTimestamp?: string,
 
 }

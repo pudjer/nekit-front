@@ -14,20 +14,18 @@ import { CurrencySelect } from '../CurrencySelect/CurrencySelect';
 
 
 export const CreateSpot: React.FC<{open: boolean, onClose: ()=>void}> = ({open, onClose}) => {
-  const [formData, setFormData] = useState<Partial<CreateSpotPositionDTO>>({
-    exitPrice:0,
+  const [formData, setFormData] = useState<CreateSpotPositionDTO>({
     quantity:0,
     symbol:"",
     timestamp: (new Date()).toISOString().slice(0, 16), // Initial timestamp as ISO string
     initialPrice: 0,
   });
-  
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     let { name, value } = event.target;
 
     setFormData({
       ...formData,
-      [name]: (value),
+      [name]: (value === "" ? undefined : value),
     });
   };
 
@@ -54,7 +52,8 @@ export const CreateSpot: React.FC<{open: boolean, onClose: ()=>void}> = ({open, 
       <DialogTitle>Добавить спот-позицию</DialogTitle>
       <DialogContent>
         <CurrencySelect fullWidth/>
-        <SymbolSelect fullWidth onChange={(s)=>s && setFormData({...formData, symbol: s.symbol})}/>
+        <SymbolSelect fullWidth onChange={(s)=>s && setFormData({...formData, symbol: s.symbol, initialPrice: s.current_price * (StoreInstance.currency?.exchangeRateToUsd || 1)})}/>
+
         <TextField
           margin="dense"
           name="quantity"
@@ -89,6 +88,15 @@ export const CreateSpot: React.FC<{open: boolean, onClose: ()=>void}> = ({open, 
           type="number"
           fullWidth
           value={formData.exitPrice}
+          onChange={handleChange}
+        />
+        <TextField
+          margin="dense"
+          name="exitTimestamp"
+          label="Время закрытия"
+          type="datetime-local"
+          fullWidth
+          value={formData.exitTimestamp}
           onChange={handleChange}
         />
       </DialogContent>

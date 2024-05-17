@@ -2,6 +2,7 @@ import { makeAutoObservable } from "mobx";
 import { CreateSpotPositionDTO, SpotPosition } from "./SpotPosition";
 import { CreateFuturesPositionDTO, FuturesPosition } from "./FuturesPosition";
 import { Axios } from "@/api/Axios";
+import { StoreInstance } from "./Store";
 
 
 
@@ -84,7 +85,9 @@ export class Portfolio{
     }
     if(this.futuresPositions){
       for(const pos of this.futuresPositions){
-        const value = pos.getValue()
+        const currentRate = StoreInstance.currencyMap.get(pos.currency)?.exchangeRateToUsd
+        if(!currentRate)continue
+        const value = pos.getValue() / currentRate
         if(value>0){
           sum = sum + value
         }
@@ -102,7 +105,9 @@ export class Portfolio{
     }
     if(this.futuresPositions){
       for(const pos of this.futuresPositions){
-        initialSum = initialSum + pos.margin
+        const currentRate = StoreInstance.currencyMap.get(pos.currency)?.exchangeRateToUsd
+        if(!currentRate)continue
+        initialSum = initialSum + pos.margin / currentRate
       }
     }
     const value = this.getValue()
@@ -120,7 +125,9 @@ export class Portfolio{
     }
     if(this.futuresPositions){
       for(const pos of this.futuresPositions){
-          symbolValueMap[pos.symbol] = (symbolValueMap[pos.symbol] || 0) + pos.getValue()
+          const currentRate = StoreInstance.currencyMap.get(pos.currency)?.exchangeRateToUsd
+          if(!currentRate)continue
+          symbolValueMap[pos.symbol] = (symbolValueMap[pos.symbol] || 0) + (pos.getValue() / currentRate)
       }
     }
     return symbolValueMap
@@ -136,8 +143,11 @@ export class Portfolio{
       }
     }
     if(this.futuresPositions){
+
       for(const pos of this.futuresPositions){
-          sum = sum + pos.getValueChange()
+        const currentRate = StoreInstance.currencyMap.get(pos.currency)?.exchangeRateToUsd
+        if(!currentRate)continue
+        sum = sum + pos.getValueChange() / currentRate
       }
     }
     return sum

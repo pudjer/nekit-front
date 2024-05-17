@@ -1,4 +1,4 @@
-import { Container, Typography, Button } from '@mui/material';
+import { Container, Typography, Button, Paper } from '@mui/material';
 import styles from "./WelcomPage.module.css"
 import { PortfolioList } from '@/widgets/PortfolioList/PortfolioList';
 import { Portfolio } from '@/Store/Portfolio';
@@ -21,8 +21,8 @@ export function WelcomePage() {
     nav("/portfolios?portfolio="+StoreInstance.portfolio?._id, {replace: true})
   };
   return (<div className={styles.page}>
-      <div className={styles.description}>
-        <Typography sx={{marginY: 30}} className={styles.typography} variant="h2" gutterBottom>
+      <Paper className={styles.description} sx={{borderRadius: 10, padding: 10, margin: 10}}>
+        <Typography sx={{marginY: 10}} className={styles.typography} variant="h2" gutterBottom>
           CoinTrackX: Ваш персональный ассистент для учета криптовалютных сделок
         </Typography>
         <Typography sx={{marginY: 30}} className={styles.typography} variant="h3" paragraph>
@@ -49,7 +49,7 @@ export function WelcomePage() {
         <Typography className={styles.typography} variant="h6" gutterBottom>
           Начните Учет Прямо Сейчас!
         </Typography>
-      </div>
+      </Paper>
       <div className={styles.list}>
         <Typography className={styles.listHeader} variant="h3" gutterBottom>
           Публичные портфели:

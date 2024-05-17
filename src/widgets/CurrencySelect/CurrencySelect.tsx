@@ -4,7 +4,7 @@ import { FormControl, TextField, Autocomplete } from "@mui/material"
 import { observer } from "mobx-react-lite"
 import { useState } from "react";
 
-export const CurrencySelect : React.FC<{fullWidth?: boolean}> = observer(({fullWidth}) => {
+export const CurrencySelect : React.FC<{fullWidth?: boolean, onSelect?: (cur: Currency)=>void}> = observer(({fullWidth, onSelect = ()=>undefined}) => {
   const [isCorrect, setIsCorrect] = useState(true);
   const options = StoreInstance.currencies.map((curr) => 
     ({
@@ -27,6 +27,7 @@ export const CurrencySelect : React.FC<{fullWidth?: boolean}> = observer(({fullW
             setIsCorrect(true)
             const currency = v.id
             StoreInstance.currency = currency
+            onSelect(currency)
           }else{
             setIsCorrect(false)
           }

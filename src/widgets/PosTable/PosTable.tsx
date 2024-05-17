@@ -32,8 +32,8 @@ export const PosTable: TTable = observer(({onSelect, positions, cols, highlighte
   const ref = React.useRef<number>()
 
   return (
-    <Paper {...rest}>
-      <TableContainer sx={{height: "100%", width: '100%' }} >
+    <Paper {...rest} style={{borderRadius: 20}}>
+      <TableContainer sx={{height: "100%", width: '100%', borderRadius: 5 }} >
         {
           hidden.map(e=><Button color='success' onClick={()=>{Hide(hidden.filter(el=>el!==e)); setColumns([...columns, e])}} className={styles.hidden}>{e.label+" "}</Button>)
         }

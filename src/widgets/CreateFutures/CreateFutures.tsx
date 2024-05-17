@@ -16,15 +16,17 @@ import { CreateFuturesPositionDTO, FuturesPosition } from '@/Store/FuturesPositi
 
 
 export const CreateFutures: React.FC<{open: boolean, onClose: ()=>void}> = ({open, onClose}) => {
-  const [formData, setFormData] = useState<Partial<CreateFuturesPositionDTO>>({
+  
+  const [formData, setFormData] = useState<CreateFuturesPositionDTO>({
+    symbol: "btc",
     quantity: 0,
     timestamp: (new Date()).toISOString().slice(0, 16), // Initial timestamp as ISO string
     initialPrice: 0,
     currency: "",
     leverage: 1,
     margin: 0,
-    stopLoss: 0,
-    takeProfit: 0
+    initialCurrencyPrice: StoreInstance.currency ? 1 / StoreInstance.currency?.exchangeRateToUsd : 1
+
   });
   const [long, setIsLong] = useState(true)
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -33,9 +35,11 @@ export const CreateFutures: React.FC<{open: boolean, onClose: ()=>void}> = ({ope
     if(name==="leverage" && formData.margin){
       changes.quantity = formData.margin * Number(value)
     }
+
     setFormData({
       ...formData,
-      [name]: (value),
+      [name]: (value === "" ? undefined : value),
+
       ...changes
     });
 
@@ -46,27 +50,19 @@ export const CreateFutures: React.FC<{open: boolean, onClose: ()=>void}> = ({ope
       alert("select currency!!!")
       return
     }
-    const keysToUsd = ['initialPrice', 'margin', 'stopLoss', 'takeProfit', 'exitPrice'] satisfies (keyof FuturesPosition)[]
+    const toModify = {...formData}
 
-    
-    const toUsd = {...formData}
-    for(const key of keysToUsd){
-      if(toUsd[key]!==undefined){
-        toUsd[key] = toUsd[key]! / StoreInstance.currency.exchangeRateToUsd
-      }
-    }
-    if(!long && toUsd.quantity)toUsd.quantity = -toUsd.quantity
-    toUsd.currency = StoreInstance.currency.symbol
-    //@ts-ignore
-    StoreInstance.portfolio?.createFuturesPosition(toUsd)
+    if(!long && toModify.quantity)toModify.quantity = -toModify.quantity
+    toModify.currency = StoreInstance.currency.symbol
+    StoreInstance.portfolio?.createFuturesPosition(toModify)
   };
 
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>Добавить фьючерс-позицию</DialogTitle>
       <DialogContent>
-        <CurrencySelect fullWidth/>
-        <SymbolSelect fullWidth onChange={(s)=>s && setFormData({...formData, symbol: s.symbol})}/>
+        <CurrencySelect fullWidth onSelect={(s)=>s && setFormData({...formData, initialCurrencyPrice: 1/s.exchangeRateToUsd})}/>
+        <SymbolSelect fullWidth onChange={(s)=>s && setFormData({...formData, symbol: s.symbol, initialPrice: s.current_price * (StoreInstance.currency?.exchangeRateToUsd || 1)})}/>
         <FormControlLabel control={<Switch style={{color: long ? "lightgreen" : "red"}} checked={long} onChange={()=>setIsLong(!long)}/>} label={long ? "LONG" : "SHORT"} />
 
         <TextField
@@ -87,7 +83,15 @@ export const CreateFutures: React.FC<{open: boolean, onClose: ()=>void}> = ({ope
           value={formData.initialPrice}
           onChange={handleChange}
         />
-
+        <TextField
+          margin="dense"
+          name="initialCurrencyPrice"
+          label="Начальная цена валюты к USD"
+          type="number"
+          fullWidth
+          value={formData.initialCurrencyPrice}
+          onChange={handleChange}
+        />
         <TextField
           margin="dense"
           name="leverage"
@@ -142,7 +146,15 @@ export const CreateFutures: React.FC<{open: boolean, onClose: ()=>void}> = ({ope
           value={formData.exitPrice}
           onChange={handleChange}
         />
-
+        <TextField
+          margin="dense"
+          name="exitTimestamp"
+          label="Время закрытия"
+          type="datetime-local"
+          fullWidth
+          value={formData.exitTimestamp}
+          onChange={handleChange}
+        />
       </DialogContent>
       <DialogActions>
         <Button onClick={handleSubmit} color="primary">

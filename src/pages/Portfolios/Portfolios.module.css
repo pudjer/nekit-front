@@ -6,9 +6,10 @@
 
 .box{
   position: relative;
-  top: -320px;
-  width: 370px;
-  height: 100px;
+  top: -420px;
+  left: 32px;
+  width: 300px;
+  height: 300px;
   display: flex;
   padding: 20px;
   flex-direction: column;
@@ -16,7 +17,7 @@
   justify-content: center;
   align-items: center;
   background-color: rgba(0, 0, 0, 0.5); /* Полупрозрачный черный цвет */
-  border-radius: 15px; /* Закругление углов, можно изменить значение по необходимости */
+  border-radius: 185px; /* Закругление углов, можно изменить значение по необходимости */
   color: white; /* Белый цвет текста для контраста */
   max-width: 400px; /* Максимальная ширина контейнера */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
