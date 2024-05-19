@@ -54,7 +54,7 @@ export class FuturesPosition implements Position{
     const currentRate = StoreInstance.currencyMap.get(this.currency)?.exchangeRateToUsd
     const currentPrice = tokenPrice && currentRate && (tokenPrice * currentRate)
     if(currentPrice && this.quantity){
-      if(this.quantity>0){
+      if(this.quantity<0){
         if(this.takeProfit && this.takeProfit>=currentPrice)return this.takeProfit
         if(this.stopLoss && this.stopLoss<=currentPrice)return this.stopLoss
       }else{

@@ -35,13 +35,13 @@ export const UpdateFutures: React.FC<{open: boolean, onClose: ()=>void, pos: Fut
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     let { name, value } = event.target;
     const changes: {[key: string]: any} = {}
-    if(name==="leverage"){
-      changes.quantity = formData.margin * Number(value)
+    if(name==="leverage" && formData.margin && formData.initialPrice && value){
+      changes.quantity = (formData.margin * Number(value)) / formData.initialPrice
     }
 
     setFormData({
       ...formData,
-      [name]: (value === "" ? undefined : value),
+      [name]: (value === "" ? null : value),
 
       ...changes
     });
@@ -70,7 +70,7 @@ export const UpdateFutures: React.FC<{open: boolean, onClose: ()=>void, pos: Fut
           label="Количество"
           type="number"
           fullWidth
-          value={formData.quantity}
+          value={formData.quantity || ""}
           onChange={handleChange}
         />
         <TextField
@@ -82,7 +82,7 @@ export const UpdateFutures: React.FC<{open: boolean, onClose: ()=>void, pos: Fut
             shrink: true,
           }}
           fullWidth
-          value={formData.timestamp}
+          value={formData.timestamp || ""}
           onChange={handleChange}
         />
         <TextField
@@ -91,7 +91,7 @@ export const UpdateFutures: React.FC<{open: boolean, onClose: ()=>void, pos: Fut
           label="Начальная цена"
           type="number"
           fullWidth
-          value={formData.initialPrice}
+          value={formData.initialPrice || ""}
           onChange={handleChange}
         />
         <TextField
@@ -100,7 +100,7 @@ export const UpdateFutures: React.FC<{open: boolean, onClose: ()=>void, pos: Fut
           label="Кредитное плечо"
           type="number"
           fullWidth
-          value={formData.leverage}
+          value={formData.leverage || ""}
           onChange={handleChange}
         />
         <TextField
@@ -109,7 +109,7 @@ export const UpdateFutures: React.FC<{open: boolean, onClose: ()=>void, pos: Fut
           label="Обеспечение"
           type="number"
           fullWidth
-          value={formData.margin}
+          value={formData.margin || ""}
           onChange={handleChange}
         />
         <TextField
@@ -118,7 +118,7 @@ export const UpdateFutures: React.FC<{open: boolean, onClose: ()=>void, pos: Fut
           label="Stop Loss"
           type="number"
           fullWidth
-          value={formData.stopLoss}
+          value={formData.stopLoss || ""}
           onChange={handleChange}
         />
         <TextField
@@ -127,7 +127,7 @@ export const UpdateFutures: React.FC<{open: boolean, onClose: ()=>void, pos: Fut
           label="Take Profit"
           type="number"
           fullWidth
-          value={formData.takeProfit}
+          value={formData.takeProfit || ""}
           onChange={handleChange}
         />
         <TextField
@@ -136,7 +136,7 @@ export const UpdateFutures: React.FC<{open: boolean, onClose: ()=>void, pos: Fut
           label="Цена закрытия"
           type="number"
           fullWidth
-          value={formData.exitPrice}
+          value={formData.exitPrice || ""}
           onChange={handleChange}
         />
         <TextField
@@ -145,7 +145,7 @@ export const UpdateFutures: React.FC<{open: boolean, onClose: ()=>void, pos: Fut
           label="Начальная цена валюты к USD"
           type="number"
           fullWidth
-          value={formData.initialCurrencyPrice}
+          value={formData.initialCurrencyPrice || ""}
           onChange={handleChange}
         />
         <TextField
@@ -157,7 +157,7 @@ export const UpdateFutures: React.FC<{open: boolean, onClose: ()=>void, pos: Fut
             shrink: true,
           }}
           fullWidth
-          value={formData.exitTimestamp}
+          value={formData.exitTimestamp || ""}
           onChange={handleChange}
         />
       </DialogContent>

@@ -29,7 +29,7 @@ export const UpdateSpot: React.FC<{open: boolean, onClose: ()=>void, pos: SpotPo
 
     setFormData({
       ...formData,
-      [name]: (value === "" ? undefined : value),
+      [name]: (value === "" ? null : value),
 
     });
   };
@@ -64,7 +64,7 @@ export const UpdateSpot: React.FC<{open: boolean, onClose: ()=>void, pos: SpotPo
           label="Количество"
           type="number"
           fullWidth
-          value={formData.quantity}
+          value={formData.quantity || ""}
           onChange={handleChange}
         />
         <TextField
@@ -76,7 +76,7 @@ export const UpdateSpot: React.FC<{open: boolean, onClose: ()=>void, pos: SpotPo
             shrink: true,
           }}
           fullWidth
-          value={formData.timestamp}
+          value={formData.timestamp || ""}
           onChange={handleChange}
         />
         <TextField
@@ -85,7 +85,7 @@ export const UpdateSpot: React.FC<{open: boolean, onClose: ()=>void, pos: SpotPo
           label="Начальная цена"
           type="number"
           fullWidth
-          value={formData.initialPrice}
+          value={formData.initialPrice || ""}
           onChange={handleChange}
         />
          <TextField
@@ -94,7 +94,7 @@ export const UpdateSpot: React.FC<{open: boolean, onClose: ()=>void, pos: SpotPo
           label="Цена закрытия"
           type="number"
           fullWidth
-          value={formData.exitPrice}
+          value={formData.exitPrice || ""}
           onChange={handleChange}
         />
         <TextField
@@ -106,7 +106,7 @@ export const UpdateSpot: React.FC<{open: boolean, onClose: ()=>void, pos: SpotPo
             shrink: true,
           }}
           fullWidth
-          value={formData.exitTimestamp}
+          value={formData.exitTimestamp || ""}
           onChange={handleChange}
         />
       </DialogContent>

@@ -27,7 +27,7 @@ export const CreateSpot: React.FC<{open: boolean, onClose: ()=>void}> = ({open, 
 
     setFormData({
       ...formData,
-      [name]: (value === "" ? undefined : value),
+      [name]: (value === "" ? null : value),
     });
   };
 
@@ -62,7 +62,7 @@ export const CreateSpot: React.FC<{open: boolean, onClose: ()=>void}> = ({open, 
           label="Количество"
           type="number"
           fullWidth
-          value={formData.quantity}
+          value={formData.quantity || ""}
           onChange={handleChange}
         />
         <TextField
@@ -74,7 +74,7 @@ export const CreateSpot: React.FC<{open: boolean, onClose: ()=>void}> = ({open, 
             shrink: true,
           }}
           fullWidth
-          value={formData.timestamp}
+          value={formData.timestamp || ""}
           onChange={handleChange}
         />
         <TextField
@@ -83,7 +83,7 @@ export const CreateSpot: React.FC<{open: boolean, onClose: ()=>void}> = ({open, 
           label="Начальная цена"
           type="number"
           fullWidth
-          value={formData.initialPrice}
+          value={formData.initialPrice || ""}
           onChange={handleChange}
         />
         <TextField
@@ -92,7 +92,7 @@ export const CreateSpot: React.FC<{open: boolean, onClose: ()=>void}> = ({open, 
           label="Цена закрытия"
           type="number"
           fullWidth
-          value={formData.exitPrice}
+          value={formData.exitPrice || ""}
           onChange={handleChange}
         />
         <TextField
@@ -104,7 +104,7 @@ export const CreateSpot: React.FC<{open: boolean, onClose: ()=>void}> = ({open, 
             shrink: true,
           }}
           fullWidth
-          value={formData.exitTimestamp}
+          value={formData.exitTimestamp || ""}
           onChange={handleChange}
         />
       </DialogContent>

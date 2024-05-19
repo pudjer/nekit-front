@@ -15,9 +15,9 @@ export const ExportFunction = () => {
     return
   }
 
-  let html = "<div><div>Futures</div>"
+  let html = "<div><div>Фьючерс-позиции</div>"
   html = html + ReactDOMServer.renderToStaticMarkup(<PosTable onSelect={()=>undefined} cols={futuresColumns} positions={StoreInstance.portfolio.futuresPositions || []}/>)
-  html = html + "<div>Spot</div>"
+  html = html + "<div>Спот-позиции</div>"
   html = html + ReactDOMServer.renderToStaticMarkup(<PosTable onSelect={()=>undefined} cols={spotColumns} positions={StoreInstance.portfolio.spotPositions || []}/>)
   html = html + "</div>"
   
