@@ -222,7 +222,7 @@ export const futuresColumns: Column<FuturesPosition>[]= [
 
 const hightlight = (value: FuturesPosition)=>{
   if(value.getValue()<=0) return "#200808";
-  if(value.takeProfit){
+  if(value.takeProfit || value.stopLoss){
     if(value.quantity>0){
       if(value.getCurrentPrice()>=(value.takeProfit || NaN)){
         return "#081b07"
