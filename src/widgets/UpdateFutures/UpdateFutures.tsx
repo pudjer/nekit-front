@@ -16,18 +16,18 @@ import { CurrencySelect } from '../CurrencySelect/CurrencySelect';
 
 
 export const UpdateFutures: React.FC<{open: boolean, onClose: ()=>void, pos: FuturesPosition}> = ({open, onClose,pos}) => {
-  StoreInstance.currency = StoreInstance.currencies.find(e=>e.symbol===pos.currency)
+  StoreInstance.currency = StoreInstance.currencyMap.get(pos.currency)
   const [formData, setFormData] = useState<CreateFuturesPositionDTO>({
     symbol: pos.symbol,
     quantity: Math.abs(pos.quantity),
     timestamp: pos.timestamp.slice(0, 16), // Initial timestamp as ISO string
-    initialPrice: StoreInstance.convertFromUSD(pos.initialPrice, pos.currency)[0],
+    initialPrice: pos.initialPrice,
     currency: pos.currency,
     leverage: pos.leverage,
-    margin: StoreInstance.convertFromUSD(pos.margin, pos.currency)[0],
-    stopLoss: StoreInstance.convertFromUSD(pos.stopLoss, pos.currency)[0] || undefined,
-    takeProfit: StoreInstance.convertFromUSD(pos.takeProfit, pos.currency)[0] || undefined,
-    exitPrice: StoreInstance.convertFromUSD(pos.exitPrice, pos.currency)[0] || undefined,
+    margin: pos.margin,
+    stopLoss: pos.stopLoss,
+    takeProfit: pos.takeProfit,
+    exitPrice: pos.exitPrice,
     initialCurrencyPrice: pos.initialCurrencyPrice
   });
   const [long, setIsLong] = useState(true)
@@ -53,7 +53,6 @@ export const UpdateFutures: React.FC<{open: boolean, onClose: ()=>void, pos: Fut
     }
     const toModify = {...formData}
     if(!long && toModify.quantity)toModify.quantity = -toModify.quantity
-    toModify.currency = StoreInstance.currency.symbol
     pos.update(toModify)
   };
 
@@ -61,8 +60,8 @@ export const UpdateFutures: React.FC<{open: boolean, onClose: ()=>void, pos: Fut
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>Изменить фьючерс-позицию</DialogTitle>
       <DialogContent>
-        <CurrencySelect fullWidth/>
-        <SymbolSelect init={pos.symbol} fullWidth onChange={(s)=>s && setFormData({...formData, symbol: s.symbol})}/>
+        <CurrencySelect init={pos.currency} onSelect={c=>setFormData({...formData, currency: c.symbol})} fullWidth/>
+        <SymbolSelect init={pos.symbol} fullWidth onChange={(s)=>s && setFormData({...formData, symbol: s.symbol, currency: s.symbol})}/>
         <FormControlLabel control={<Switch style={{color: long ? "lightgreen" : "red"}} checked={long} onChange={()=>setIsLong(!long)}/>} label={long ? "LONG" : "SHORT"} />
 
         <TextField
@@ -79,6 +78,9 @@ export const UpdateFutures: React.FC<{open: boolean, onClose: ()=>void, pos: Fut
           name="timestamp"
           label="Время открытия"
           type="datetime-local"
+          InputLabelProps={{
+            shrink: true,
+          }}
           fullWidth
           value={formData.timestamp}
           onChange={handleChange}
@@ -151,6 +153,9 @@ export const UpdateFutures: React.FC<{open: boolean, onClose: ()=>void, pos: Fut
           name="exitTimestamp"
           label="Время закрытия"
           type="datetime-local"
+          InputLabelProps={{
+            shrink: true,
+          }}
           fullWidth
           value={formData.exitTimestamp}
           onChange={handleChange}

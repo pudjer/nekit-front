@@ -1,8 +1,7 @@
 import { observer } from 'mobx-react-lite';
 import { StoreInstance } from '@/Store/Store';
-import { Button, Select, MenuItem, SelectChangeEvent, InputLabel, FormControl } from '@mui/material';
+import { Select, MenuItem, InputLabel, FormControl } from '@mui/material';
 import styles from "./PortfolioSelect.module.css"
-import { useNavigate } from 'react-router-dom';
 
 const PortfolioSelect = observer(() => {
 

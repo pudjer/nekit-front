@@ -12,7 +12,7 @@ import {
 import { StoreInstance } from '@/Store/Store';
 import { SymbolSelect } from '../SymbolSelect/SymbolSelect';
 import { CurrencySelect } from '../CurrencySelect/CurrencySelect';
-import { CreateFuturesPositionDTO, FuturesPosition } from '@/Store/FuturesPosition';
+import { CreateFuturesPositionDTO } from '@/Store/FuturesPosition';
 
 
 export const CreateFutures: React.FC<{open: boolean, onClose: ()=>void}> = ({open, onClose}) => {
@@ -22,7 +22,7 @@ export const CreateFutures: React.FC<{open: boolean, onClose: ()=>void}> = ({ope
     quantity: 0,
     timestamp: (new Date()).toISOString().slice(0, 16), // Initial timestamp as ISO string
     initialPrice: 0,
-    currency: "",
+    currency: StoreInstance.currency?.symbol || "USD",
     leverage: 1,
     margin: 0,
     initialCurrencyPrice: StoreInstance.currency ? 1 / StoreInstance.currency?.exchangeRateToUsd : 1
@@ -53,7 +53,6 @@ export const CreateFutures: React.FC<{open: boolean, onClose: ()=>void}> = ({ope
     const toModify = {...formData}
 
     if(!long && toModify.quantity)toModify.quantity = -toModify.quantity
-    toModify.currency = StoreInstance.currency.symbol
     StoreInstance.portfolio?.createFuturesPosition(toModify)
   };
 
@@ -61,7 +60,7 @@ export const CreateFutures: React.FC<{open: boolean, onClose: ()=>void}> = ({ope
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>Добавить фьючерс-позицию</DialogTitle>
       <DialogContent>
-        <CurrencySelect fullWidth onSelect={(s)=>s && setFormData({...formData, initialCurrencyPrice: 1/s.exchangeRateToUsd})}/>
+        <CurrencySelect fullWidth onSelect={(s)=>s && setFormData({...formData, initialCurrencyPrice: 1/s.exchangeRateToUsd, currency: s.symbol})}/>
         <SymbolSelect fullWidth onChange={(s)=>s && setFormData({...formData, symbol: s.symbol, initialPrice: s.current_price * (StoreInstance.currency?.exchangeRateToUsd || 1)})}/>
         <FormControlLabel control={<Switch style={{color: long ? "lightgreen" : "red"}} checked={long} onChange={()=>setIsLong(!long)}/>} label={long ? "LONG" : "SHORT"} />
 
@@ -133,6 +132,9 @@ export const CreateFutures: React.FC<{open: boolean, onClose: ()=>void}> = ({ope
           name="timestamp"
           label="Дата и время"
           type="datetime-local"
+          InputLabelProps={{
+            shrink: true,
+          }}
           fullWidth
           value={formData.timestamp}
           onChange={handleChange}
@@ -151,6 +153,9 @@ export const CreateFutures: React.FC<{open: boolean, onClose: ()=>void}> = ({ope
           name="exitTimestamp"
           label="Время закрытия"
           type="datetime-local"
+          InputLabelProps={{
+            shrink: true,
+          }}
           fullWidth
           value={formData.exitTimestamp}
           onChange={handleChange}

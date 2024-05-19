@@ -1,7 +1,6 @@
 import { observer } from 'mobx-react-lite';
 import { StoreInstance } from '@/Store/Store';
 import { PosTable, Column } from '../PosTable/PosTable';
-import { useNavigate } from 'react-router-dom';
 import { SpotPosition } from '@/Store/SpotPosition';
 import { CommonColumns } from '../CommonColumns';
 import { Typography } from '@mui/material';

@@ -1,7 +1,7 @@
 import { StoreInstance } from "@/Store/Store";
-import { FuturesTable, futuresColumns } from "@/widgets/FuturesTable/FuturesTable";
+import { futuresColumns } from "@/widgets/FuturesTable/FuturesTable";
 import { PosTable } from "@/widgets/PosTable/PosTable";
-import { SpotTable, spotColumns } from "@/widgets/SpotTable/SpotTable";
+import { spotColumns } from "@/widgets/SpotTable/SpotTable";
 import ReactDOMServer from 'react-dom/server';
 
 

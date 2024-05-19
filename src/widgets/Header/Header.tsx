@@ -1,15 +1,14 @@
 import React from 'react';
-import { AppBar,Typography, Toolbar, Button} from "@mui/material"
-import { Link, useNavigate } from 'react-router-dom';
-import logo from './logo.svg';
+import { AppBar,Typography, Toolbar} from "@mui/material"
+import { Link } from 'react-router-dom';
 import styles from './Header.module.css'
 import ProfileButton from '../ProfileButton/ProfileButton';
 import { observer } from 'mobx-react-lite';
 import { CurrencySelect } from '../CurrencySelect/CurrencySelect';
+import { StoreInstance } from '@/Store/Store';
 
 
 const Header: React.FC = observer(() => {
-  const nav = useNavigate()
   return (
     <AppBar sx={{width: "100vw", margin: 0}}>
       <Toolbar className={styles.header}>
@@ -26,7 +25,7 @@ const Header: React.FC = observer(() => {
         </Typography>
       ))}
 
-      <CurrencySelect/>
+      <CurrencySelect onSelect={(c)=>{StoreInstance.currency = c}} value={StoreInstance.currency}/>
       <div>
         <Typography variant="h6" align="right">
           <ProfileButton/>

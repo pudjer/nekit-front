@@ -1,6 +1,6 @@
 import { Portfolio } from "@/Store/Portfolio";
 import { StoreInstance } from "@/Store/Store";
-import { Button, List, ListItem, ListItemText, Popover, Typography } from "@mui/material";
+import { Button, List, ListItem, Popover, Typography } from "@mui/material";
 import { observer } from "mobx-react-lite";
 import { useState } from "react";
 

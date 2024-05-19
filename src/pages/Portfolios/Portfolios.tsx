@@ -1,5 +1,5 @@
-import React, { useState, useEffect, ChangeEvent } from 'react';
-import { List, ListItem, ListItemText, Button, Dialog, DialogTitle, DialogContent, TextField, DialogActions, Box, Typography, Paper, CardContent, Card, Divider, MenuItem, Select, InputLabel, FormControl } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Button, Dialog, DialogContent, Typography, Paper, CardContent, Card, Divider, MenuItem, Select, InputLabel, FormControl } from '@mui/material';
 import { Portfolio } from '@/Store/Portfolio';
 import styles from "./Portfolios.module.css"
 import { StoreInstance } from '@/Store/Store';
@@ -177,7 +177,7 @@ export const Portfolios: React.FC = observer(() => {
                 slotProps={{
                   legend: { hidden: true },
                 }}
-                onItemClick={(e, d)=>setDataIndex(d.dataIndex)}
+                onItemClick={(_, d)=>setDataIndex(d.dataIndex)}
               />
               {dataIndex !== undefined && dataIndex<data.length ? 
               <div style={{overflow: "visible", width: 0, height: 0}}>

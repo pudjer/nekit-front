@@ -14,11 +14,13 @@ import { CurrencySelect } from '../CurrencySelect/CurrencySelect';
 
 
 export const CreateSpot: React.FC<{open: boolean, onClose: ()=>void}> = ({open, onClose}) => {
+  const rate = StoreInstance.currency?.exchangeRateToUsd
+  const price = StoreInstance.tokensMap.get("btc")?.current_price
   const [formData, setFormData] = useState<CreateSpotPositionDTO>({
     quantity:0,
-    symbol:"",
+    symbol:"btc",
     timestamp: (new Date()).toISOString().slice(0, 16), // Initial timestamp as ISO string
-    initialPrice: 0,
+    initialPrice: (rate && price && price * rate) || 0,
   });
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     let { name, value } = event.target;
@@ -51,8 +53,8 @@ export const CreateSpot: React.FC<{open: boolean, onClose: ()=>void}> = ({open, 
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>Добавить спот-позицию</DialogTitle>
       <DialogContent>
-        <CurrencySelect fullWidth/>
-        <SymbolSelect fullWidth onChange={(s)=>s && setFormData({...formData, symbol: s.symbol, initialPrice: s.current_price * (StoreInstance.currency?.exchangeRateToUsd || 1)})}/>
+        <CurrencySelect fullWidth onSelect={(c)=>{StoreInstance.currency = c}} value={StoreInstance.currency}/>
+        <SymbolSelect init='btc' fullWidth onChange={(s)=>s && setFormData({...formData, symbol: s.symbol, initialPrice: s.current_price * (StoreInstance.currency?.exchangeRateToUsd || 1)})}/>
 
         <TextField
           margin="dense"
@@ -68,6 +70,9 @@ export const CreateSpot: React.FC<{open: boolean, onClose: ()=>void}> = ({open, 
           name="timestamp"
           label="Дата и время"
           type="datetime-local"
+          InputLabelProps={{
+            shrink: true,
+          }}
           fullWidth
           value={formData.timestamp}
           onChange={handleChange}
@@ -95,6 +100,9 @@ export const CreateSpot: React.FC<{open: boolean, onClose: ()=>void}> = ({open, 
           name="exitTimestamp"
           label="Время закрытия"
           type="datetime-local"
+          InputLabelProps={{
+            shrink: true,
+          }}
           fullWidth
           value={formData.exitTimestamp}
           onChange={handleChange}

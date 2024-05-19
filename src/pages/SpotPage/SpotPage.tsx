@@ -27,7 +27,7 @@ export const SpotPage = observer(()=>{
           <Button variant="contained" color='success' onClick={()=>setOpenCreate(true)}>Добавить</Button>
           {selected && <>
             <Button variant="contained" color='info'  onClick={()=>setOpenUpdate(true)}>Изменить</Button>
-            <UpdateSpot open={openUpdate} onClose={()=>setOpenUpdate(false)} pos={selected}/>
+            <UpdateSpot key={selected._id} open={openUpdate} onClose={()=>setOpenUpdate(false)} pos={selected}/>
             <Button variant="contained" color='error' onClick={()=>StoreInstance.portfolio?.deleteSpotPosition(selected._id)}>УДАЛИТЬ</Button>
             <Button variant="contained" color='info'  onClick={()=>setOpenStats(true)}>статистика</Button>
             <Dialog fullScreen open={openStats}>

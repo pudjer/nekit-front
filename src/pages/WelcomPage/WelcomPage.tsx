@@ -1,8 +1,7 @@
-import { Container, Typography, Button, Paper } from '@mui/material';
+import { Typography, Paper } from '@mui/material';
 import styles from "./WelcomPage.module.css"
 import { PortfolioList } from '@/widgets/PortfolioList/PortfolioList';
 import { Portfolio } from '@/Store/Portfolio';
-import { User } from '@/Store/User';
 import { useState, useEffect } from 'react';
 import { Axios } from '@/api/Axios';
 import { StoreInstance } from '@/Store/Store';

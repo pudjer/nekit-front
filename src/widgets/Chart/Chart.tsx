@@ -29,7 +29,7 @@ export const Chart: React.FC<{symbol: string, curr?:string, valueFn: (price: num
     return valueFn(currP * tokenP)
   })
 
-  return (<>
+  return (<div style={{display: "flex"}}>
             <LineChart
               xAxis={[{ data: x, valueFormatter: (date: Date) => (new Date(date)).toLocaleString(),  }]}
               series={[
@@ -40,31 +40,38 @@ export const Chart: React.FC<{symbol: string, curr?:string, valueFn: (price: num
               height={300}
               margin={{ left: 100, right: 30, top: 30, bottom: 30 }}
             />
-            <TextField
-              margin="dense"
-              name="timestamp"
-              label="ОТ"
-              type="datetime-local"
-              fullWidth
-              value={sinceS}
-              onChange={(e)=>{
-                if(since && (new Date(e.target.value))<(new Date(since))) return
-                setSince(e.target.value)
-              }}
-            />
-            <TextField
-              margin="dense"
-              name="timestamp"
-              label="ДО"
-              type="datetime-local"
-              fullWidth
-              value={untilS}
-              onChange={(e)=>{
-                if(until && (new Date(e.target.value))>(new Date(until))) return
-                setUntil(e.target.value)
-              }}
-            />
-          </>
+            <div>
+              <TextField
+                margin="dense"
+                name="timestamp"
+                label="ОТ"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+        
+                type="datetime-local"
+                value={sinceS}
+                onChange={(e)=>{
+                  if(since && (new Date(e.target.value))<(new Date(since))) return
+                  setSince(e.target.value)
+                }}
+              />
+              <TextField
+                margin="dense"
+                name="timestamp"
+                label="ДО"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                type="datetime-local"
+                value={untilS}
+                onChange={(e)=>{
+                  if(until && (new Date(e.target.value))>(new Date(until))) return
+                  setUntil(e.target.value)
+                }}
+              />
+            </div>
+          </div>
   )
 })
 

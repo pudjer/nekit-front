@@ -1,4 +1,4 @@
-import { Paper, TableContainer, TableHead, TableRow, TableCell, TableBody, TablePagination, Button, Table } from "@mui/material";
+import { Paper, TableContainer, TableHead, TableRow, TableCell, TableBody, Button, Table } from "@mui/material";
 import styles from "./PosTable.module.css"
 
 import { observer } from "mobx-react-lite";

@@ -24,7 +24,7 @@ export const SymbolSelect: React.FC<{onChange: (token: Token | undefined)=>void,
         }
         renderInput={(params) => <TextField {...params} label={isCorrect ? "Токен" : "Выберите токен!!"} />}
         value={value}
-        onChange={(e, v)=>{
+        onChange={(_, v)=>{
           setValue(v)
           if(typeof v !== "string" && v){
             setIsCorrect(true)
