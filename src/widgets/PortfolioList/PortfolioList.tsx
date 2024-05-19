@@ -35,7 +35,7 @@ export const PortfolioList : React.FC<Props>=  observer(({handleSelect, portfoli
           const res = StoreInstance.convertFromUSD(portfolio.getValue())
           return <ListItem
             key={portfolio._id}
-            style={{ height: 80, width: "100%", margin: 3, border: "1px solid #ccc", display: "flex", justifyContent: "space-between",borderRadius: 10, ...(portfolio === StoreInstance.portfolio ? {backgroundColor: "#080721"}: {})}}
+            style={{ height: 80, width: "99%", margin: 3, border: "1px solid #ccc", display: "flex", justifyContent: "space-between",borderRadius: 10, ...(portfolio === StoreInstance.portfolio ? {backgroundColor: "#080721"}: {})}}
             onClick={() => handleSelect(portfolio)}
           >
             <div style={{width: "30%"}}>

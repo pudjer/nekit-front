@@ -50,6 +50,27 @@ export const SpotPage = observer(()=>{
             </Dialog>
           </>}
         </>}
+        {selected && <>
+          <Button variant="contained" color='info'  onClick={()=>setOpenStats(true)}>статистика</Button>
+            <Dialog fullScreen open={openStats}>
+            <AppBar sx={{ position: 'relative' }}>
+              <Toolbar>
+                <IconButton
+                  edge="start"
+                  color="inherit"
+                  onClick={()=>setOpenStats(false)}
+                  aria-label="close"
+                >
+                  ЗАКРЫТЬ
+                </IconButton>
+              </Toolbar>
+            </AppBar>
+                <Typography variant="h4">Прибыль(%)</Typography>
+                <Chart symbol={selected.symbol} valueFn={p=>((p/(selected.initialPrice*(StoreInstance.currency?.exchangeRateToUsd || 1)))*100-100)} since={selected.timestamp} until={selected.exitTimestamp}/>
+                <Typography variant="h4">Ценность({StoreInstance.currency?.symbol || "USD"})</Typography>
+                <Chart symbol={selected.symbol} valueFn={p=>p*selected.quantity} since={selected.timestamp}  until={selected.exitTimestamp} />
+            </Dialog>
+        </>}
       </div>
     </>
   )

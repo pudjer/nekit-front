@@ -24,9 +24,6 @@ export function WelcomePage() {
         <Typography sx={{marginY: 10}} className={styles.typography} variant="h2" gutterBottom>
           CoinTrackX - Ваш персональный ассистент для учета криптовалютных сделок
         </Typography>
-        <Typography sx={{marginY: 30}} className={styles.typography} variant="h3" paragraph>
-          Приветствуем вас на CoinTrackX – вашем интуитивно понятном помощнике для эффективного учета криптовалютных операций. Независимо от того, являетесь ли вы опытным трейдером или новичком в мире криптовалют, CoinTrackX обеспечивает все необходимое для того, чтобы упростить ваш опыт учета и анализа.
-        </Typography>
         <Typography className={styles.typography} variant="h3" gutterBottom>
           Особенности CoinTrackX:
         </Typography>

@@ -27,7 +27,11 @@ export const FuturesPage = observer(()=>{
             <Button variant="contained" color='info'  onClick={()=>setOpenUpdate(true)}>Изменить</Button>
             <UpdateFutures key={selected._id} open={openUpdate} onClose={()=>setOpenUpdate(false)} pos={selected}/>
             <Button variant="contained" color='error' onClick={()=>StoreInstance.portfolio?.deleteFuturesPosition(selected._id)}>УДАЛИТЬ</Button>
-            <Button variant="contained" color='info'  onClick={()=>setOpenStats(true)}>статистика</Button>
+            
+          </>}
+        </>}
+        {selected &&<>
+        <Button variant="contained" color='info'  onClick={()=>setOpenStats(true)}>статистика</Button>
             <Dialog fullScreen open={openStats}>
             <AppBar sx={{ position: 'relative' }}>
               <Toolbar>
@@ -47,9 +51,8 @@ export const FuturesPage = observer(()=>{
                 <Chart symbol={selected.symbol} valueFn={p=>((p * selected.quantity - selected.initialPrice * selected.quantity))} curr={selected.currency} since={selected.timestamp} until={selected.exitTimestamp}/>
                 <Typography variant="h4">Ценность({selected.currency})</Typography>
                 <Chart symbol={selected.symbol} valueFn={p=>(selected.margin + (p * selected.quantity - selected.initialPrice * selected.quantity))} curr={selected.currency} since={selected.timestamp} until={selected.exitTimestamp}/>
-            </Dialog>
-          </>}
-        </>}
+            </Dialog></>
+            }     
       </div>
     </>
   )
