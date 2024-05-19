@@ -9,4 +9,8 @@ export default defineConfig({
        '@': path.resolve(__dirname, 'src'),
     },
   },
+  server: {
+    host: '0.0.0.0', // Слушать на всех доступных IP
+    port: 80, // Порт, на котором будет запущен сервер
+  },
 })
