@@ -21,6 +21,8 @@ export const CreateSpot: React.FC<{open: boolean, onClose: ()=>void}> = ({open, 
     symbol:"btc",
     timestamp: (new Date()).toISOString().slice(0, 16), // Initial timestamp as ISO string
     initialPrice: (rate && price && price * rate) || 0,
+    exitTimestamp: "", // Initial timestamp as ISO string,
+
   });
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     let { name, value } = event.target;

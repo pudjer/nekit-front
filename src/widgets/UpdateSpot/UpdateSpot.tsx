@@ -21,7 +21,7 @@ export const UpdateSpot: React.FC<{open: boolean, onClose: ()=>void, pos: SpotPo
     timestamp: pos.timestamp.slice(0, 16), // Initial timestamp as ISO string
     initialPrice: rate ? (pos.initialPrice * rate) : 0,
     exitPrice: rate && pos.exitPrice && (pos.exitPrice * rate),
-    exitTimestamp: pos.exitTimestamp
+    exitTimestamp: pos.exitTimestamp?.slice(0, 16)
   });
   
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {

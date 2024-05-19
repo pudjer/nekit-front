@@ -92,6 +92,7 @@ export class FuturesPosition implements Position{
   }
   async update(upd: CreateFuturesPositionDTO){
     const res: FuturesPosition = (await Axios.patch(`/futures/${this._id}`, upd)).data
+    console.log(res)
     Object.assign(this, res)
   }
   getPortfolioPerc(){

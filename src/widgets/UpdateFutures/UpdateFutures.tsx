@@ -28,7 +28,8 @@ export const UpdateFutures: React.FC<{open: boolean, onClose: ()=>void, pos: Fut
     stopLoss: pos.stopLoss,
     takeProfit: pos.takeProfit,
     exitPrice: pos.exitPrice,
-    initialCurrencyPrice: pos.initialCurrencyPrice
+    initialCurrencyPrice: pos.initialCurrencyPrice,
+    exitTimestamp: pos.exitTimestamp?.slice(0, 16)
   });
   const [long, setIsLong] = useState(true)
   

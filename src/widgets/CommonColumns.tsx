@@ -160,10 +160,10 @@ export const CommonColumns: Column<Position>[] = [
     id: 'exitTimestamp',
     label: 'Время закрытия',
     align: 'right',
-    format: (value: Position) => (new Date(value.timestamp)).toLocaleString(),
+    format: (value: Position) => value.exitTimestamp ? (new Date(value.exitTimestamp)).toLocaleString() : "N/A",
     toCompare: (a: Position, b: Position) => {
-      if(!a.timestamp || !b.timestamp)return 0
-      return a.timestamp>b.timestamp ? 1 : -1
+      if(!a.exitTimestamp || !b.exitTimestamp)return 0
+      return a.exitTimestamp>b.exitTimestamp ? 1 : -1
     }
       
       

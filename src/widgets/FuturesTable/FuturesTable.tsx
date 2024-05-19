@@ -210,10 +210,10 @@ export const futuresColumns: Column<FuturesPosition>[]= [
     id: 'exitTimestamp',
     label: 'Время закрытия',
     align: 'right',
-    format: (value: FuturesPosition) => (new Date(value.timestamp)).toLocaleString(),
+    format: (value: FuturesPosition) => value.exitTimestamp ? (new Date(value.exitTimestamp)).toLocaleString() : "N/A",
     toCompare: (a: FuturesPosition, b: FuturesPosition) => {
-      if(!a.timestamp || !b.timestamp)return 0
-      return a.timestamp>b.timestamp ? 1 : -1
+      if(!a.exitTimestamp || !b.exitTimestamp)return 0
+      return a.exitTimestamp>b.exitTimestamp ? 1 : -1
     }
   }
 
@@ -246,7 +246,7 @@ const hightlight = (value: FuturesPosition)=>{
 export const FuturesTable: React.FC<{onSelect: (pos: FuturesPosition)=>void}> = observer(({onSelect}) => {
 
   return <div style={{display: "flex", alignItems: "center",margin: 10, flexDirection: "column"}}>
-    <Typography variant='h2'>Фючерс-позиции</Typography>
+    <Typography variant='h2'>Фьючерс-позиции</Typography>
     <PosTable sx={{width: "97vw", height: "80vh"}} onSelect={onSelect} positions={StoreInstance.portfolio?.futuresPositions || []} cols={futuresColumns}  highlighted={hightlight}/>
   </div>
 })

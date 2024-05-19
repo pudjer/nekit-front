@@ -6,7 +6,8 @@ export interface Position{
   quantity: number,
   timestamp: string,
   initialPrice: number,
-  exitPrice?: number
+  exitPrice?: number,
+  exitTimestamp?: string,
   getCurrentPrice(): number
   getPriceChange(): number
   getPriceChangePerc(): number

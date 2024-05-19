@@ -25,8 +25,8 @@ export const CreateFutures: React.FC<{open: boolean, onClose: ()=>void}> = ({ope
     currency: StoreInstance.currency?.symbol || "USD",
     leverage: 1,
     margin: 0,
-    initialCurrencyPrice: StoreInstance.currency ? 1 / StoreInstance.currency?.exchangeRateToUsd : 1
-
+    initialCurrencyPrice: StoreInstance.currency ? 1 / StoreInstance.currency?.exchangeRateToUsd : 1,
+    exitTimestamp: ""
   });
   const [long, setIsLong] = useState(true)
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -61,7 +61,7 @@ export const CreateFutures: React.FC<{open: boolean, onClose: ()=>void}> = ({ope
       <DialogTitle>Добавить фьючерс-позицию</DialogTitle>
       <DialogContent>
         <CurrencySelect fullWidth onSelect={(s)=>s && setFormData({...formData, initialCurrencyPrice: 1/s.exchangeRateToUsd, currency: s.symbol})}/>
-        <SymbolSelect fullWidth onChange={(s)=>s && setFormData({...formData, symbol: s.symbol, initialPrice: s.current_price * (StoreInstance.currency?.exchangeRateToUsd || 1)})}/>
+        <SymbolSelect fullWidth onChange={(s)=>s && setFormData({...formData, symbol: s.symbol, initialPrice: s.current_price * (StoreInstance.currencyMap.get((formData.currency || ""))?.exchangeRateToUsd || 1)})}/>
         <FormControlLabel control={<Switch style={{color: long ? "lightgreen" : "red"}} checked={long} onChange={()=>setIsLong(!long)}/>} label={long ? "LONG" : "SHORT"} />
 
         <TextField
