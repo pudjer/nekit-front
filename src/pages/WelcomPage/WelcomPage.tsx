@@ -20,8 +20,8 @@ export function WelcomePage() {
     nav("/portfolios?portfolio="+StoreInstance.portfolio?._id, {replace: true})
   };
   return (<div className={styles.page}>
-      <Paper className={styles.description} sx={{borderRadius: 10, padding: 10, margin: 10}}>
-        <Typography sx={{marginY: 10}} className={styles.typography} variant="h2" gutterBottom>
+      <Paper className={styles.description} sx={{borderRadius: 10, padding: 10, margin: 5}}>
+        <Typography sx={{marginY: 5}} className={styles.typography} variant="h2" gutterBottom>
           CoinTrackX - Ваш персональный ассистент для учета криптовалютных сделок
         </Typography>
         <Typography className={styles.typography} variant="h3" gutterBottom>
