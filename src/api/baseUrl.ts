@@ -1,1 +1,1 @@
-export const baseUrl = location.hostname+':3000'
+export const baseUrl = document.getElementById('baseUrl')!.getAttribute('value')!
