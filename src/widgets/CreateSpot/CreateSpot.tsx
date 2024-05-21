@@ -29,7 +29,8 @@ export const CreateSpot: React.FC<{open: boolean, onClose: ()=>void}> = ({open, 
 
     setFormData({
       ...formData,
-      [name]: (value === "" ? null : value),
+      [name]: value,
+
     });
   };
 
@@ -39,15 +40,22 @@ export const CreateSpot: React.FC<{open: boolean, onClose: ()=>void}> = ({open, 
       return
     }
     const keysToUsd = ['initialPrice', 'exitPrice'] satisfies (keyof SpotPosition)[]
-    
+    console.log(formData)
     const toUsd = {...formData}
     for(const key of keysToUsd){
       if(toUsd[key]!==undefined){
         toUsd[key] = toUsd[key]! / StoreInstance.currency.exchangeRateToUsd
       }
     }
+
+    const toModify = {...toUsd}
+    for(const key in toModify){
+      if(toModify[key]===''){
+        delete toModify[key]
+      }
+    }
     //@ts-ignore
-    StoreInstance.portfolio?.createSpotPosition(toUsd)
+    StoreInstance.portfolio?.createSpotPosition(toModify)
 
   };
 

@@ -29,7 +29,8 @@ export const UpdateSpot: React.FC<{open: boolean, onClose: ()=>void, pos: SpotPo
 
     setFormData({
       ...formData,
-      [name]: (value === "" ? null : value),
+      [name]: value,
+
 
     });
   };
@@ -47,7 +48,13 @@ export const UpdateSpot: React.FC<{open: boolean, onClose: ()=>void, pos: SpotPo
         toUsd[key] = toUsd[key]! / StoreInstance.currency.exchangeRateToUsd
       }
     }
-    pos.update(toUsd)
+    const toModify = {...toUsd}
+    for(const key in toModify){
+      if(toModify[key]===''){
+        delete toModify[key]
+      }
+    }
+    pos.update(toModify)
   };
 
   return (

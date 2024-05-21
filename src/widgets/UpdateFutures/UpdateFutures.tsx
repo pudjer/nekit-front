@@ -42,7 +42,8 @@ export const UpdateFutures: React.FC<{open: boolean, onClose: ()=>void, pos: Fut
 
     setFormData({
       ...formData,
-      [name]: (value === "" ? null : value),
+      [name]: value,
+
 
       ...changes
     });
@@ -53,6 +54,11 @@ export const UpdateFutures: React.FC<{open: boolean, onClose: ()=>void, pos: Fut
       return
     }
     const toModify = {...formData}
+    for(const key in toModify){
+      if(toModify[key]===''){
+        delete toModify[key]
+      }
+    }
     if(!long && toModify.quantity)toModify.quantity = -toModify.quantity
     pos.update(toModify)
   };

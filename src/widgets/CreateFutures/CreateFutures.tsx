@@ -38,8 +38,7 @@ export const CreateFutures: React.FC<{open: boolean, onClose: ()=>void}> = ({ope
 
     setFormData({
       ...formData,
-      [name]: (value === "" ? null : value),
-
+      [name]: value,
       ...changes
     });
 
@@ -51,7 +50,11 @@ export const CreateFutures: React.FC<{open: boolean, onClose: ()=>void}> = ({ope
       return
     }
     const toModify = {...formData}
-
+    for(const key in toModify){
+      if(toModify[key]===''){
+        delete toModify[key]
+      }
+    }
     if(!long && toModify.quantity)toModify.quantity = -toModify.quantity
     StoreInstance.portfolio?.createFuturesPosition(toModify)
   };

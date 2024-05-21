@@ -15,7 +15,7 @@ type Glob = {
 
 
 
-type UserCreateDTO = {
+export type UserCreateDTO = {
   username: string
   password: string
   email?: string

@@ -28,26 +28,7 @@ export const SpotPage = observer(()=>{
           {selected && <>
             <Button variant="contained" color='info'  onClick={()=>setOpenUpdate(true)}>Изменить</Button>
             <UpdateSpot key={selected._id} open={openUpdate} onClose={()=>setOpenUpdate(false)} pos={selected}/>
-            <Button variant="contained" color='error' onClick={()=>StoreInstance.portfolio?.deleteSpotPosition(selected._id)}>УДАЛИТЬ</Button>
-            <Button variant="contained" color='info'  onClick={()=>setOpenStats(true)}>статистика</Button>
-            <Dialog fullScreen open={openStats}>
-            <AppBar sx={{ position: 'relative' }}>
-              <Toolbar>
-                <IconButton
-                  edge="start"
-                  color="inherit"
-                  onClick={()=>setOpenStats(false)}
-                  aria-label="close"
-                >
-                  ЗАКРЫТЬ
-                </IconButton>
-              </Toolbar>
-            </AppBar>
-                <Typography variant="h4">Прибыль(%)</Typography>
-                <Chart symbol={selected.symbol} valueFn={p=>((p/(selected.initialPrice*(StoreInstance.currency?.exchangeRateToUsd || 1)))*100-100)} since={selected.timestamp} until={selected.exitTimestamp}/>
-                <Typography variant="h4">Ценность({StoreInstance.currency?.symbol || "USD"})</Typography>
-                <Chart symbol={selected.symbol} valueFn={p=>p*selected.quantity} since={selected.timestamp}  until={selected.exitTimestamp} />
-            </Dialog>
+            <Button variant="contained" color='error' onClick={()=>{StoreInstance.portfolio?.deleteSpotPosition(selected._id); Select(undefined)}}>УДАЛИТЬ</Button>
           </>}
         </>}
         {selected && <>

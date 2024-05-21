@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { TextField, Button, DialogContent, Link, Typography } from '@mui/material';
-import { StoreInstance } from '@/Store/Store';
+import { StoreInstance, UserCreateDTO } from '@/Store/Store';
 import { AxiosError } from 'axios';
 import { Error } from '@mui/icons-material';
 
@@ -27,8 +27,12 @@ const UserManagement: React.FC<{close: ()=>void}> = ({close}) => {
 
   const handleUpdate = async () => {
     // Call API to update user
+    const update: Partial<UserCreateDTO> = {}
+    if(username)update.username = username
+    if(password)update.password = password
+    if(email)update.email = email
     try{
-      await StoreInstance.updateUser({ username, password, email });
+      await StoreInstance.updateUser(update);
       close()
     }catch(e: unknown){
       if(e instanceof AxiosError){

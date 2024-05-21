@@ -26,7 +26,7 @@ export const FuturesPage = observer(()=>{
           {selected &&<>
             <Button variant="contained" color='info'  onClick={()=>setOpenUpdate(true)}>Изменить</Button>
             <UpdateFutures key={selected._id} open={openUpdate} onClose={()=>setOpenUpdate(false)} pos={selected}/>
-            <Button variant="contained" color='error' onClick={()=>StoreInstance.portfolio?.deleteFuturesPosition(selected._id)}>УДАЛИТЬ</Button>
+            <Button variant="contained" color='error' onClick={()=>{StoreInstance.portfolio?.deleteFuturesPosition(selected._id); Select(undefined)}}>УДАЛИТЬ</Button>
             
           </>}
         </>}
