@@ -55,9 +55,11 @@ export const UpdateFutures: React.FC<{open: boolean, onClose: ()=>void, pos: Fut
     }
     const toModify = {...formData}
     for(const key in toModify){
+      //@ts-ignore
       if(toModify[key]===''){
-        delete toModify[key]
-      }
+        //@ts-ignore
+          delete toModify[key]
+        }
     }
     if(!long && toModify.quantity)toModify.quantity = -toModify.quantity
     pos.update(toModify)

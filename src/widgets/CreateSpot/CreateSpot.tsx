@@ -50,9 +50,11 @@ export const CreateSpot: React.FC<{open: boolean, onClose: ()=>void}> = ({open, 
 
     const toModify = {...toUsd}
     for(const key in toModify){
+      //@ts-ignore
       if(toModify[key]===''){
-        delete toModify[key]
-      }
+        //@ts-ignore
+          delete toModify[key]
+        }
     }
     //@ts-ignore
     StoreInstance.portfolio?.createSpotPosition(toModify)

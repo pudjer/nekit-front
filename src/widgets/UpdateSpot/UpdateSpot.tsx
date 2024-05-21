@@ -50,9 +50,11 @@ export const UpdateSpot: React.FC<{open: boolean, onClose: ()=>void, pos: SpotPo
     }
     const toModify = {...toUsd}
     for(const key in toModify){
-      if(toModify[key]===''){
-        delete toModify[key]
-      }
+       //@ts-ignore
+       if(toModify[key]===''){
+        //@ts-ignore
+          delete toModify[key]
+        }
     }
     pos.update(toModify)
   };

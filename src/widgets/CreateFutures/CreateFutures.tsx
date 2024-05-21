@@ -51,7 +51,9 @@ export const CreateFutures: React.FC<{open: boolean, onClose: ()=>void}> = ({ope
     }
     const toModify = {...formData}
     for(const key in toModify){
+      //@ts-ignore
       if(toModify[key]===''){
+      //@ts-ignore
         delete toModify[key]
       }
     }
