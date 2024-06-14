@@ -31,7 +31,7 @@ export const UpdateFutures: React.FC<{open: boolean, onClose: ()=>void, pos: Fut
     initialCurrencyPrice: pos.initialCurrencyPrice,
     exitTimestamp: pos.exitTimestamp?.slice(0, 16)
   });
-  const [long, setIsLong] = useState(true)
+  const [long, setIsLong] = useState(pos.quantity >= 0)
   
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     let { name, value } = event.target;
