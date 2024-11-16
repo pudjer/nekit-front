@@ -1,6 +1,5 @@
 import { baseUrl } from "@/api/baseUrl";
 import { observer } from "mobx-react-lite";
-import Peer from "peerjs";
 import { useRef, useEffect } from "react";
 import { io, Socket } from "socket.io-client";
 
@@ -9,47 +8,26 @@ type videoRef =  {current: HTMLVideoElement | null}
 export const AdminPage = observer(() => {
   const localRef = useRef<HTMLVideoElement>(null);
   const remoteRef = useRef<HTMLVideoElement>(null);
+  const remoteDeviceRef = useRef<HTMLVideoElement>(null);
 
 
   useEffect(() => {
     const socket = io(baseUrl+':90');
+    const run = async () => {
+      const streams = await setLocalStream(localRef)
+      const connection = await createPeerConnection(streams, socket, [remoteRef, remoteDeviceRef])
+      handleSignaling(connection)
+      await signal(connection)
+    }
 
-    const getLocalStream = async () => {
-        const localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-        if (localRef.current) localRef.current.srcObject = localStream;
-        return localStream
-    };
-
+    run()
     
-
-    const peer = new Peer();
-    getLocalStream().then((stream)=>{
-      peer.on('open', function (id) {
-        const data = {
-          token: localStorage.getItem('access_token'),
-          id,
-        };
-        socket.emit('entered', JSON.stringify(data));
-        socket.once('entered', id => {
-            peer.call(id, stream).on('stream', function(remoteStream) {
-            if(remoteRef.current)remoteRef.current.srcObject = remoteStream
-          });
-        })
-      });
-  
-      peer.on('call', function(call) {
-        console.log('lol')
-        call.answer(stream); // Answer the call with an A/V stream.
-        call.on('stream', function(remoteStream) {
-          if(remoteRef.current)remoteRef.current.srcObject = remoteStream
-        });
-      });
-
-
-
-    });
     return () => {
       socket.disconnect();
+      if(localRef.current?.srcObject)localRef.current.srcObject = null
+      if(remoteDeviceRef.current?.srcObject)remoteDeviceRef.current.srcObject = null
+      if(remoteRef.current?.srcObject)remoteRef.current.srcObject = null
+
     };
   }, []);
 
@@ -57,20 +35,21 @@ export const AdminPage = observer(() => {
     <div>
       <video ref={localRef} autoPlay muted style={{ width: '100%', maxHeight: '480px' }} />
       <video ref={remoteRef} autoPlay style={{ width: '100%', maxHeight: '480px' }} />
+      <video ref={remoteDeviceRef} autoPlay style={{ width: '100%', maxHeight: '480px' }} />
+
 
     </div>
   );
 });
 
 
-const setLocalStream = async (userRef: videoRef, deviceRef: videoRef) => {
+const setLocalStream = async (userRef: videoRef) => {
+  console.log("au")
   const userStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-  const deviceStream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
 
   if (userRef.current) userRef.current.srcObject = userStream;
-  if (deviceRef.current) deviceRef.current.srcObject = deviceStream;
 
-  return [userStream, deviceStream]
+  return [userStream]
 };
 
 const createPeerConnection = (streams: MediaStream[], socket: Socket, remoteRef: videoRef[]) => {
@@ -108,9 +87,14 @@ const createPeerConnection = (streams: MediaStream[], socket: Socket, remoteRef:
       socket.emit('ice-candidate', event.candidate);
     }
   };
+
+  return {peerConnection, socket}
 };
 
-const handleSignaling = (socket: Socket, peerConnection: RTCPeerConnection) => {
+
+type ConnectionProps = {socket: Socket, peerConnection: RTCPeerConnection}
+
+const handleSignaling = ({socket, peerConnection}: ConnectionProps) => {
   socket.on('offer', async (offer: RTCSessionDescriptionInit) => {
     await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
     const answer = await peerConnection.createAnswer();
@@ -127,16 +111,14 @@ const handleSignaling = (socket: Socket, peerConnection: RTCPeerConnection) => {
       await peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
     }
   });
-  return socket
 };
 
-const signal = async (peerConnection: RTCPeerConnection, socket: Socket) => {
+const signal = async ({socket, peerConnection}: ConnectionProps) => {
   const offer = await peerConnection.createOffer();
   await peerConnection.setLocalDescription(offer);
   const data = {
     token: localStorage.getItem('access_token'),
     offer,
   };
-  socket.emit('offer', data);
-
+  socket.emit('entered', data);
 }
