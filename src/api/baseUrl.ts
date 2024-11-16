@@ -1,1 +1,1 @@
-export const baseUrl = document.getElementById('baseUrl')!.getAttribute('value')!
+export const baseUrl = window.location.origin

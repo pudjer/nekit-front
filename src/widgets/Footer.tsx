@@ -12,9 +12,6 @@ export const Footer = () => {
 
       }}>
       <Container maxWidth="sm">
-        <Typography variant="body1">
-          Powered by CoinGecko
-        </Typography>
       </Container>
     </footer>
   );

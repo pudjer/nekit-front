@@ -76,7 +76,6 @@ const UserManagement: React.FC<{close: ()=>void}> = ({close}) => {
       <Button variant="contained" onClick={handleDelete}>УДАЛИТЬ пользователя</Button>
       <Button variant="contained" onClick={handleUpdate}>ИЗМЕНИТЬ пользователя</Button>
       <Button variant="contained" onClick={handleExit}>Выйти</Button>
-      <Link href={'https://t.me/CoinTrackX_Bot?start='+StoreInstance.user!._id}><Typography>Добавить Telegram аккаунт</Typography></Link>
     </DialogContent>
   );
 };

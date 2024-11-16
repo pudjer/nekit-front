@@ -3,7 +3,7 @@ import { redirect } from 'react-router-dom';
 import { baseUrl } from './baseUrl';
 
 const api = axios.create({
-  baseURL: baseUrl,
+  baseURL: baseUrl+":3000",
   headers: {withCredentials:true},
 });
 
