@@ -41,7 +41,7 @@ const SignInForm: React.FC<{close: ()=>void}> = ({close}) => {
     }
   }
   return (
-    <DialogContent>
+    <DialogContent style={{height: 500, width: 500, display: "flex", flexDirection: "column", justifyContent: "space-around"}}>
       {error && <Alert severity="error">{error}</Alert>}
       <FormControlLabel control={<Switch checked={signUp} onChange={()=>setSignUp(!signUp)}/>} label={signUp ? "Зарегистрироваться" : "Войти"} />
       <TextField

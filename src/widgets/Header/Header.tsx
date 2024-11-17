@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import styles from './Header.module.css'
 import ProfileButton from '../ProfileButton/ProfileButton';
 import { observer } from 'mobx-react-lite';
+import { ThemeToggleButton } from '@/app/ThemeContext';
 
 
 const Header: React.FC = observer(() => {
@@ -14,6 +15,7 @@ const Header: React.FC = observer(() => {
       <Link to={'/'}>
         <Typography className={styles.icon}  variant='h4'>CoinTrackX</Typography>
       </Link>
+      <ThemeToggleButton />
 
       <div>
         <Typography variant="h6" align="right">

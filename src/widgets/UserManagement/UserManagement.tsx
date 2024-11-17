@@ -12,17 +12,7 @@ const UserManagement: React.FC<{close: ()=>void}> = ({close}) => {
   const [email, setEmail] = useState(user.email || '');
   const [error, setError] = useState<string|undefined>()
 
-  const handleDelete = async() => {
-    // Call API to delete user
-    try{
-      await StoreInstance.deleteUser();
-      close()
-    }catch(e: unknown){
-      if(e instanceof AxiosError){
-        setError(e.response?.data)
-      }
-    }
-  };
+
 
 
   const handleUpdate = async () => {
@@ -49,7 +39,7 @@ const UserManagement: React.FC<{close: ()=>void}> = ({close}) => {
   };
 
   return (
-    <DialogContent>
+    <DialogContent style={{height: 500, width: 500, display: "flex", flexDirection: "column", justifyContent: "space-around"}}>
       {error && <Error>
         {error}
       </Error>}
@@ -73,7 +63,6 @@ const UserManagement: React.FC<{close: ()=>void}> = ({close}) => {
         value={email}
         onChange={(e) => setEmail(e.target.value)}
       />
-      <Button variant="contained" onClick={handleDelete}>УДАЛИТЬ пользователя</Button>
       <Button variant="contained" onClick={handleUpdate}>ИЗМЕНИТЬ пользователя</Button>
       <Button variant="contained" onClick={handleExit}>Выйти</Button>
     </DialogContent>

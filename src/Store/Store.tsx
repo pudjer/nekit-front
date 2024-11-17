@@ -36,10 +36,7 @@ export class Store {
     await this.setUser()
   }
   
-  async deleteUser(){
-    await Axios.delete('/user')
-    this.user = undefined
-  }
+
   
   async updateUser(user: Partial<UserCreateDTO>){
     const res: User = (await Axios.patch('/user', user)).data

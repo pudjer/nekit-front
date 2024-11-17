@@ -1,5 +1,5 @@
 import { StoreInstance } from "@/Store/Store"
-import { CallPage } from "@/pages/CallPage/CallPage"
+import { MainPage } from "@/pages/MainPage/MainPage"
 import ErrorPage from "@/pages/ErrorPage/ErrorPage"
 import { Footer } from "@/widgets/Footer"
 import Header from "@/widgets/Header/Header"
@@ -20,7 +20,7 @@ const App = observer(() => {
       <Header/>
       <div style={{marginTop: 52, width:"100vw"}}>
         <Routes>
-          <Route path="/" Component={()=><CallPage/>}/>
+          <Route path="/" Component={()=><MainPage/>}/>
         </Routes>
       </div>
       <Footer/>

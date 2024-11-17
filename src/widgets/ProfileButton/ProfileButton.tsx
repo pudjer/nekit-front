@@ -21,7 +21,7 @@ const ProfileButton = observer(() => {
   const user = StoreInstance.user
   return (
     <div>
-      <Button onClick={handleOpen} size="large" variant='text'><Typography variant='h6'>{user ? user.username : 'Войти'}</Typography></Button>
+      <Button onClick={handleOpen} size="large" variant='contained'>{user ? user.username : 'Войти'}</Button>
       <Dialog open={open} onClose={handleClose}>
         {user ? <UserManagement  close={handleClose}/> : <SignInForm close={handleClose}/>}
       </Dialog>
