@@ -9,11 +9,11 @@ import { ThemeToggleButton } from '@/app/ThemeContext';
 
 const Header: React.FC = observer(() => {
   return (
-    <AppBar sx={{width: "100vw", margin: 0}}>
+    <AppBar sx={{width: "100vw"}}>
       <Toolbar className={styles.header}>
 
       <Link to={'/'}>
-        <Typography className={styles.icon}  variant='h4'>CoinTrackX</Typography>
+        <Typography className={styles.icon}  variant='h4'>ZVyaZ</Typography>
       </Link>
       <ThemeToggleButton />
 

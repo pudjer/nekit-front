@@ -1,7 +1,7 @@
 import { StoreInstance } from "@/Store/Store";
 import { CallPage } from "@/pages/CallPage/CallPage";
 import ProfileButton from "@/widgets/ProfileButton/ProfileButton";
-import { Typography } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import { observer } from "mobx-react-lite";
 import { useState } from "react";
 import { AdminPage } from "../AdminPage/AdminPage";
@@ -17,19 +17,20 @@ export const MainPage: React.FC = observer(()=>{
   if(user.isAdmin){
     return <AdminPage/>
   }else{
-    return <CallContainer/>
+    return <CallContainer isOperator={user.isOperator}/>
   }
 })
 
-const CallContainer = () => {
+const CallContainer = ({isOperator}: {isOperator: boolean}) => {
   const [callOpened, setCallOpened] = useState(false)
-  return <div>
+  return <div style={{width: "100%", height: "100%"}}>
     {
       callOpened 
       ?
       <CallPage close={()=>setCallOpened(false)}/>
       :
-      <button onClick={()=>setCallOpened(true)}>open</button>
+      <div style={{width: "100%",display: "flex", justifyContent: "center", height: "100%", alignItems: "center"}}><Button onClick={()=>setCallOpened(true)} size="large" variant='contained'>{isOperator ? "Начать принимать звонки" : "Запросить Тех. Поддержку"}</Button></div>
+
     }
   </div>
 }

@@ -1,29 +1,48 @@
-import React, { useState, useEffect } from 'react';
-import { TextField, Checkbox, FormControlLabel, Button, Box, Typography, Alert } from '@mui/material';
-import axios from 'axios';
+import React, { useState } from 'react';
+import {AdminForm} from './AdminForm';
+import { TextField, Button, Box, Typography, Alert } from '@mui/material';
+import {Axios} from '@/api/Axios'
 
-interface UserFormProps {
-  userId?: string; // If editing, pass the user ID
-  onSuccess?: () => void; // Callback after successful operation
+interface User {
+  _id: string;
+  username: string;
+  email?: string;
+  blocked: boolean;
+  isAdmin: boolean;
+  isOperator: boolean;
 }
 
-
 export const AdminPage = () => {
-  const [userId, setUserId] = useState('');
-  const [editingUserId, setEditingUserId] = useState<string | null>();
+  const [searchUsername, setSearchUsername] = useState('');
+  const [user, setUser] = useState<User | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [refresh, setRefresh] = useState(false);
 
-  // Handle the form submission
-  const handleFetchUser = () => {
-    // If an ID is entered, set it for editing, otherwise clear the form for creating a new user
-    setEditingUserId(userId.trim() ? userId.trim() : null);
+  // Handle search by username
+  const handleSearch = async () => {
+    setError(null);
+    try {
+      const response = await Axios.get(`/admin/user/username/${searchUsername}`);
+      setUser(response.data);
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'User not found');
+      setUser(null);
+    }
   };
 
   const handleSuccess = () => {
     setRefresh(!refresh);
-    setUserId(''); // Clear the input field after a successful operation
-    setEditingUserId(null); // Reset the form state
+    setUser(null);
+    setSearchUsername('');
   };
+
+  const handleType: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> = (e) => {
+    setSearchUsername(e.target.value)
+    if(e.target.value.length===0){
+      setUser(null)
+    }
+  }
+
 
   return (
     <Box sx={{ maxWidth: 600, mx: 'auto', mt: 5 }}>
@@ -31,151 +50,36 @@ export const AdminPage = () => {
         Admin Dashboard
       </Typography>
 
-      {/* Input field to enter the User ID */}
+      {/* Username Search */}
       <Box sx={{ display: 'flex', gap: 2, mb: 4 }}>
         <TextField
           fullWidth
-          label="Enter User ID (leave blank to create new)"
-          value={userId}
-          onChange={(e) => setUserId(e.target.value)}
+          label="Search by Username"
+          value={searchUsername}
+          onChange={handleType}
         />
-        <Button variant="contained" color="primary" onClick={handleFetchUser}>
-          {userId ? 'Edit User' : 'Create User'}
+        <Button variant="contained" color="primary" onClick={handleSearch}>
+          Search
         </Button>
       </Box>
-
-      {/* User Form */}
-      <AdminForm userId={editingUserId || undefined} onSuccess={handleSuccess} />
-    </Box>
-  );
-};
-
-export const AdminForm: React.FC<UserFormProps> = ({ userId, onSuccess }) => {
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [blocked, setBlocked] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [isOperator, setIsOperator] = useState(false);
-  const [hashedPassword, setHashedPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
-
-  // Fetch user data if editing
-  useEffect(() => {
-    if (userId) {
-      axios
-        .get(`/admin/user/${userId}`)
-        .then((response) => {
-          const user = response.data;
-          setUsername(user.username);
-          setEmail(user.email || '');
-          setBlocked(user.blocked);
-          setIsAdmin(user.isAdmin);
-          setIsOperator(user.isOperator);
-        })
-        .catch((err) => setError(err.response?.data?.message || 'Error fetching user data'));
-    }
-  }, [userId]);
-
-  // Handle form submission
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-    setError(null);
-
-    const userData = {
-      username,
-      email: email || undefined,
-      blocked,
-      isAdmin,
-      isOperator,
-      hashedPassword,
-    };
-
-    try {
-      if (userId) {
-        await axios.patch(`/admin/user/${userId}`, userData);
-      } else {
-        await axios.post('/admin/user', userData);
-      }
-      if (onSuccess) onSuccess();
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Error saving user data');
-    }
-  };
-
-  // Handle delete user
-  const handleDelete = async () => {
-    if (!userId) return;
-    try {
-      await axios.delete(`/admin/user/${userId}`);
-      if (onSuccess) onSuccess();
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Error deleting user');
-    }
-  };
-
-  return (
-    <Box component="form" onSubmit={handleSubmit} sx={{ maxWidth: 400, mx: 'auto', mt: 4 }}>
-      <Typography variant="h5" mb={2}>{userId ? 'Edit User' : 'Create User'}</Typography>
 
       {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
 
-      <TextField
-        fullWidth
-        label="Username"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-        inputProps={{ maxLength: 25 }}
-        required
-        sx={{ mb: 2 }}
-      />
+      {/* Display User Info if Found */}
+      {user && (
+        <Box sx={{ mb: 4 }}>
+          <Typography variant="h6">User Found:</Typography>
+          <Typography>ID: {user._id}</Typography>
+          <Typography>Username: {user.username}</Typography>
+          <Typography>Email: {user.email || 'N/A'}</Typography>
+          <Typography>Blocked: {user.blocked ? 'Yes' : 'No'}</Typography>
+          <Typography>Admin: {user.isAdmin ? 'Yes' : 'No'}</Typography>
+          <Typography>Operator: {user.isOperator ? 'Yes' : 'No'}</Typography>
+        </Box>
+      )}
 
-      <TextField
-        fullWidth
-        label="Email (optional)"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        type="email"
-        sx={{ mb: 2 }}
-      />
-
-      <TextField
-        fullWidth
-        label="Password"
-        value={hashedPassword}
-        onChange={(e) => setHashedPassword(e.target.value)}
-        type="password"
-        required={!userId} // Password is required for new users only
-        sx={{ mb: 2 }}
-      />
-
-      <FormControlLabel
-        control={<Checkbox checked={blocked} onChange={(e) => setBlocked(e.target.checked)} />}
-        label="Blocked"
-      />
-
-      <FormControlLabel
-        control={<Checkbox checked={isAdmin} onChange={(e) => setIsAdmin(e.target.checked)} />}
-        label="Admin"
-      />
-
-      <FormControlLabel
-        control={<Checkbox checked={isOperator} onChange={(e) => setIsOperator(e.target.checked)} />}
-        label="Operator"
-      />
-
-      <Box sx={{ display: 'flex', gap: 2, mt: 3 }}>
-        <Button variant="contained" color="primary" type="submit">
-          {userId ? 'Update' : 'Create'}
-        </Button>
-
-        {userId && (
-          <Button variant="contained" color="error" onClick={handleDelete}>
-            Delete
-          </Button>
-        )}
-      </Box>
+      {/* User Form for Edit/Delete using User ID */}
+      <AdminForm userId={user?._id} onSuccess={handleSuccess} />
     </Box>
   );
 };
-
-

@@ -1,5 +1,6 @@
 import { baseUrl } from "@/api/baseUrl";
-import { Mic, MicOff } from "@mui/icons-material";
+import { Mic, MicOff, MicOffRounded, MicRounded } from "@mui/icons-material";
+import { Button } from "@mui/material";
 import { observer } from "mobx-react-lite";
 import { useRef, useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
@@ -41,10 +42,13 @@ export const CallPage = observer((callbacks: Callbacks) => {
 
 
   return (
-    <div>
-      <video ref={localRef} autoPlay muted style={{ width: '100%', maxHeight: '480px' }} />
-      <video ref={remoteRef} autoPlay style={{ width: '100%', maxHeight: '480px' }} />
-      <button onClick={toggleAudio}>{audio ? <Mic/> : <MicOff/> }</button>
+    <div style={{ width: '100%', height: '100%' }}>
+      
+      <video ref={remoteRef} autoPlay style={{ width: '100%', height: '100%', maxHeight: '100%', maxWidth: '100%', border: "3px solid red"}}></video>
+      <div>
+        <video ref={localRef} autoPlay muted style={{ maxWidth: '300px', maxHeight: '300px', position: "absolute", top: "25vw", border: "3px solid red"}} />
+        <Button style={{ position: "absolute", bottom: "25vh", left: "calc(50vw - 30px)"}} onClick={toggleAudio}>{audio ? <MicRounded /> : <MicOffRounded/> }</Button>
+      </div>
     </div>
   );
 });
@@ -150,6 +154,7 @@ const createPeerConnection = (stream: MediaStream, socket: Socket, remoteRef: vi
       await peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
     }
   });
+  socket.on("disconnect", ()=>close())
   
 
   return {peerConnection, socket}

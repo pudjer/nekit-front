@@ -18,7 +18,7 @@ const App = observer(() => {
   return (
     <BrowserRouter>
       <Header/>
-      <div style={{marginTop: 52, width:"100vw"}}>
+      <div style={{paddingTop: 76, width:"100vw", height: "100%"}}>
         <Routes>
           <Route path="/" Component={()=><MainPage/>}/>
         </Routes>
