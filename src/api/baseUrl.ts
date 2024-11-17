@@ -1,1 +1,3 @@
-export const baseUrl = window.location.origin
+
+//@ts-ignore
+export const baseUrl = global.API_HOST

@@ -4,7 +4,6 @@ import { Button } from "@mui/material";
 import { observer } from "mobx-react-lite";
 import { useRef, useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
-
 type videoRef =  {current: HTMLVideoElement | null}
 
 
@@ -17,7 +16,8 @@ export const CallPage = observer((callbacks: Callbacks) => {
   const [audio, setAudio] = useState<boolean>(true)
 
   useEffect(() => {
-    const socket = io(baseUrl+':90');
+    //@ts-ignore
+    const socket = io(`${baseUrl}:${global.API_PORT}`);
     const run = async () => {
       const stream = await setLocalStream(localRef)
       localStream.current = stream
@@ -31,6 +31,8 @@ export const CallPage = observer((callbacks: Callbacks) => {
       socket.disconnect();
       if(localRef.current?.srcObject)localRef.current.srcObject = null
       if(remoteRef.current?.srcObject)remoteRef.current.srcObject = null
+      if(localStream.current)localStream.current.getTracks().forEach(t=>t.stop())
+
 
     };
   }, []);
@@ -47,7 +49,10 @@ export const CallPage = observer((callbacks: Callbacks) => {
       <video ref={remoteRef} autoPlay style={{ width: '100%', height: '100%', maxHeight: '100%', maxWidth: '100%', border: "3px solid red"}}></video>
       <div>
         <video ref={localRef} autoPlay muted style={{ maxWidth: '300px', maxHeight: '300px', position: "absolute", top: "25vw", border: "3px solid red"}} />
-        <Button style={{ position: "absolute", bottom: "25vh", left: "calc(50vw - 30px)"}} onClick={toggleAudio}>{audio ? <MicRounded /> : <MicOffRounded/> }</Button>
+        <div style={{ position: "absolute", bottom: "25vh", left: "calc(50vw - 50px)", width: 100}}>
+          <Button  onClick={toggleAudio}>{audio ? <MicRounded /> : <MicOffRounded/> }</Button>
+          <Button onClick={callbacks.close}>close</Button>
+        </div>
       </div>
     </div>
   );
