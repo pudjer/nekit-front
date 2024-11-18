@@ -48,7 +48,7 @@ export const CallPage = observer((callbacks: Callbacks) => {
   return (
     <div style={{ width: '100%', height: '100%' }}>
       
-      <video ref={remoteRef} autoPlay style={{ width: '100%', height: '100%', maxHeight: '100%', maxWidth: '100%', border: "3px solid red"}}></video>
+      <video ref={remoteRef} autoPlay style={{ objectFit: "contain", border: "3px solid red"}}></video>
       <div>
         <video ref={localRef} autoPlay muted style={{ maxWidth: '300px', maxHeight: '300px', position: "absolute", top: "25vw", border: "3px solid red"}} />
         <div style={{ position: "absolute", bottom: "25vh", left: "calc(50vw - 50px)", width: 100}}>
