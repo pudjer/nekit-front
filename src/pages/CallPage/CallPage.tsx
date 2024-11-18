@@ -18,6 +18,7 @@ export const CallPage = observer((callbacks: Callbacks) => {
   useEffect(() => {
     //@ts-ignore
     const socket = io(`${baseUrl}:${global.API_PORT}`);
+    callbacks.setOnlineStatus && callbacks.setOnlineStatus("В очереди...")
     let peerConnection: RTCPeerConnection | undefined
     const run = async () => {
       const stream = await setLocalStream(localRef)
@@ -52,7 +53,7 @@ export const CallPage = observer((callbacks: Callbacks) => {
         <video ref={localRef} autoPlay muted style={{ maxWidth: '300px', maxHeight: '300px', position: "absolute", top: "25vw", border: "3px solid red"}} />
         <div style={{ position: "absolute", bottom: "25vh", left: "calc(50vw - 50px)", width: 100}}>
           <Button  onClick={toggleAudio}>{audio ? <MicRounded /> : <MicOffRounded/> }</Button>
-          <Button onClick={callbacks.close}>close</Button>
+          <Button onClick={callbacks.close}>закончить звонок</Button>
         </div>
       </div>
     </div>
@@ -95,7 +96,6 @@ const createPeerConnection = (stream: MediaStream, socket: Socket, remoteRef: vi
   // Handle ICE candidates
   peerConnection.onicecandidate = (event) => {
     if (event.candidate) {
-      console.log("otpravka")
       socket.emit('ice-candidate', event.candidate);
     }
   };
@@ -122,21 +122,21 @@ const createPeerConnection = (stream: MediaStream, socket: Socket, remoteRef: vi
       switch (peerConnection.connectionState) {
         case "new":
         case "connecting":
-          setOnlineStatus("Connecting…");
+          setOnlineStatus("Подключение...");
           break;
         case "connected":
           setOnlineStatus("Online");
           break;
         case "disconnected":
-          setOnlineStatus("Disconnecting…");
+          setOnlineStatus("Переподключение...");
           break;
         case "closed":
-          setOnlineStatus("Offline");
+          setOnlineStatus("Офлайн");
           close()
           socket.disconnect()
           break;
         case "failed":
-          setOnlineStatus("Error");
+          setOnlineStatus("Ошибка");
           close()
           socket.disconnect()
           break;
@@ -153,7 +153,6 @@ const createPeerConnection = (stream: MediaStream, socket: Socket, remoteRef: vi
   });
 
   socket.on('ice-candidate', async (candidate: RTCIceCandidateInit) => {
-    console.log("poluchka")
     if (peerConnection) {
       await peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
     }
