@@ -159,7 +159,10 @@ const createPeerConnection = (stream: MediaStream, socket: Socket, remoteRef: vi
       await peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
     }
   });
-  socket.on("disconnect", ()=>close())
+  socket.on("disconnect", ()=>{
+    close()
+    peerConnection.close()
+  })
   
 
   return {peerConnection, socket}
