@@ -34,8 +34,7 @@ export const CallPage = observer((callbacks: Callbacks) => {
       if(localRef.current?.srcObject)localRef.current.srcObject = null
       if(remoteRef.current?.srcObject)remoteRef.current.srcObject = null
       if(localStream.current)localStream.current.getTracks().forEach(t=>t.stop())
-
-
+      callbacks.setOnlineStatus && callbacks.setOnlineStatus("")
     };
   }, []);
 
@@ -138,11 +137,6 @@ const createPeerConnection = (stream: MediaStream, socket: Socket, remoteRef: vi
           break;
         case "failed":
           setOnlineStatus("Error");
-          close()
-          socket.disconnect()
-          break;
-        default:
-          setOnlineStatus("Unknown");
           close()
           socket.disconnect()
           break;
