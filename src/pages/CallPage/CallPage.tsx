@@ -158,6 +158,7 @@ const createPeerConnection = (stream: MediaStream, socket: Socket, remoteRef: vi
 
   socket.on("disconnect", ()=>{
     close()
+    peerConnection.close()
   })
   
 
