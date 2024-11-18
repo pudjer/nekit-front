@@ -132,14 +132,17 @@ const createPeerConnection = (stream: MediaStream, socket: Socket, remoteRef: vi
         case "closed":
           setOnlineStatus("Offline");
           close()
+          socket.disconnect()
           break;
         case "failed":
           setOnlineStatus("Error");
           close()
+          socket.disconnect()
           break;
         default:
           setOnlineStatus("Unknown");
           close()
+          socket.disconnect()
           break;
       }
   
@@ -159,6 +162,7 @@ const createPeerConnection = (stream: MediaStream, socket: Socket, remoteRef: vi
       await peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
     }
   });
+
   socket.on("disconnect", ()=>{
     close()
     peerConnection.close()
