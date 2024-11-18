@@ -1,6 +1,6 @@
 import { baseUrl } from "@/api/baseUrl";
 import { MicOffRounded, MicRounded } from "@mui/icons-material";
-import { Button } from "@mui/material";
+import { Button, Paper } from "@mui/material";
 import { observer } from "mobx-react-lite";
 import { useRef, useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
@@ -46,16 +46,14 @@ export const CallPage = observer((callbacks: Callbacks) => {
 
 
   return (
-    <div style={{ width: '100%', height: '100%' }}>
+    <div style={{ width: '100%', height: '100%', justifyContent: "center", display: "flex" }}>
       
-      <video ref={remoteRef} autoPlay style={{ objectFit: "contain", border: "3px solid red"}}></video>
-      <div>
-        <video ref={localRef} autoPlay muted style={{ maxWidth: '300px', maxHeight: '300px', position: "absolute", top: "25vw", border: "3px solid red"}} />
-        <div style={{ position: "absolute", bottom: "25vh", left: "calc(50vw - 50px)", width: 100}}>
+      <video ref={remoteRef} autoPlay style={{ width: '90%', border: "3px solid red"}}></video>
+        <video ref={localRef} autoPlay muted style={{ maxWidth: '300px', maxHeight: '300px', position: "absolute", top: "10vh", border: "3px solid red", right: "10vw"}} />
+        <Paper style={{ position: "absolute", bottom: "10vh", left: "10vw", width: 100, height: 120, display: "flex", flexDirection: "column", justifyContent: "space-around"}}>
           <Button  onClick={toggleAudio}>{audio ? <MicRounded /> : <MicOffRounded/> }</Button>
           <Button onClick={callbacks.close}>закончить звонок</Button>
-        </div>
-      </div>
+        </Paper>
     </div>
   );
 });

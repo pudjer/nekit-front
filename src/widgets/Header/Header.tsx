@@ -9,7 +9,7 @@ import { ThemeToggleButton } from '@/ThemeContext';
 
 const Header: React.FC = observer(() => {
   return (
-    <AppBar sx={{width: "100vw"}}>
+    <AppBar sx={{width: "100%"}}>
       <Toolbar className={styles.header}>
 
       <Link to={'/'}>
