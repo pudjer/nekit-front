@@ -2,8 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import './index.css';
-import { ThemeProviderContext, useThemeContext } from './ThemeContext';
-import { Button } from '@mui/material';
+import { ThemeProviderContext } from './ThemeContext';
 
 
 

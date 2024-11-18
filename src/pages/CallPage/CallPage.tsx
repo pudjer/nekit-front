@@ -1,5 +1,5 @@
 import { baseUrl } from "@/api/baseUrl";
-import { Mic, MicOff, MicOffRounded, MicRounded } from "@mui/icons-material";
+import { MicOffRounded, MicRounded } from "@mui/icons-material";
 import { Button } from "@mui/material";
 import { observer } from "mobx-react-lite";
 import { useRef, useEffect, useState } from "react";

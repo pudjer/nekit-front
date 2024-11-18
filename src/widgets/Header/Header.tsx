@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import styles from './Header.module.css'
 import ProfileButton from '../ProfileButton/ProfileButton';
 import { observer } from 'mobx-react-lite';
-import { ThemeToggleButton } from '@/app/ThemeContext';
+import { ThemeToggleButton } from '@/ThemeContext';
 
 
 const Header: React.FC = observer(() => {

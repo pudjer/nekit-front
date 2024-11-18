@@ -2,6 +2,8 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
 import path from 'path';
 import dotenv from 'dotenv'
+import * as fs from 'fs';
+
 // https://vitejs.dev/config/
 
 
@@ -27,6 +29,10 @@ export default defineConfig(({ mode }) => {
     server: {
       host: '0.0.0.0', // Слушать на всех доступных IP
       port: Number(env.PORT) || 80, // Порт, на котором будет запущен сервер
+      https: {
+        key: fs.readFileSync('../ssl/server.key'),
+        cert: fs.readFileSync('../ssl/server.cert'),
+      },
     },
   }
 })
