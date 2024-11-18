@@ -17,7 +17,7 @@ export const CallPage = observer((callbacks: Callbacks) => {
 
   useEffect(() => {
     //@ts-ignore
-    const socket = io(`${baseUrl}:${global.WS_PORT}`);
+    const socket = io(`${baseUrl}:${global.API_PORT}`);
     const run = async () => {
       const stream = await setLocalStream(localRef)
       localStream.current = stream
