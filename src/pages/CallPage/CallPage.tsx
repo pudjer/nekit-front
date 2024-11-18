@@ -49,7 +49,7 @@ export const CallPage = observer((callbacks: Callbacks) => {
     <div style={{ width: '100%', height: '100%', justifyContent: "center", display: "flex" }}>
       
       <video ref={remoteRef} autoPlay style={{ width: '90%', border: "3px solid red"}}></video>
-        <video ref={localRef} autoPlay muted style={{ maxWidth: '300px', maxHeight: '300px', position: "absolute", top: "10vh", border: "3px solid red", right: "10vw"}} />
+        <video ref={localRef} autoPlay muted style={{ maxWidth: '300px', maxHeight: '300px', position: "absolute", top: 77, border: "3px solid red", right: "10vw"}} />
         <Paper style={{ position: "absolute", bottom: "10vh", left: "10vw", width: 100, height: 120, display: "flex", flexDirection: "column", justifyContent: "space-around"}}>
           <Button  onClick={toggleAudio}>{audio ? <MicRounded /> : <MicOffRounded/> }</Button>
           <Button onClick={callbacks.close}>закончить звонок</Button>

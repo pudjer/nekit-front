@@ -23,7 +23,6 @@ export default defineConfig(({ mode }) => {
       global: {
         API_HOST: env.API_HOST || 'https://localhost',
         API_PORT: Number(env.API_PORT) || 3000,
-        WS_PORT: Number(env.WS_PORT) || 9000,
       }
     },
     server: {

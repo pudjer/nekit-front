@@ -19,7 +19,7 @@ const SignInForm: React.FC<{close: ()=>void}> = ({close}) => {
       close()
     }catch(e: unknown){
       if(e instanceof AxiosError){
-        setError(e.response?.data.message)
+        setError(e.response?.data.message || "Error")
       }
     }
 
@@ -36,7 +36,7 @@ const SignInForm: React.FC<{close: ()=>void}> = ({close}) => {
       }
     }catch(e: unknown){
       if(e instanceof AxiosError){
-        setError(e.response?.data.message)
+        setError(e.response?.data.message || "Error")
       }
     }
   }
