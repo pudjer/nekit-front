@@ -18,17 +18,19 @@ export const CallPage = observer((callbacks: Callbacks) => {
   useEffect(() => {
     //@ts-ignore
     const socket = io(`${baseUrl}:${global.API_PORT}`);
+    let peerConnection: RTCPeerConnection | undefined
     const run = async () => {
       const stream = await setLocalStream(localRef)
       localStream.current = stream
-      const connection = await createPeerConnection(stream, socket, remoteRef, callbacks)
-      await signal(connection)
+      peerConnection = await createPeerConnection(stream, socket, remoteRef, callbacks)
+      await signal({peerConnection, socket})
     }
 
     run()
     
     return () => {
       socket.disconnect();
+      if(peerConnection)peerConnection.close()
       if(localRef.current?.srcObject)localRef.current.srcObject = null
       if(remoteRef.current?.srcObject)remoteRef.current.srcObject = null
       if(localStream.current)localStream.current.getTracks().forEach(t=>t.stop())
@@ -165,11 +167,10 @@ const createPeerConnection = (stream: MediaStream, socket: Socket, remoteRef: vi
 
   socket.on("disconnect", ()=>{
     close()
-    peerConnection.close()
   })
   
 
-  return {peerConnection, socket}
+  return peerConnection
 };
 
 
