@@ -23,11 +23,13 @@ export const MainPage: React.FC = observer(()=>{
 
 const CallContainer = ({isOperator}: {isOperator: boolean}) => {
   const [callOpened, setCallOpened] = useState(false)
+  const [status, setStatus] = useState("")
   return <div style={{width: "100%", height: "100%"}}>
+    <Typography variant="h4">{status}</Typography>
     {
       callOpened 
       ?
-      <CallPage close={()=>setCallOpened(false)}/>
+      <CallPage close={()=>setCallOpened(false)} setOnlineStatus={setStatus}/>
       :
       <div style={{width: "100%",display: "flex", justifyContent: "center", height: "100%", alignItems: "center"}}><Button onClick={()=>setCallOpened(true)} size="large" variant='contained'>{isOperator ? "Начать принимать звонки" : "Запросить Тех. Поддержку"}</Button></div>
 
